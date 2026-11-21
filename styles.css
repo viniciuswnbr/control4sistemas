@@ -1,0 +1,45 @@
+/* ==========================================================================
+   Control 4 Sistemas — Custom Styles (Clean Light Theme)
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+}
+
+/* Grade sutil clara no Hero */
+.bg-grid-light {
+  background-color: #FFFFFF;
+  background-image:
+    linear-gradient(to right, rgba(226, 232, 240, 0.55) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 232, 240, 0.55) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Scrollbar limpa */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #F8FAFC;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Compensação da navbar fixa ao navegar por âncoras */
+section[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Destaque de erro em inputs */
+.input-error {
+  border-color: #E11D48 !important;
+  box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.25);
+}
