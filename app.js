@@ -154,6 +154,12 @@
     }
   }
 
+  function trackDemoTableInteraction() {
+    if (typeof window.clarity === 'function') {
+      window.clarity('event', 'interacao_demo_tabela');
+    }
+  }
+
   if (crudTableBody) {
     renderCrudTable();
 
@@ -178,6 +184,7 @@
           status: template.status,
         });
         renderCrudTable();
+        trackDemoTableInteraction();
       });
     }
 
@@ -195,9 +202,11 @@
         const nextIdx = (STATUS_CYCLE.indexOf(currentStatus) + 1) % STATUS_CYCLE.length;
         sampleRecords[index].status = STATUS_CYCLE[nextIdx];
         renderCrudTable();
+        trackDemoTableInteraction();
       } else if (action === 'delete') {
         sampleRecords.splice(index, 1);
         renderCrudTable();
+        trackDemoTableInteraction();
       }
     });
   }
@@ -343,6 +352,10 @@
           </p>
         `;
         feedbackBox.classList.remove('hidden');
+      }
+
+      if (typeof window.registrarConversao === 'function') {
+        window.registrarConversao('contato_formulario');
       }
 
       window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
