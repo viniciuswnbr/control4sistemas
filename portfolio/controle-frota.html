@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -71,6 +72,7 @@
 
     <!-- Grid de Veículos -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-4" id="vehicles-grid"></section>
+    <div id="empty-state" class="hidden bg-white border border-slate-200 rounded-xl"></div>
 
     <!-- Histórico de Abastecimentos -->
     <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
@@ -209,7 +211,13 @@
         state = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
         renderAll();
-        window.C4Utils.toast('Dados da frota restaurados!', 'info');
+        window.showToast('Dados da frota restaurados!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-oil').value = 'all';
+        renderVehicles();
       };
 
       function getOilStatus(v) {
@@ -259,7 +267,18 @@
           return true;
         });
 
-        document.getElementById('vehicles-grid').innerHTML = filtered.map((v) => {
+        const grid = document.getElementById('vehicles-grid');
+        const empty = document.getElementById('empty-state');
+
+        if (!filtered.length) {
+          grid.innerHTML = '';
+          empty.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        grid.innerHTML = filtered.map((v) => {
           const st = getOilStatus(v);
           const badgeCls = st.level === 'overdue'
             ? 'bg-rose-100 text-rose-800 border-rose-300'
@@ -332,7 +351,7 @@
         v.lastOilKm = v.km;
         saveData();
         renderAll();
-        window.C4Utils.toast(`Troca de óleo registrada para ${v.plate} aos ${v.km.toLocaleString('pt-BR')} km!`);
+        window.showToast(`Troca de óleo registrada para ${v.plate} aos ${v.km.toLocaleString('pt-BR')} km!`, 'success');
       };
 
       const fuelModal = document.getElementById('fuel-modal');
@@ -378,7 +397,7 @@
         const liters = Number(document.getElementById('ff-liters').value);
         const cost = Number(document.getElementById('ff-cost').value);
         if (newKm <= v.km) {
-          window.C4Utils.toast('O novo odômetro deve ser maior que o atual!', 'error');
+          window.showToast('O novo odômetro deve ser maior que o atual!', 'warning');
           return;
         }
         const dist = newKm - v.km;
@@ -399,7 +418,7 @@
         saveData();
         fuelModal.classList.add('hidden');
         renderAll();
-        window.C4Utils.toast(`Abastecimento salvo! Média: ${kmPerL.toFixed(2)} km/L`);
+        window.showToast(`Abastecimento salvo! Média: ${kmPerL.toFixed(2)} km/L`, 'success');
       });
 
       const vehModal = document.getElementById('vehicle-modal');
@@ -423,7 +442,7 @@
         vehModal.classList.add('hidden');
         document.getElementById('vehicle-form').reset();
         renderAll();
-        window.C4Utils.toast('Veículo cadastrado!');
+        window.showToast('Registro salvo com sucesso', 'success');
       });
 
       document.getElementById('search-input').addEventListener('input', renderVehicles);

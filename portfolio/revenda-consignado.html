@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -85,6 +86,7 @@
           <tbody id="consign-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
         </table>
       </div>
+      <div id="empty-state" class="hidden"></div>
     </section>
   </main>
 
@@ -171,7 +173,14 @@
         rows = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
         renderAll();
-        window.C4Utils.toast('Dados de consignado restaurados!', 'info');
+        window.showToast('Dados de consignado restaurados!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-reseller').value = 'all';
+        document.getElementById('filter-status').value = 'all';
+        renderTable();
       };
 
       function calcRow(r) {
@@ -243,7 +252,18 @@
           return true;
         });
 
-        document.getElementById('consign-tbody').innerHTML = filtered.map((r) => {
+        const tbody = document.getElementById('consign-tbody');
+        const empty = document.getElementById('empty-state');
+
+        if (!filtered.length) {
+          tbody.innerHTML = '';
+          empty.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        tbody.innerHTML = filtered.map((r) => {
           const c = calcRow(r);
           const isClosed = r.status === 'Fechado';
           return `
@@ -299,6 +319,7 @@
         r.sold = Math.min(r.sent, Math.max(0, Number(val || 0)));
         saveData();
         renderAll();
+        window.showToast('Registro salvo com sucesso', 'success');
       };
 
       const settleModal = document.getElementById('settle-modal');
@@ -335,7 +356,7 @@
         saveData();
         settleModal.classList.add('hidden');
         renderAll();
-        window.C4Utils.toast(`Acerto fechado com ${r.reseller}!`);
+        window.showToast(`Acerto fechado com ${r.reseller}!`, 'success');
       };
 
       const consignModal = document.getElementById('consign-modal');
@@ -360,7 +381,7 @@
         consignModal.classList.add('hidden');
         document.getElementById('consign-form').reset();
         renderAll();
-        window.C4Utils.toast('Remessa consignada registrada!');
+        window.showToast('Registro salvo com sucesso', 'success');
       });
 
       ['search-input', 'filter-reseller', 'filter-status'].forEach((id) => {

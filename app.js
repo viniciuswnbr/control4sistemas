@@ -144,6 +144,10 @@
       label: 'Eliminar Prejuízo',
       msg: 'Olá Juliana! Usei a calculadora de planilhas no site e quero eliminar o retrabalho operacional da minha equipe.',
     },
+    comparativo: {
+      label: 'Sair das Planilhas',
+      msg: 'Olá Juliana! Vi o comparativo de Planilhas vs. Sistema Sob Medida e quero avaliar a migração para minha empresa.',
+    },
     bases: {
       label: 'Bases Customizáveis',
       msg: 'Olá Juliana! Tenho interesse em uma das Bases Prontas Customizáveis da Control 4 Sistemas.',
@@ -753,4 +757,109 @@
       input.addEventListener('input', updateMargemCalc);
     });
   }
+
+  /* -------------------------------------------------------------------------
+   * 10. RASTREAMENTO DE PROFUNDIDADE DE SCROLL (25%, 50%, 75%, 90%)
+   * ------------------------------------------------------------------------- */
+  (function initScrollDepthTracking() {
+    const thresholds = [25, 50, 75, 90];
+    const fired = new Set();
+    let ticking = false;
+
+    function checkScrollDepth() {
+      ticking = false;
+      const docEl = document.documentElement;
+      const scrollTop = window.scrollY || docEl.scrollTop || 0;
+      const maxScroll = docEl.scrollHeight - window.innerHeight;
+      if (maxScroll <= 0) return;
+
+      const percent = Math.min(100, Math.round((scrollTop / maxScroll) * 100));
+
+      thresholds.forEach((t) => {
+        if (percent >= t && !fired.has(t)) {
+          fired.add(t);
+          if (typeof window.gtag === 'function') {
+            window.gtag('event', 'scroll_depth', { percent: t });
+          }
+        }
+      });
+    }
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          ticking = true;
+          window.requestAnimationFrame(checkScrollDepth);
+        }
+      },
+      { passive: true }
+    );
+  })();
+
+  /* -------------------------------------------------------------------------
+   * 11. RASTREAMENTO DE CLIQUE NOS 8 CARDS DO PORTFÓLIO (HOME)
+   * ------------------------------------------------------------------------- */
+  document.querySelectorAll('a[data-portfolio-system]').forEach((link) => {
+    link.addEventListener('click', () => {
+      const systemName = link.getAttribute('data-portfolio-system') || '';
+      const slug = link.getAttribute('data-portfolio-slug') || '';
+
+      if (typeof window.gtag === 'function' && systemName) {
+        window.gtag('event', 'select_portfolio_system', {
+          system_name: systemName,
+        });
+      }
+      if (typeof window.clarity === 'function' && slug) {
+        window.clarity('event', 'clique_sistema_' + slug);
+      }
+    });
+  });
+
+  /* -------------------------------------------------------------------------
+   * 12. BANNER DISCRETO DE AVISO DE COOKIES / LGPD (PRIMEIRA VISITA)
+   * ------------------------------------------------------------------------- */
+  (function initLgpdBanner() {
+    const LGPD_KEY = 'c4_lgpd_consent';
+    try {
+      if (localStorage.getItem(LGPD_KEY) === 'accepted') return;
+    } catch {
+      return;
+    }
+
+    const banner = document.createElement('aside');
+    banner.id = 'c4-lgpd-banner';
+    banner.setAttribute('role', 'dialog');
+    banner.setAttribute('aria-label', 'Aviso de Privacidade e Cookies');
+    banner.className =
+      'fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-md z-30 rounded-xl border border-slate-200 bg-white/95 backdrop-blur-md p-4 shadow-lg text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center gap-3';
+
+    banner.innerHTML = `
+      <p class="leading-relaxed flex-1">
+        Utilizamos cookies e métricas anônimas (GA4 e Clarity) para melhorar sua experiência. Ao continuar, você concorda com nossa
+        <a href="/privacidade" class="text-sky-600 underline hover:text-sky-700 font-medium">Política de Privacidade</a>.
+      </p>
+      <button
+        type="button"
+        id="c4-lgpd-accept"
+        class="shrink-0 rounded-lg bg-slate-900 px-3.5 py-2 text-xs font-semibold text-white hover:bg-slate-800 transition-colors cursor-pointer"
+      >
+        Entendi
+      </button>
+    `;
+
+    document.body.appendChild(banner);
+
+    const acceptBtn = document.getElementById('c4-lgpd-accept');
+    if (acceptBtn) {
+      acceptBtn.addEventListener('click', () => {
+        try {
+          localStorage.setItem(LGPD_KEY, 'accepted');
+        } catch {
+          // ignore storage errors
+        }
+        banner.remove();
+      });
+    }
+  })();
 })();

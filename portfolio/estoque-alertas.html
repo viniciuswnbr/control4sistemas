@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -120,6 +121,7 @@
           <tbody id="stock-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
         </table>
       </div>
+      <div id="empty-state" class="hidden"></div>
     </section>
   </main>
 
@@ -224,7 +226,14 @@
         movesToday = 0;
         saveData();
         renderAll();
-        window.C4Utils.toast('Estoque demo restaurado!', 'info');
+        window.showToast('Estoque demo restaurado!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-category').value = 'all';
+        document.getElementById('filter-alert').value = 'all';
+        renderTable();
       };
 
       function playBeep() {
@@ -291,7 +300,18 @@
           return true;
         });
 
-        document.getElementById('stock-tbody').innerHTML = filtered.map((i) => {
+        const tbody = document.getElementById('stock-tbody');
+        const empty = document.getElementById('empty-state');
+
+        if (!filtered.length) {
+          tbody.innerHTML = '';
+          empty.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        tbody.innerHTML = filtered.map((i) => {
           const isCrit = i.qty <= i.min;
           return `
             <tr class="${isCrit ? 'bg-rose-50/90 hover:bg-rose-100/70' : 'hover:bg-slate-50'} transition">
@@ -340,9 +360,9 @@
         saveData();
         renderAll();
         if (item.qty <= item.min) {
-          window.C4Utils.toast(`Alerta: "${item.name}" atingiu estoque crítico (${item.qty} un)!`, 'error');
+          window.showToast(`Alerta: "${item.name}" atingiu estoque crítico (${item.qty} un)!`, 'warning');
         } else {
-          window.C4Utils.toast(`Estoque atualizado: ${item.name} (${item.qty} un)`);
+          window.showToast(`Estoque atualizado: ${item.name} (${item.qty} un)`, 'success');
         }
       };
 
@@ -350,6 +370,7 @@
         items = items.filter((i) => i.id !== id);
         saveData();
         renderAll();
+        window.showToast('Produto excluído com sucesso.', 'warning');
       };
 
       function processBarcode(code) {
@@ -363,7 +384,7 @@
           banner.className = 'mt-3 text-xs font-mono px-3 py-2 rounded-lg bg-rose-50 text-rose-700 border border-rose-200';
           banner.textContent = `Código "${clean}" não encontrado no cadastro.`;
           banner.classList.remove('hidden');
-          window.C4Utils.toast('Código de barras não encontrado!', 'warning');
+          window.showToast('Código de barras não encontrado!', 'warning');
           return;
         }
 
@@ -403,12 +424,13 @@
         const msg = `🚨 *ALERTA DE ESTOQUE MÍNIMO — CONTROL 4*\n\nOlá Gestor, os seguintes itens precisam de reposição imediata:\n\n${listText}\n\n_Enviado automaticamente pelo Sistema de Estoque V1._`;
         document.getElementById('wa-preview-text').textContent = msg;
         waModal.classList.remove('hidden');
+        window.showToast('Alerta de reposição simulado no WhatsApp', 'info');
       });
       document.getElementById('btn-close-wa').addEventListener('click', () => waModal.classList.add('hidden'));
       document.getElementById('btn-close-wa-2').addEventListener('click', () => waModal.classList.add('hidden'));
       document.getElementById('btn-copy-wa').addEventListener('click', () => {
         navigator.clipboard.writeText(document.getElementById('wa-preview-text').textContent);
-        window.C4Utils.toast('Mensagem copiada para a área de transferência!');
+        window.showToast('Mensagem copiada para a área de transferência!', 'info');
       });
 
       // New item modal
@@ -435,7 +457,7 @@
         saveData();
         itemModal.classList.add('hidden');
         renderAll();
-        window.C4Utils.toast('Produto cadastrado!');
+        window.showToast('Registro salvo com sucesso', 'success');
       });
 
       ['search-input', 'filter-category', 'filter-alert'].forEach((id) => {

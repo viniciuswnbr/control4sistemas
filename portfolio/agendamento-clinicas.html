@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -165,7 +166,15 @@
         saveData();
         document.getElementById('filter-date').value = TODAY;
         renderAll();
-        window.C4Utils.toast('Agenda de demonstração restaurada!', 'info');
+        window.showToast('Agenda de demonstração restaurada!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-date').value = '';
+        document.getElementById('filter-pro').value = 'all';
+        document.getElementById('filter-status').value = 'all';
+        renderAll();
       };
 
       document.getElementById('filter-date').value = TODAY;
@@ -230,7 +239,7 @@
 
         const container = document.getElementById('agenda-container');
         if (!filtered.length) {
-          container.innerHTML = '<div class="bg-white border border-slate-200 rounded-xl py-12 text-center text-slate-400 text-sm">Nenhum atendimento encontrado para os filtros selecionados.</div>';
+          container.innerHTML = `<div class="bg-white border border-slate-200 rounded-xl">${window.C4Utils.emptyStateHtml('clearFilters()')}</div>`;
           return;
         }
 
@@ -314,7 +323,7 @@
         a.status = 'Enviado 24h';
         saveData();
         renderAll();
-        window.C4Utils.toast(`Lembrete WhatsApp 24h enviado para ${a.patient} (${a.time})!`);
+        window.showToast(`Lembrete WhatsApp 24h enviado para ${a.patient} (${a.time})!`, 'info');
       };
 
       window.setStatus = function (id, status) {
@@ -323,13 +332,14 @@
         a.status = status;
         saveData();
         renderAll();
-        window.C4Utils.toast(`Status atualizado para "${status}".`);
+        window.showToast(`Status atualizado para "${status}".`, 'success');
       };
 
       window.deleteAppt = function (id) {
         appts = appts.filter((x) => x.id !== id);
         saveData();
         renderAll();
+        window.showToast('Agendamento excluído.', 'warning');
       };
 
       // View switcher
@@ -374,7 +384,7 @@
         modal.classList.add('hidden');
         document.getElementById('appt-form').reset();
         renderAll();
-        window.C4Utils.toast('Agendamento criado!');
+        window.showToast('Registro salvo com sucesso', 'success');
       });
 
       ['search-input', 'filter-date', 'filter-pro', 'filter-status'].forEach((id) => {

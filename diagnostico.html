@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Diagnóstico Interativo de Sistema | Control 4 Sistemas</title>
+  <meta
+    name="description"
+    content="Responda 5 perguntas rápidas e receba um Pré-Diagnóstico Técnico Personalizado indicando qual Base Pronta ou Sistema V1 da Control 4 Sistemas resolve seu gargalo."
+  />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://control4sistemas.com.br/diagnostico" />
+  <meta name="theme-color" content="#FFFFFF" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#FFFFFF',
+              subtle: '#F8FAFC',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#475569',
+              cyan: '#0284C7',
+              emerald: '#10B981',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FXN3Y3MRDR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-FXN3Y3MRDR');
+  </script>
+
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', 'zh9ji51ore');
+  </script>
+
+  <script>
+    function registrarConversao(origem) {
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', { event_category: 'contato', event_label: origem });
+      }
+      if (typeof clarity === 'function') {
+        clarity('set', 'lead_origem', origem);
+        clarity('event', 'clique_orcamento');
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased selection:bg-sky-100 selection:text-sky-900 min-h-screen flex flex-col">
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="/" class="inline-flex items-center gap-2 font-mono text-sm sm:text-base font-bold tracking-wider text-slate-900">
+          <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+          <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Navegação principal">
+          <a href="/#bases" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Bases Prontas</a>
+          <a href="/#projetos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Portfólio V1</a>
+          <a href="/diagnostico" class="text-sm font-semibold text-sky-600">Diagnóstico</a>
+          <a href="/calculadora-margem" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Calculadora de Margem</a>
+          <a href="/parceiros" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Parceiros</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a
+            href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Gostaria%20de%20um%20or%C3%A7amento%20r%C3%A1pido%20para%20sistema%20sob%20medida."
+            data-wa-base-msg="Olá Juliana! Gostaria de um orçamento rápido para sistema sob medida."
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="registrarConversao('diagnostico_navbar_wa')"
+            class="hidden sm:inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          >
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>Orçamento Direto</span>
+          </a>
+          <button
+            id="mobile-menu-btn"
+            type="button"
+            class="lg:hidden inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-700"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Abrir menu"
+          >
+            <i data-lucide="menu" class="w-5 h-5" id="menu-icon-open"></i>
+            <i data-lucide="x" class="w-5 h-5 hidden" id="menu-icon-close"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white">
+      <div class="px-4 py-4 space-y-1.5">
+        <a href="/" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Página Inicial</a>
+        <a href="/#bases" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Bases Prontas</a>
+        <a href="/#projetos" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Portfólio V1</a>
+        <a href="/calculadora-margem" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Calculadora de Margem</a>
+        <a href="/parceiros" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Parceiros</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 pt-24 pb-16 md:pt-32 md:pb-24">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Cabeçalho -->
+      <div class="text-center mb-8 space-y-3">
+        <div class="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3.5 py-1 text-xs font-mono font-semibold uppercase tracking-wider text-sky-700">
+          <i data-lucide="cpu" class="w-3.5 h-3.5"></i>
+          <span>Diagnóstico Técnico em 1 Minuto</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900">
+          Descubra o sistema ideal para sua operação
+        </h1>
+        <p class="text-sm sm:text-base text-slate-600 max-w-xl mx-auto">
+          Responda 5 perguntas rápidas e receba na hora um pré-diagnóstico recomendando a Base Pronta ou Sistema V1 mais adequado ao seu cenário.
+        </p>
+      </div>
+
+      <!-- Container Principal do Wizard (altura mínima reservada para CLS zero) -->
+      <div class="rounded-2xl border border-slate-200 bg-white shadow-md overflow-hidden min-h-[430px] flex flex-col justify-between">
+        <!-- Barra de Progresso -->
+        <div id="diag-progress-header" class="border-b border-slate-100 bg-slate-50/80 px-6 py-4">
+          <div class="flex items-center justify-between text-xs font-mono mb-2">
+            <span id="diag-step-label" class="font-semibold text-sky-700">Pergunta 1 de 5</span>
+            <span id="diag-percent-label" class="text-slate-500 tabular-nums">20%</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
+            <div
+              id="diag-progress-bar"
+              class="h-full bg-gradient-to-r from-sky-600 to-emerald-500 transition-all duration-300"
+              style="width: 20%"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Corpo das Etapas -->
+        <div id="diag-wizard-body" class="p-6 sm:p-8 flex-1 flex flex-col justify-between">
+          <!-- Etapa 1: Segmento -->
+          <div class="diag-step space-y-5" data-step="1">
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900">1. Qual é o segmento da sua empresa?</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">Isso ajuda a identificar regras de negócio e módulos essenciais.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-3" id="opt-segmento">
+              <button type="button" data-value="Distribuidora/Atacado" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-sky-50 p-2 text-sky-600 shrink-0"><i data-lucide="package" class="w-5 h-5"></i></span>
+                <span class="text-sm font-semibold text-slate-800">Distribuidora / Atacado</span>
+              </button>
+              <button type="button" data-value="Oficina/Serviços" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-emerald-50 p-2 text-emerald-600 shrink-0"><i data-lucide="wrench" class="w-5 h-5"></i></span>
+                <span class="text-sm font-semibold text-slate-800">Oficina / Serviços</span>
+              </button>
+              <button type="button" data-value="Clínica/Estúdio" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-sky-50 p-2 text-sky-600 shrink-0"><i data-lucide="stethoscope" class="w-5 h-5"></i></span>
+                <span class="text-sm font-semibold text-slate-800">Clínica / Estúdio</span>
+              </button>
+              <button type="button" data-value="Transportadora/Frota" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-emerald-50 p-2 text-emerald-600 shrink-0"><i data-lucide="truck" class="w-5 h-5"></i></span>
+                <span class="text-sm font-semibold text-slate-800">Transportadora / Frota</span>
+              </button>
+              <button type="button" data-value="Obra/Engenharia" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-sky-50 p-2 text-sky-600 shrink-0"><i data-lucide="hard-hat" class="w-5 h-5"></i></span>
+                <span class="text-sm font-semibold text-slate-800">Obra / Engenharia</span>
+              </button>
+              <button type="button" data-value="Outro" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-slate-100 p-2 text-slate-600 shrink-0"><i data-lucide="briefcase" class="w-5 h-5"></i></span>
+                <span class="text-sm font-semibold text-slate-800">Outro Segmento</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Etapa 2: Tamanho da equipe -->
+          <div class="diag-step hidden space-y-5" data-step="2">
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900">2. Quantas pessoas usam os controles hoje?</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">Lembrando: na Control 4 não cobramos mensalidade por usuário.</p>
+            </div>
+            <div class="grid sm:grid-cols-2 gap-3" id="opt-equipe">
+              <button type="button" data-value="1-3 pessoas" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer">
+                <div class="text-sm font-bold text-slate-900">1 a 3 pessoas</div>
+                <div class="text-xs text-slate-500 mt-0.5">Operação enxuta buscando organização</div>
+              </button>
+              <button type="button" data-value="4-10 pessoas" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer">
+                <div class="text-sm font-bold text-slate-900">4 a 10 pessoas</div>
+                <div class="text-xs text-slate-500 mt-0.5">Equipe em crescimento com conflito de planilhas</div>
+              </button>
+              <button type="button" data-value="11-30 pessoas" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer">
+                <div class="text-sm font-bold text-slate-900">11 a 30 pessoas</div>
+                <div class="text-xs text-slate-500 mt-0.5">Múltiplos setores e necessidade de permissões</div>
+              </button>
+              <button type="button" data-value="+30 pessoas" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer">
+                <div class="text-sm font-bold text-slate-900">+30 pessoas</div>
+                <div class="text-xs text-slate-500 mt-0.5">Alta escala, auditoria e integrações</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Etapa 3: Principal gargalo -->
+          <div class="diag-step hidden space-y-5" data-step="3">
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900">3. Qual é o principal gargalo hoje?</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">Escolha o problema que mais gera perda de tempo ou dinheiro.</p>
+            </div>
+            <div class="grid gap-3" id="opt-gargalo">
+              <button type="button" data-value="Planilhas lentas/quebradas" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-rose-50 p-2 text-rose-600 shrink-0"><i data-lucide="file-warning" class="w-5 h-5"></i></span>
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Planilhas lentas / quebradas</div>
+                  <div class="text-xs text-slate-500">Fórmulas apagadas, arquivos pesados e versões duplicadas</div>
+                </div>
+              </button>
+              <button type="button" data-value="Falta de controle de estoque/pedidos" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-sky-50 p-2 text-sky-600 shrink-0"><i data-lucide="boxes" class="w-5 h-5"></i></span>
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Falta de controle de estoque / pedidos</div>
+                  <div class="text-xs text-slate-500">Furos de saldo, demora em separar pedidos ou cotações</div>
+                </div>
+              </button>
+              <button type="button" data-value="Falhas de agendamento/atendimento" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-emerald-50 p-2 text-emerald-600 shrink-0"><i data-lucide="calendar-x" class="w-5 h-5"></i></span>
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Falhas de agendamento / atendimento</div>
+                  <div class="text-xs text-slate-500">Choque de horários, O.S. sem histórico ou faltas sem lembrete</div>
+                </div>
+              </button>
+              <button type="button" data-value="Retrabalho financeiro/comissões" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center gap-3">
+                <span class="rounded-lg bg-amber-50 p-2 text-amber-600 shrink-0"><i data-lucide="calculator" class="w-5 h-5"></i></span>
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Retrabalho financeiro / comissões</div>
+                  <div class="text-xs text-slate-500">Fechamento manual de comissões, fluxo de caixa e cobranças</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Etapa 4: Urgência -->
+          <div class="diag-step hidden space-y-5" data-step="4">
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900">4. Qual a urgência de implantação?</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">Com nossas Bases Prontas, entregamos a primeira versão em 2 a 4 semanas.</p>
+            </div>
+            <div class="grid gap-3" id="opt-urgencia">
+              <button type="button" data-value="Imediata" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-emerald-500 hover:bg-emerald-50/40 transition-all cursor-pointer flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Imediata</div>
+                  <div class="text-xs text-slate-500">Preciso resolver esse gargalo ainda este mês</div>
+                </div>
+                <span class="font-mono text-[11px] font-semibold bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded">Prioridade Alta</span>
+              </button>
+              <button type="button" data-value="Próximos 30 dias" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Próximos 30 dias</div>
+                  <div class="text-xs text-slate-500">Estou estruturando o orçamento para iniciar em breve</div>
+                </div>
+                <span class="font-mono text-[11px] font-semibold bg-sky-50 text-sky-700 px-2.5 py-1 rounded">Planejamento</span>
+              </button>
+              <button type="button" data-value="Apenas pesquisando" class="diag-option text-left rounded-xl border border-slate-200 bg-white p-4 hover:border-sky-500 hover:bg-sky-50/40 transition-all cursor-pointer flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-bold text-slate-900">Apenas pesquisando</div>
+                  <div class="text-xs text-slate-500">Quero entender possibilidades e faixa de investimento</div>
+                </div>
+                <span class="font-mono text-[11px] font-semibold bg-slate-100 text-slate-600 px-2.5 py-1 rounded">Exploratório</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Etapa 5: Nome e Empresa -->
+          <div class="diag-step hidden space-y-5" data-step="5">
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-slate-900">5. Para finalizar, quem está solicitando o diagnóstico?</h2>
+              <p class="text-xs sm:text-sm text-slate-500 mt-1">Seu pré-diagnóstico técnico será gerado imediatamente na tela seguinte.</p>
+            </div>
+            <div class="space-y-4">
+              <div>
+                <label for="diag-nome" class="block text-xs font-mono uppercase tracking-wider text-slate-600 mb-1.5">Seu Nome *</label>
+                <input
+                  type="text"
+                  id="diag-nome"
+                  placeholder="Ex: Carlos Mendes"
+                  class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                />
+              </div>
+              <div>
+                <label for="diag-empresa" class="block text-xs font-mono uppercase tracking-wider text-slate-600 mb-1.5">Nome da Empresa *</label>
+                <input
+                  type="text"
+                  id="diag-empresa"
+                  placeholder="Ex: Distribuidora Vale Ltda"
+                  class="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                />
+              </div>
+              <p id="diag-step5-error" class="hidden text-xs font-mono text-rose-600"></p>
+              <button
+                type="button"
+                id="diag-finish-btn"
+                class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 px-6 py-3.5 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-sky-700 transition-colors cursor-pointer"
+              >
+                <span>Gerar Pré-Diagnóstico Técnico</span>
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Resultado: Pré-Diagnóstico Técnico Personalizado -->
+          <div id="diag-result" class="hidden space-y-6">
+            <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-4">
+              <div>
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 border border-emerald-200 px-3 py-1 text-xs font-mono font-semibold text-emerald-700">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                  <span>Pré-Diagnóstico Técnico Gerado</span>
+                </span>
+                <h2 id="res-title" class="mt-3 text-xl sm:text-2xl font-extrabold text-slate-900">
+                  Recomendação Personalizada
+                </h2>
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-sky-200 bg-sky-50/50 p-5 space-y-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span id="res-badge-base" class="font-mono text-xs font-bold bg-sky-600 text-white px-2.5 py-1 rounded">BASE RECOMENDADA</span>
+                <span id="res-badge-v1" class="font-mono text-xs font-bold bg-white border border-sky-200 text-sky-700 px-2.5 py-1 rounded">SISTEMA V1</span>
+              </div>
+              <p id="res-rationale" class="text-sm text-slate-700 leading-relaxed"></p>
+              <div class="pt-1 flex flex-wrap items-center gap-4 text-xs font-mono text-slate-600">
+                <span id="res-prazo" class="flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-3.5 h-3.5 text-sky-600"></i>
+                  <span>Implantação estimada: 2 a 4 semanas</span>
+                </span>
+                <a id="res-demo-link" href="/portfolio/pedidos-comissoes.html" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-sky-700 font-semibold hover:underline">
+                  <span>Testar Demo V1 recomendada</span>
+                  <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                </a>
+              </div>
+            </div>
+
+            <!-- Resumo das 5 respostas -->
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div class="text-xs font-mono uppercase tracking-wider text-slate-500 mb-2.5">Resumo do seu cenário</div>
+              <dl id="res-summary" class="grid sm:grid-cols-2 gap-x-4 gap-y-2 text-xs"></dl>
+            </div>
+
+            <!-- CTA Principal WhatsApp -->
+            <div class="space-y-2.5">
+              <a
+                id="res-whatsapp-btn"
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex w-full items-center justify-center gap-2.5 rounded-xl bg-emerald-600 px-6 py-4 text-sm sm:text-base font-bold text-white shadow-md hover:bg-emerald-700 transition-colors"
+              >
+                <i data-lucide="message-circle" class="w-5 h-5 shrink-0"></i>
+                <span>Enviar Diagnóstico e Agendar 15 min com Juliana</span>
+              </a>
+              <button
+                type="button"
+                id="diag-restart-btn"
+                class="w-full text-center text-xs font-mono text-slate-500 hover:text-sky-600 py-1 cursor-pointer"
+              >
+                ↺ Refazer diagnóstico
+              </button>
+            </div>
+          </div>
+
+          <!-- Navegação Voltar (etapas 2-5) -->
+          <div id="diag-nav-footer" class="hidden pt-6 mt-6 border-t border-slate-100 flex items-center justify-between">
+            <button
+              type="button"
+              id="diag-back-btn"
+              class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 cursor-pointer"
+            >
+              <i data-lucide="arrow-left" class="w-4 h-4"></i>
+              <span>Voltar pergunta</span>
+            </button>
+            <span class="text-[11px] font-mono text-slate-400">Sem recarregar a página</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-white py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-12 gap-6 items-center">
+        <div class="md:col-span-4 space-y-1.5">
+          <div class="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-slate-900">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+          </div>
+          <p class="text-xs text-slate-500">Atendimento no Vale do Paraíba (SP) e em todo o Brasil.</p>
+          <p class="text-xs text-slate-500 font-mono">&copy; <span id="current-year">2026</span> Control 4 Sistemas — control4sistemas.com.br</p>
+        </div>
+        <nav class="md:col-span-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="Links do rodapé">
+          <a href="/#bases" class="hover:text-sky-600">Bases Prontas</a>
+          <a href="/#projetos" class="hover:text-sky-600">Portfólio V1</a>
+          <a href="/diagnostico" class="text-sky-600 font-medium">Diagnóstico</a>
+          <a href="/calculadora-margem" class="hover:text-sky-600">Calculadora de Margem</a>
+          <a href="/parceiros" class="hover:text-sky-600">Parceiros</a>
+        </nav>
+        <div class="md:col-span-3 md:text-right">
+          <a href="https://www.youtube.com/@control4sistemas" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-mono text-slate-700 hover:border-rose-300 hover:text-rose-600">
+            <i data-lucide="youtube" class="w-4 h-4 text-rose-600"></i>
+            <span>Canal no YouTube</span>
+          </a>
+        </div>
+      </div>
+      <div class="mt-6 pt-5 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+        <span>Control 4 Sistemas — Atendimento Comercial B2B</span>
+        <div class="flex items-center gap-4">
+          <a href="/privacidade" class="hover:text-slate-600 transition-colors">Política de Privacidade</a>
+          <a href="/termos" class="hover:text-slate-600 transition-colors">Termos de Uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    (function () {
+      const state = {
+        step: 1,
+        segmento: '',
+        equipe: '',
+        gargalo: '',
+        urgencia: '',
+        nome: '',
+        empresa: '',
+      };
+
+      const steps = document.querySelectorAll('.diag-step');
+      const progressHeader = document.getElementById('diag-progress-header');
+      const stepLabel = document.getElementById('diag-step-label');
+      const percentLabel = document.getElementById('diag-percent-label');
+      const progressBar = document.getElementById('diag-progress-bar');
+      const navFooter = document.getElementById('diag-nav-footer');
+      const backBtn = document.getElementById('diag-back-btn');
+      const resultBox = document.getElementById('diag-result');
+      const finishBtn = document.getElementById('diag-finish-btn');
+      const restartBtn = document.getElementById('diag-restart-btn');
+      const step5Error = document.getElementById('diag-step5-error');
+
+      function showStep(stepNum) {
+        state.step = stepNum;
+        steps.forEach((el) => {
+          el.classList.toggle('hidden', Number(el.getAttribute('data-step')) !== stepNum);
+        });
+        resultBox.classList.add('hidden');
+        progressHeader.classList.remove('hidden');
+        navFooter.classList.toggle('hidden', stepNum === 1);
+
+        const pct = stepNum * 20;
+        stepLabel.textContent = `Pergunta ${stepNum} de 5`;
+        percentLabel.textContent = `${pct}%`;
+        progressBar.style.width = `${pct}%`;
+      }
+
+      function bindOptionGroup(containerId, field, nextStep) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.querySelectorAll('button.diag-option').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            container.querySelectorAll('button.diag-option').forEach((b) => {
+              b.classList.remove('border-sky-600', 'bg-sky-50/60', 'ring-1', 'ring-sky-500');
+            });
+            btn.classList.add('border-sky-600', 'bg-sky-50/60', 'ring-1', 'ring-sky-500');
+            state[field] = btn.getAttribute('data-value') || '';
+            setTimeout(() => showStep(nextStep), 140);
+          });
+        });
+      }
+
+      bindOptionGroup('opt-segmento', 'segmento', 2);
+      bindOptionGroup('opt-equipe', 'equipe', 3);
+      bindOptionGroup('opt-gargalo', 'gargalo', 4);
+      bindOptionGroup('opt-urgencia', 'urgencia', 5);
+
+      if (backBtn) {
+        backBtn.addEventListener('click', () => {
+          if (state.step > 1) showStep(state.step - 1);
+        });
+      }
+
+      function computeRecommendation() {
+        const { segmento, gargalo, equipe } = state;
+
+        if (segmento === 'Clínica/Estúdio' || gargalo === 'Falhas de agendamento/atendimento') {
+          if (segmento === 'Oficina/Serviços') {
+            return {
+              base: 'Base 02: Agendamento & Serviços',
+              v1: 'Ordens de Serviço com Assinatura V1',
+              demoHref: '/portfolio/ordem-servico.html',
+              rationale: `Para ${segmento} com equipe de ${equipe}, recomendamos partir da Base 02 (Agendamento & Serviços) combinada ao módulo de Ordem de Serviço com Assinatura Digital e alertas automáticos via WhatsApp.`,
+            };
+          }
+          return {
+            base: 'Base 02: Agendamento & Serviços',
+            v1: 'Agendamento para Clínicas V1',
+            demoHref: '/portfolio/agendamento-clinicas.html',
+            rationale: `Para ${segmento} com foco em eliminar falhas de atendimento, a Base 02 com grade de horários por profissional e confirmação automática no WhatsApp reduz faltas e organiza a recepção em semanas.`,
+          };
+        }
+
+        if (segmento === 'Transportadora/Frota') {
+          return {
+            base: 'Base 02: Agendamento & Serviços',
+            v1: 'Controle de Frota V1',
+            demoHref: '/portfolio/controle-frota.html',
+            rationale: `Para operações de ${segmento} (${equipe}), o Sistema V1 de Controle de Frota centraliza quilometragem, abastecimentos, manutenções preventivas e alertas de vencimento de CNH/IPVA.`,
+          };
+        }
+
+        if (segmento === 'Obra/Engenharia') {
+          return {
+            base: 'Base 03: Financeiro & Comissões',
+            v1: 'Gestor de Obras V1',
+            demoHref: '/portfolio/gestor-obras.html',
+            rationale: `Para ${segmento}, o Gestor de Obras V1 integrado à Base Financeira dá visibilidade físico-financeira por etapa, diário de campo e controle de materiais sem depender de planilhas soltas.`,
+          };
+        }
+
+        if (gargalo === 'Retrabalho financeiro/comissões') {
+          return {
+            base: 'Base 03: Financeiro & Comissões',
+            v1: 'Pedidos & Comissões V1',
+            demoHref: '/portfolio/pedidos-comissoes.html',
+            rationale: `Como seu maior gargalo é retrabalho financeiro e comissões (${equipe}), a Base 03 automatiza regras de comissão, fluxo de caixa e relatórios em 1 clique com histórico de auditoria.`,
+          };
+        }
+
+        if (gargalo === 'Falta de controle de estoque/pedidos' && segmento === 'Distribuidora/Atacado') {
+          return {
+            base: 'Base 01: Pedidos & Estoque',
+            v1: 'Estoque com Leitor de Barras V1',
+            demoHref: '/portfolio/estoque-alertas.html',
+            rationale: `Para ${segmento} com ${equipe}, a Base 01 com Estoque e Leitor de Barras elimina furos de saldo, automatiza baixa por pedido e dispara alertas de estoque mínimo.`,
+          };
+        }
+
+        return {
+          base: 'Base 01: Pedidos & Estoque',
+          v1: 'Pedidos & Comissões V1',
+          demoHref: '/portfolio/pedidos-comissoes.html',
+          rationale: `Para ${segmento} (${equipe}) sofrendo com ${gargalo.toLowerCase()}, a Base 01 (Pedidos & Estoque) oferece a implantação mais rápida para substituir planilhas por um painel web multi-usuário seguro.`,
+        };
+      }
+
+      function renderResult() {
+        const rec = computeRecommendation();
+        steps.forEach((el) => el.classList.add('hidden'));
+        progressHeader.classList.add('hidden');
+        navFooter.classList.add('hidden');
+        resultBox.classList.remove('hidden');
+
+        document.getElementById('res-title').textContent = `${state.nome}, este é o plano ideal para a ${state.empresa}:`;
+        document.getElementById('res-badge-base').textContent = rec.base;
+        document.getElementById('res-badge-v1').textContent = rec.v1;
+        document.getElementById('res-rationale').textContent = rec.rationale;
+        document.getElementById('res-demo-link').href = rec.demoHref;
+
+        const summaryEl = document.getElementById('res-summary');
+        summaryEl.innerHTML = `
+          <div><dt class="text-slate-500">Segmento:</dt><dd class="font-semibold text-slate-900">${state.segmento}</dd></div>
+          <div><dt class="text-slate-500">Equipe:</dt><dd class="font-semibold text-slate-900">${state.equipe}</dd></div>
+          <div><dt class="text-slate-500">Principal Gargalo:</dt><dd class="font-semibold text-slate-900">${state.gargalo}</dd></div>
+          <div><dt class="text-slate-500">Urgência:</dt><dd class="font-semibold text-slate-900">${state.urgencia}</dd></div>
+        `;
+
+        const waMsg = [
+          '*[DIAGNÓSTICO TÉCNICO - CONTROL 4 SISTEMAS]*',
+          '',
+          `*Nome:* ${state.nome}`,
+          `*Empresa:* ${state.empresa}`,
+          `*1. Segmento:* ${state.segmento}`,
+          `*2. Equipe:* ${state.equipe}`,
+          `*3. Principal Gargalo:* ${state.gargalo}`,
+          `*4. Urgência:* ${state.urgencia}`,
+          '',
+          `*Recomendação do site:* ${rec.base} (${rec.v1})`,
+          '',
+          'Quero agendar os 15 min com a Juliana para validar esse cenário!',
+        ].join('\n');
+
+        const waBtn = document.getElementById('res-whatsapp-btn');
+        waBtn.href = typeof window.c4BuildWhatsAppUrl === 'function'
+          ? window.c4BuildWhatsAppUrl(waMsg)
+          : `https://wa.me/5512988600746?text=${encodeURIComponent(waMsg)}`;
+
+        waBtn.onclick = function () {
+          if (typeof window.registrarConversao === 'function') {
+            window.registrarConversao('diagnostico_whatsapp');
+          }
+        };
+
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'complete_diagnostic', {
+            segmento: state.segmento,
+            equipe: state.equipe,
+            gargalo: state.gargalo,
+            urgencia: state.urgencia,
+          });
+        }
+        if (typeof window.clarity === 'function') {
+          window.clarity('event', 'diagnostico_concluido');
+        }
+        if (window.lucide) window.lucide.createIcons();
+      }
+
+      if (finishBtn) {
+        finishBtn.addEventListener('click', () => {
+          const nome = document.getElementById('diag-nome').value.trim();
+          const empresa = document.getElementById('diag-empresa').value.trim();
+          if (nome.length < 2 || empresa.length < 2) {
+            step5Error.textContent = 'Por favor, informe seu nome e o nome da sua empresa para gerar o diagnóstico.';
+            step5Error.classList.remove('hidden');
+            return;
+          }
+          step5Error.classList.add('hidden');
+          state.nome = nome;
+          state.empresa = empresa;
+          renderResult();
+        });
+      }
+
+      if (restartBtn) {
+        restartBtn.addEventListener('click', () => {
+          showStep(1);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

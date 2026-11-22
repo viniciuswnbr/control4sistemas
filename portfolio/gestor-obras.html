@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -93,6 +94,7 @@
           <tbody id="costs-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
         </table>
       </div>
+      <div id="empty-state" class="hidden"></div>
     </section>
   </main>
 
@@ -187,7 +189,15 @@
         state = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
         renderAll();
-        window.C4Utils.toast('Dados de obras restaurados!', 'info');
+        window.showToast('Dados de obras restaurados!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-project').value = 'all';
+        document.getElementById('filter-kind').value = 'all';
+        document.getElementById('filter-stage').value = 'all';
+        renderTable();
       };
 
       function getProjectSpent(projId) {
@@ -285,7 +295,18 @@
           return true;
         });
 
-        document.getElementById('costs-tbody').innerHTML = filtered.map((c) => {
+        const tbody = document.getElementById('costs-tbody');
+        const empty = document.getElementById('empty-state');
+
+        if (!filtered.length) {
+          tbody.innerHTML = '';
+          empty.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        tbody.innerHTML = filtered.map((c) => {
           const proj = state.projects.find((p) => p.id === c.projectId);
           return `
             <tr class="hover:bg-slate-50">
@@ -327,6 +348,7 @@
         state.costs = state.costs.filter((c) => c.id !== id);
         saveData();
         renderAll();
+        window.showToast('Lançamento excluído.', 'warning');
       };
 
       const costModal = document.getElementById('cost-modal');
@@ -350,7 +372,7 @@
         costModal.classList.add('hidden');
         document.getElementById('cost-form').reset();
         renderAll();
-        window.C4Utils.toast('Custo lançado na obra!');
+        window.showToast('Registro salvo com sucesso', 'success');
       });
 
       ['search-input', 'filter-project', 'filter-kind', 'filter-stage'].forEach((id) => {

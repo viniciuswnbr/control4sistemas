@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -109,9 +110,7 @@
           <tbody id="orders-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
         </table>
       </div>
-      <div id="empty-state" class="hidden py-12 text-center text-slate-400 text-sm">
-        Nenhum pedido ou orçamento encontrado com os filtros atuais.
-      </div>
+      <div id="empty-state" class="hidden"></div>
     </section>
   </main>
 
@@ -314,7 +313,15 @@
         orders = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
         renderAll();
-        window.C4Utils.toast('Dados de demonstração restaurados!', 'info');
+        window.showToast('Dados de demonstração restaurados!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-type').value = 'all';
+        document.getElementById('filter-status').value = 'all';
+        document.getElementById('filter-seller').value = 'all';
+        renderTable();
       };
 
       function calcOrderTotals(order) {
@@ -442,6 +449,7 @@
 
         if (filtered.length === 0) {
           tbody.innerHTML = '';
+          empty.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
           empty.classList.remove('hidden');
           return;
         }
@@ -610,10 +618,10 @@
         if (id) {
           const idx = orders.findIndex((o) => o.id === id);
           if (idx >= 0) orders[idx] = payload;
-          window.C4Utils.toast(`${payload.id} atualizado com sucesso!`);
+          window.showToast(`Registro salvo com sucesso (${payload.id})`, 'success');
         } else {
           orders.unshift(payload);
-          window.C4Utils.toast(`${payload.id} criado com sucesso!`);
+          window.showToast(`Registro salvo com sucesso (${payload.id})`, 'success');
         }
 
         saveData();
@@ -630,7 +638,7 @@
         orders = orders.filter((o) => o.id !== id);
         saveData();
         renderAll();
-        window.C4Utils.toast(`Registro ${id} removido.`, 'warning');
+        window.showToast(`Registro ${id} excluído.`, 'warning');
       };
 
       window.convertQuote = function (id) {
@@ -641,7 +649,7 @@
           orders[idx].id = orders[idx].id.replace('ORC-', 'PED-');
           saveData();
           renderAll();
-          window.C4Utils.toast(`Orçamento convertido em Pedido Aprovado (${orders[idx].id})!`);
+          window.showToast(`Orçamento convertido em Pedido Aprovado (${orders[idx].id})!`, 'success');
         }
       };
 

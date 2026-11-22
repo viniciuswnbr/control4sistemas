@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -82,9 +83,7 @@
 
     <!-- Lista de OS -->
     <section class="grid grid-cols-1 md:grid-cols-2 gap-4" id="os-grid"></section>
-    <div id="empty-state" class="hidden bg-white border border-slate-200 rounded-xl py-12 text-center text-slate-400 text-sm">
-      Nenhuma Ordem de Serviço encontrada.
-    </div>
+    <div id="empty-state" class="hidden bg-white border border-slate-200 rounded-xl"></div>
   </main>
 
   <!-- Modal Nova/Editar OS + Assinatura -->
@@ -148,7 +147,7 @@
               Limpar Assinatura
             </button>
           </div>
-          <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg overflow-hidden relative">
+          <div class="bg-white c4-keep-light border-2 border-dashed border-slate-300 rounded-lg overflow-hidden relative">
             <canvas id="signature-canvas" class="w-full h-40 block cursor-crosshair" style="touch-action: none;"></canvas>
             <span id="sig-placeholder" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-slate-300 font-mono uppercase tracking-widest">
               Assine Aqui
@@ -264,7 +263,13 @@
         orders = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
         renderAll();
-        window.C4Utils.toast('Dados de demonstração restaurados!', 'info');
+        window.showToast('Dados de demonstração restaurados!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-status').value = 'all';
+        renderGrid();
       };
 
       function renderKPIs() {
@@ -322,6 +327,7 @@
 
         if (!filtered.length) {
           grid.innerHTML = '';
+          empty.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
           empty.classList.remove('hidden');
           return;
         }
@@ -493,10 +499,10 @@
         if (id) {
           const idx = orders.findIndex((o) => o.id === id);
           if (idx >= 0) orders[idx] = payload;
-          window.C4Utils.toast(`${payload.id} atualizada!`);
+          window.showToast(sigData ? `${payload.id} salva e assinada com sucesso!` : 'Registro salvo com sucesso', 'success');
         } else {
           orders.unshift(payload);
-          window.C4Utils.toast(`${payload.id} criada!`);
+          window.showToast(sigData ? `${payload.id} criada e assinada com sucesso!` : 'Registro salvo com sucesso', 'success');
         }
         saveData();
         osModal.classList.add('hidden');
@@ -512,7 +518,7 @@
         orders = orders.filter((o) => o.id !== id);
         saveData();
         renderAll();
-        window.C4Utils.toast(`OS ${id} excluída.`, 'warning');
+        window.showToast(`OS ${id} excluída.`, 'warning');
       };
 
       // Receipt Print Modal

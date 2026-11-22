@@ -10,6 +10,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -79,6 +80,7 @@
       <div class="overflow-x-auto">
         <table class="w-full text-left border-collapse" id="quote-table"></table>
       </div>
+      <div id="empty-state" class="hidden"></div>
     </section>
   </main>
 
@@ -151,7 +153,13 @@
         state = JSON.parse(JSON.stringify(DEFAULT_DATA));
         saveData();
         renderAll();
-        window.C4Utils.toast('Cotação de demonstração restaurada!', 'info');
+        window.showToast('Cotação de demonstração restaurada!', 'info');
+      };
+
+      window.clearFilters = function () {
+        document.getElementById('search-input').value = '';
+        document.getElementById('filter-quote').value = 'all';
+        renderTable();
       };
 
       function computeTotals() {
@@ -313,7 +321,19 @@
           </tfoot>
         `;
 
-        document.getElementById('quote-table').innerHTML = thead + tbody + tfoot;
+        const tableEl = document.getElementById('quote-table');
+        const emptyEl = document.getElementById('empty-state');
+
+        if (!filteredItems.length) {
+          tableEl.innerHTML = thead;
+          emptyEl.innerHTML = window.C4Utils.emptyStateHtml('clearFilters()');
+          emptyEl.classList.remove('hidden');
+          lucide.createIcons();
+          return;
+        }
+        emptyEl.classList.add('hidden');
+
+        tableEl.innerHTML = thead + tbody + tfoot;
         lucide.createIcons();
       }
 
@@ -327,27 +347,30 @@
         it.prices[supplierId] = Math.max(0, Number(val || 0));
         saveData();
         renderAll();
+        window.showToast('Registro salvo com sucesso', 'success');
       };
 
       window.deleteItem = function (id) {
         state.items = state.items.filter((i) => i.id !== id);
         saveData();
         renderAll();
+        window.showToast('Item removido da cotação.', 'warning');
       };
 
       window.removeSupplier = function (supId) {
         if (state.suppliers.length <= 3) {
-          window.C4Utils.toast('Mínimo de 3 fornecedores exigido.', 'warning');
+          window.showToast('Mínimo de 3 fornecedores exigido.', 'warning');
           return;
         }
         state.suppliers = state.suppliers.filter((s) => s.id !== supId);
         saveData();
         renderAll();
+        window.showToast('Fornecedor removido da cotação.', 'warning');
       };
 
       document.getElementById('btn-add-supplier').addEventListener('click', () => {
         if (state.suppliers.length >= 5) {
-          window.C4Utils.toast('Limite máximo de 5 fornecedores atingido.', 'warning');
+          window.showToast('Limite máximo de 5 fornecedores atingido.', 'warning');
           return;
         }
         const name = prompt('Nome do novo fornecedor:');
@@ -356,7 +379,7 @@
         state.suppliers.push({ id, name: name.trim() });
         saveData();
         renderAll();
-        window.C4Utils.toast(`Fornecedor "${name.trim()}" adicionado!`);
+        window.showToast(`Fornecedor "${name.trim()}" adicionado!`, 'success');
       });
 
       const itemModal = document.getElementById('item-modal');
@@ -377,7 +400,7 @@
         itemModal.classList.add('hidden');
         document.getElementById('item-form').reset();
         renderAll();
-        window.C4Utils.toast('Item adicionado! Preencha os preços na tabela.');
+        window.showToast('Registro salvo com sucesso', 'success');
       });
 
       document.getElementById('search-input').addEventListener('input', renderTable);
