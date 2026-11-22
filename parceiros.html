@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programa de Parceiros de Indicação | Control 4 Sistemas</title>
+  <meta
+    name="description"
+    content="Indique empresas para a Control 4 Sistemas e receba comissão sobre setup e recorrência mensal. Programa para contadores, consultores de BPO financeiro e networking B2B."
+  />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://control4sistemas.com.br/parceiros" />
+  <meta name="theme-color" content="#FFFFFF" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:url" content="https://control4sistemas.com.br/parceiros" />
+  <meta property="og:title" content="Programa de Parceiros | Control 4 Sistemas" />
+  <meta
+    property="og:description"
+    content="Transforme suas indicações B2B em receita recorrente. Comissão no setup e mensalidade recorrente por cliente ativo."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#FFFFFF',
+              subtle: '#F8FAFC',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#475569',
+              cyan: '#0284C7',
+              emerald: '#10B981',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FXN3Y3MRDR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-FXN3Y3MRDR');
+  </script>
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', 'zh9ji51ore');
+  </script>
+  <script>
+    function registrarConversao(origem) {
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', { event_category: 'contato', event_label: origem });
+      }
+      if (typeof clarity === 'function') {
+        clarity('set', 'lead_origem', origem);
+        clarity('event', 'clique_orcamento');
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-slate-900 font-sans antialiased selection:bg-sky-100 selection:text-sky-900">
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 font-mono text-sm sm:text-base font-bold tracking-wider text-slate-900 focus:outline-none"
+          aria-label="Control 4 Sistemas - Página Inicial"
+        >
+          <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+          <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Navegação principal">
+          <a href="/#bases" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Bases Prontas</a>
+          <a href="/#projetos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Portfólio V1</a>
+          <a href="/#servicos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Serviços</a>
+          <a href="/calculadora-margem" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Calculadora de Margem</a>
+          <a href="/parceiros" class="text-sm font-semibold text-sky-600" aria-current="page">Parceiros</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a
+            href="/#contato"
+            onclick="registrarConversao('navbar_parceiros')"
+            class="hidden sm:inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 transition-colors"
+          >
+            <span>Solicitar Orçamento</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <button
+            id="mobile-menu-btn"
+            type="button"
+            class="lg:hidden inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-700 hover:bg-slate-50"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Abrir menu de navegação"
+          >
+            <i data-lucide="menu" class="w-5 h-5" id="menu-icon-open"></i>
+            <i data-lucide="x" class="w-5 h-5 hidden" id="menu-icon-close"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white">
+      <div class="px-4 py-4 space-y-1.5">
+        <a href="/#bases" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Bases Prontas</a>
+        <a href="/#projetos" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Portfólio V1</a>
+        <a href="/calculadora-margem" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Calculadora de Margem</a>
+        <a href="/parceiros" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-semibold text-sky-600 bg-sky-50">Programa de Parceiros</a>
+        <div class="pt-2">
+          <a href="/#contato" class="mobile-nav-link flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white">
+            <span>Solicitar Orçamento</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO PARCEIROS -->
+    <section class="pt-28 pb-14 md:pt-36 md:pb-20 bg-grid-light border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl space-y-5">
+          <div class="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span class="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-700">
+              Programa de Parceiros Control 4
+            </span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 leading-tight">
+            Indique clientes que sofrem com planilhas e receba <span class="text-sky-600">comissão no setup e na recorrência.</span>
+          </h1>
+          <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+            Feito para <strong>contadores, consultores de BPO financeiro, agências e profissionais de networking B2B</strong>. Você apresenta a oportunidade, a Control 4 cuida de 100% da reunião técnica, desenvolvimento e suporte.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- COMO FUNCIONA A DIVISÃO DE COMISSÃO -->
+    <section class="py-14 md:py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid md:grid-cols-3 gap-6">
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+            <div class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <i data-lucide="percent" class="w-5 h-5"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">15% sobre o Setup Inicial</h2>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Cada projeto sob medida ou Base Customizável fechada pela sua indicação gera comissão direta de 15% sobre o valor de implantação.
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+            <div class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+              <i data-lucide="repeat" class="w-5 h-5"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Recorrência Mensal Ativa</h2>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Enquanto o cliente indicado mantiver o plano de suporte/hospedagem ou CTO Sob Demanda ativo, você recebe repasse mensal recorrente (ex: R$ 150/mês por conta).
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+            <div class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
+              <i data-lucide="handshake" class="w-5 h-5"></i>
+            </div>
+            <h2 class="text-lg font-bold text-slate-900">Zero Dor de Cabeça Técnica</h2>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Você não precisa gerenciar código nem suporte. Seu único papel é conectar o decisor com a Juliana — e acompanhar seus repasses com transparência.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALCULADORA DE COMISSÃO ESTIMADA -->
+    <section class="py-16 md:py-20 bg-white">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-10 shadow-sm">
+          <div class="grid lg:grid-cols-12 gap-8 items-center">
+            <div class="lg:col-span-7 space-y-6">
+              <div>
+                <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
+                  Simulador de Ganhos
+                </span>
+                <h2 class="mt-2 text-2xl sm:text-3xl font-bold text-slate-900">
+                  Calcule sua comissão como Parceiro
+                </h2>
+                <p class="mt-2 text-sm text-slate-600">
+                  Simule quantas empresas da sua carteira precisam sair das planilhas nos próximos meses.
+                </p>
+              </div>
+
+              <div class="space-y-5 bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+                <div class="space-y-2">
+                  <div class="flex justify-between text-sm">
+                    <label for="parceiros-clientes" class="font-semibold text-slate-800">Clientes indicados fechados</label>
+                    <span id="parceiros-clientes-val" class="font-mono font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded">3 clientes</span>
+                  </div>
+                  <input type="range" id="parceiros-clientes" min="1" max="20" value="3" class="c4-slider" />
+                </div>
+
+                <div class="space-y-2 pt-2 border-t border-slate-100">
+                  <div class="flex justify-between text-sm">
+                    <label for="parceiros-ticket" class="font-semibold text-slate-800">Ticket médio do projeto (Setup)</label>
+                    <span id="parceiros-ticket-val" class="font-mono font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded">R$ 8.000</span>
+                  </div>
+                  <input type="range" id="parceiros-ticket" min="3000" max="25000" step="500" value="8000" class="c4-slider" />
+                </div>
+              </div>
+            </div>
+
+            <div class="lg:col-span-5">
+              <div class="rounded-xl border border-emerald-200 bg-white p-6 shadow-md space-y-4">
+                <div class="text-xs font-mono uppercase text-slate-500">Ganho Estimado em 12 Meses</div>
+                <div id="parceiros-ganho-anual" class="text-3xl sm:text-4xl font-extrabold font-mono text-emerald-600">
+                  R$ 9.000
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
+                  <div class="rounded-lg bg-slate-50 p-3 border border-slate-200/80">
+                    <div class="text-[11px] font-mono uppercase text-slate-500">Comissão Setup</div>
+                    <div id="parceiros-setup-total" class="text-sm font-bold font-mono text-slate-900 mt-0.5">R$ 3.600</div>
+                  </div>
+                  <div class="rounded-lg bg-slate-50 p-3 border border-slate-200/80">
+                    <div class="text-[11px] font-mono uppercase text-slate-500">Recorrência</div>
+                    <div id="parceiros-recorrente-mes" class="text-sm font-bold font-mono text-slate-900 mt-0.5">R$ 450 / mês</div>
+                  </div>
+                </div>
+
+                <a
+                  id="parceiros-wa-btn"
+                  href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Quero%20me%20cadastrar%20no%20Programa%20de%20Parceiros%20da%20Control%204%20Sistemas."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onclick="registrarConversao('parceiros_whatsapp')"
+                  class="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-3.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+                >
+                  <i data-lucide="message-circle" class="w-4 h-4"></i>
+                  <span>Quero ser Parceiro (WhatsApp Juliana)</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-slate-50 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-12 gap-6 items-center">
+        <div class="md:col-span-4 space-y-1.5">
+          <div class="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-slate-900">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+          </div>
+          <p class="text-xs text-slate-500">Atendimento no Vale do Paraíba (SP) e em todo o Brasil.</p>
+          <p class="text-xs text-slate-500 font-mono">&copy; <span id="current-year">2026</span> Control 4 Sistemas — control4sistemas.com.br</p>
+        </div>
+        <nav class="md:col-span-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="Links do rodapé">
+          <a href="/#bases" class="hover:text-sky-600">Bases Prontas</a>
+          <a href="/#projetos" class="hover:text-sky-600">Portfólio V1</a>
+          <a href="/calculadora-margem" class="hover:text-sky-600">Calculadora de Margem</a>
+          <a href="/parceiros" class="text-sky-600 font-medium">Parceiros</a>
+          <a href="/#contato" class="hover:text-sky-600">Orçamento</a>
+        </nav>
+        <div class="md:col-span-3 md:text-right">
+          <a href="https://www.youtube.com/@control4sistemas" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-mono text-slate-700 hover:border-rose-300 hover:text-rose-600">
+            <i data-lucide="youtube" class="w-4 h-4 text-rose-600"></i>
+            <span>Canal no YouTube</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- BOTÃO FLUTUANTE WHATSAPP -->
+  <a
+    id="wa-float-btn"
+    data-wa-default="Olá Juliana! Quero saber mais sobre o Programa de Parceiros da Control 4 Sistemas."
+    href="https://wa.me/5512988600746"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Falar com Juliana sobre Parceria"
+    class="wa-float-pulse fixed bottom-5 right-5 z-40 inline-flex items-center gap-2.5 rounded-full bg-emerald-600 px-4 py-3 text-white shadow-lg hover:bg-emerald-700 transition-all"
+  >
+    <i data-lucide="message-circle" class="w-5 h-5 shrink-0"></i>
+    <span class="hidden sm:flex flex-col text-left leading-tight">
+      <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-100">Juliana • Parcerias</span>
+      <span id="wa-float-label" class="text-xs font-semibold">Cadastro de Parceiro</span>
+    </span>
+  </a>
+
+  <script src="app.js"></script>
+</body>
+</html>

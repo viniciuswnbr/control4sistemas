@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contato Recebido | Control 4 Sistemas</title>
+  <meta name="description" content="Recebemos seu contato. Veja os próximos passos da reunião de diagnóstico de 15 minutos da Control 4 Sistemas." />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FFFFFF" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#FFFFFF',
+              subtle: '#F8FAFC',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#475569',
+              cyan: '#0284C7',
+              emerald: '#10B981',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FXN3Y3MRDR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-FXN3Y3MRDR');
+  </script>
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', 'zh9ji51ore');
+  </script>
+  <script>
+    function registrarConversao(origem) {
+      if (typeof gtag === 'function') {
+        gtag('event', 'generate_lead', { event_category: 'contato', event_label: origem });
+      }
+      if (typeof clarity === 'function') {
+        clarity('set', 'lead_origem', origem);
+        clarity('event', 'clique_orcamento');
+      }
+    }
+  </script>
+</head>
+<body class="bg-white text-slate-900 font-sans antialiased selection:bg-sky-100 selection:text-sky-900">
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a href="/" class="inline-flex items-center gap-2 font-mono text-sm sm:text-base font-bold tracking-wider text-slate-900">
+          <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+          <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Navegação principal">
+          <a href="/#bases" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Bases Prontas</a>
+          <a href="/#projetos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Portfólio V1</a>
+          <a href="/calculadora-margem" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Calculadora de Margem</a>
+          <a href="/parceiros" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Parceiros</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="/" class="hidden sm:inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i>
+            <span>Voltar ao Início</span>
+          </a>
+          <button
+            id="mobile-menu-btn"
+            type="button"
+            class="lg:hidden inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-700"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+            aria-label="Abrir menu"
+          >
+            <i data-lucide="menu" class="w-5 h-5" id="menu-icon-open"></i>
+            <i data-lucide="x" class="w-5 h-5 hidden" id="menu-icon-close"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white">
+      <div class="px-4 py-4 space-y-1.5">
+        <a href="/" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Página Inicial</a>
+        <a href="/#projetos" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Portfólio V1</a>
+        <a href="/calculadora-margem" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Calculadora de Margem</a>
+        <a href="/parceiros" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700">Parceiros</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- CONFIRMAÇÃO -->
+    <section class="pt-28 pb-14 md:pt-36 md:pb-20 bg-grid-light border-b border-slate-200">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-5">
+        <div class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mx-auto">
+          <i data-lucide="check-circle-2" class="w-8 h-8"></i>
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+          Solicitação recebida com sucesso!
+        </h1>
+        <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto">
+          A <strong>Juliana</strong> já recebeu os detalhes do seu projeto. Se o WhatsApp não abriu automaticamente, você pode clicar no botão abaixo para retomar a conversa.
+        </p>
+        <div class="pt-2 flex flex-col sm:flex-row justify-center gap-3">
+          <a
+            href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Acabei%20de%20enviar%20meus%20dados%20pelo%20site%20da%20Control%204%20Sistemas."
+            data-wa-base-msg="Olá Juliana! Acabei de enviar meus dados pelo site da Control 4 Sistemas."
+            target="_blank"
+            rel="noopener noreferrer"
+            onclick="registrarConversao('obrigado_reabrir_whatsapp')"
+            class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-6 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors"
+          >
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            <span>Abrir WhatsApp da Juliana</span>
+          </a>
+          <a
+            href="/#projetos"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors"
+          >
+            <span>Explorar Portfólio V1</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- OS 3 PASSOS DA REUNIÃO DE DIAGNÓSTICO (15 MIN) -->
+    <section class="py-14 md:py-16 bg-slate-50 border-b border-slate-200">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center max-w-2xl mx-auto mb-10">
+          <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
+            Próximos Passos
+          </span>
+          <h2 class="mt-2 text-2xl sm:text-3xl font-bold text-slate-900">
+            Como funciona a Reunião de Diagnóstico de 15 minutos
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+            <span class="font-mono text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">PASSO 01 • 5 MIN</span>
+            <h3 class="text-lg font-bold text-slate-900">Mapeamento do Gargalo</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Entendemos rapidamente quais planilhas ou processos manuais hoje tomam mais tempo da sua equipe e geram retrabalho.
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+            <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded">PASSO 02 • 5 MIN</span>
+            <h3 class="text-lg font-bold text-slate-900">Base Pronta Compatível</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Mostramos ao vivo qual das nossas 3 Bases Prontas ou demos V1 acelera seu projeto e o que será personalizado para sua regra.
+            </p>
+          </article>
+
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs space-y-3">
+            <span class="font-mono text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">PASSO 03 • 5 MIN</span>
+            <h3 class="text-lg font-bold text-slate-900">Plano por Etapas e Proposta</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">
+              Você sai com clareza de prazo, investimento fechado e cronograma de entregas semanais para aprovação.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- LINKS PARA TESTAR O PORTFÓLIO -->
+    <section class="py-14 md:py-16 bg-white">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-6">
+          <h2 class="text-xl font-bold text-slate-900">Enquanto aguarda, teste nossas versões V1:</h2>
+          <a href="/#projetos" class="text-sm font-semibold text-sky-600 hover:text-sky-700">Ver todas as 8 soluções &rarr;</a>
+        </div>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <a href="/portfolio/pedidos-comissoes.html" class="rounded-xl border border-slate-200 p-4 hover:border-sky-400 transition-colors">
+            <div class="font-semibold text-sm text-slate-900">Pedidos &amp; Comissões</div>
+            <div class="text-xs text-sky-600 font-mono mt-1">Testar Versão V1 &rarr;</div>
+          </a>
+          <a href="/portfolio/ordens-servico-assinatura.html" class="rounded-xl border border-slate-200 p-4 hover:border-sky-400 transition-colors">
+            <div class="font-semibold text-sm text-slate-900">O.S. com Assinatura</div>
+            <div class="text-xs text-sky-600 font-mono mt-1">Testar Versão V1 &rarr;</div>
+          </a>
+          <a href="/portfolio/estoque-leitor-barras.html" class="rounded-xl border border-slate-200 p-4 hover:border-sky-400 transition-colors">
+            <div class="font-semibold text-sm text-slate-900">Estoque Leitor de Barras</div>
+            <div class="text-xs text-sky-600 font-mono mt-1">Testar Versão V1 &rarr;</div>
+          </a>
+          <a href="/portfolio/portal-cotacao-fornecedores.html" class="rounded-xl border border-slate-200 p-4 hover:border-sky-400 transition-colors">
+            <div class="font-semibold text-sm text-slate-900">Portal de Cotação</div>
+            <div class="text-xs text-sky-600 font-mono mt-1">Testar Versão V1 &rarr;</div>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-slate-50 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-12 gap-6 items-center">
+        <div class="md:col-span-4 space-y-1.5">
+          <div class="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-slate-900">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+          </div>
+          <p class="text-xs text-slate-500">Atendimento no Vale do Paraíba (SP) e em todo o Brasil.</p>
+          <p class="text-xs text-slate-500 font-mono">&copy; <span id="current-year">2026</span> Control 4 Sistemas — control4sistemas.com.br</p>
+        </div>
+        <nav class="md:col-span-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="Links do rodapé">
+          <a href="/#bases" class="hover:text-sky-600">Bases Prontas</a>
+          <a href="/#projetos" class="hover:text-sky-600">Portfólio V1</a>
+          <a href="/calculadora-margem" class="hover:text-sky-600">Calculadora de Margem</a>
+          <a href="/parceiros" class="hover:text-sky-600">Parceiros</a>
+        </nav>
+        <div class="md:col-span-3 md:text-right">
+          <a href="https://www.youtube.com/@control4sistemas" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-mono text-slate-700 hover:border-rose-300 hover:text-rose-600">
+            <i data-lucide="youtube" class="w-4 h-4 text-rose-600"></i>
+            <span>Canal no YouTube</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

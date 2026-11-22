@@ -1,18 +1,90 @@
 /**
- * Control 4 Sistemas — Frontend Controller
- * - Ícones Lucide
- * - Menu mobile
- * - Demonstração interativa de CRUD (Criar, Buscar/Filtrar, Editar Status, Excluir)
- * - Máscara de telefone e envio de orçamento para WhatsApp da Juliana (+55 12 98860-0746)
+ * Control 4 Sistemas — Frontend Controller Modular
+ * - Rastreamento UTM (sessionStorage) & registrarConversao()
+ * - Botão Flutuante de WhatsApp Inteligente (IntersectionObserver)
+ * - Menu Mobile & Ano Atual
+ * - Demonstração interativa de CRUD
+ * - Calculadora de Prejuízo com Planilhas
+ * - FAQ Comercial Accordion
+ * - Formulário de Orçamento -> WhatsApp Juliana + /obrigado
+ * - Calculadora de Comissão (parceiros.html)
+ * - Calculadora de Margem e Precificação (calculadora-margem.html)
  */
 
 (function () {
   'use strict';
 
-  // WhatsApp oficial para orçamentos: Juliana +55 12 98860-0746
   const WHATSAPP_BUDGET_NUMBER = '5512988600746';
   const CORPORATE_EMAIL = 'contato@control4sistemas.com.br';
+  const UTM_STORAGE_KEY = 'c4_utm_source';
 
+  /* -------------------------------------------------------------------------
+   * 0. RASTREAMENTO UTM & CONVERSÃO GLOBAL
+   * ------------------------------------------------------------------------- */
+  function captureUtmSource() {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const utmSource = params.get('utm_source');
+      if (utmSource && utmSource.trim()) {
+        sessionStorage.setItem(UTM_STORAGE_KEY, utmSource.trim());
+      }
+      return sessionStorage.getItem(UTM_STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  function getUtmSource() {
+    try {
+      return sessionStorage.getItem(UTM_STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  function buildWhatsAppUrl(message) {
+    const utmSource = getUtmSource();
+    const finalMessage = utmSource
+      ? `${message}\n\n[Origem: ${utmSource}]`
+      : message;
+    return `https://wa.me/${WHATSAPP_BUDGET_NUMBER}?text=${encodeURIComponent(finalMessage)}`;
+  }
+
+  const activeUtm = captureUtmSource();
+
+  // Sobrescreve/expõe registrarConversao globalmente com suporte a UTM
+  window.registrarConversao = function registrarConversao(origem) {
+    const utmSource = getUtmSource() || 'direto';
+    const labelComUtm = `${origem} | utm:${utmSource}`;
+
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'generate_lead', {
+        event_category: 'contato',
+        event_label: labelComUtm,
+        utm_source: utmSource,
+      });
+    }
+
+    if (typeof window.clarity === 'function') {
+      window.clarity('set', 'lead_origem', origem);
+      window.clarity('set', 'utm_source', utmSource);
+      window.clarity('event', 'clique_orcamento');
+    }
+  };
+
+  window.c4BuildWhatsAppUrl = buildWhatsAppUrl;
+
+  // Atualiza links estáticos de WhatsApp com UTM caso exista na sessão
+  if (activeUtm) {
+    document.querySelectorAll('a[data-wa-base-msg]').forEach((anchor) => {
+      const baseMsg = anchor.getAttribute('data-wa-base-msg');
+      if (baseMsg) {
+        anchor.href = buildWhatsAppUrl(baseMsg);
+      }
+    });
+  }
+
+  // Inicializa ícones Lucide e ano atual
   if (window.lucide) {
     window.lucide.createIcons();
   }
@@ -54,7 +126,106 @@
   });
 
   /* -------------------------------------------------------------------------
-   * 2. DEMONSTRAÇÃO INTERATIVA DE CRUD (GESTÃO DE PEDIDOS)
+   * 2. BOTÃO FLUTUANTE DE WHATSAPP INTELIGENTE (INTERSECTION OBSERVER)
+   * ------------------------------------------------------------------------- */
+  const waFloatBtn = document.getElementById('wa-float-btn');
+  const waFloatLabel = document.getElementById('wa-float-label');
+
+  const WA_CONTEXT_MAP = {
+    hero: {
+      label: 'Orçamento Sob Medida',
+      msg: 'Olá Juliana! Vi o site da Control 4 Sistemas e gostaria de solicitar um orçamento para um sistema sob medida.',
+    },
+    metricas: {
+      label: 'Reduzir Retrabalho',
+      msg: 'Olá Juliana! Quero entender como reduzir o retrabalho operacional na minha empresa com um sistema da Control 4.',
+    },
+    'calculadora-prejuizo': {
+      label: 'Eliminar Prejuízo',
+      msg: 'Olá Juliana! Usei a calculadora de planilhas no site e quero eliminar o retrabalho operacional da minha equipe.',
+    },
+    bases: {
+      label: 'Bases Customizáveis',
+      msg: 'Olá Juliana! Tenho interesse em uma das Bases Prontas Customizáveis da Control 4 Sistemas.',
+    },
+    projetos: {
+      label: 'Portfólio & Estoque V1',
+      msg: 'Olá Juliana! Estava vendo o portfólio de sistemas (Pedidos, Estoque, O.S.) e quero saber como adaptar para minha empresa.',
+    },
+    servicos: {
+      label: 'Serviços Estratégicos',
+      msg: 'Olá Juliana! Gostaria de informações sobre os Serviços Estratégicos (Auditoria, B2B Express ou CTO Sob Demanda).',
+    },
+    'para-quem': {
+      label: 'Avaliar Meu Cenário',
+      msg: 'Olá Juliana! Quero avaliar se um sistema sob medida da Control 4 faz sentido para o momento da minha empresa.',
+    },
+    faq: {
+      label: 'Tirar Dúvidas',
+      msg: 'Olá Juliana! Estava lendo o FAQ e gostaria de tirar uma dúvida sobre prazo, código ou integrações.',
+    },
+    contato: {
+      label: 'Falar com Juliana',
+      msg: 'Olá Juliana! Quero solicitar um orçamento personalizado para minha empresa.',
+    },
+  };
+
+  let currentWaContext = 'hero';
+
+  function updateFloatingWhatsApp(sectionId) {
+    if (!waFloatBtn) return;
+    const ctx = WA_CONTEXT_MAP[sectionId];
+    if (!ctx) return;
+
+    currentWaContext = sectionId;
+    waFloatBtn.href = buildWhatsAppUrl(ctx.msg);
+    if (waFloatLabel) {
+      waFloatLabel.textContent = ctx.label;
+    }
+  }
+
+  if (waFloatBtn) {
+    const defaultMsg = waFloatBtn.getAttribute('data-wa-default');
+    if (defaultMsg) {
+      waFloatBtn.href = buildWhatsAppUrl(defaultMsg);
+    } else {
+      updateFloatingWhatsApp('hero');
+    }
+
+    waFloatBtn.addEventListener('click', () => {
+      window.registrarConversao(`whatsapp_flutuante_${currentWaContext}`);
+    });
+
+    const observedSections = document.querySelectorAll('section[data-wa-section]');
+    if (observedSections.length > 0 && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          let topCandidate = null;
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (!topCandidate || entry.intersectionRatio > topCandidate.intersectionRatio) {
+                topCandidate = entry;
+              }
+            }
+          });
+          if (topCandidate) {
+            const id = topCandidate.target.getAttribute('data-wa-section') || topCandidate.target.id;
+            updateFloatingWhatsApp(id);
+          }
+        },
+        {
+          root: null,
+          rootMargin: '-25% 0px -45% 0px',
+          threshold: [0.1, 0.35, 0.6],
+        }
+      );
+
+      observedSections.forEach((sec) => observer.observe(sec));
+    }
+  }
+
+  /* -------------------------------------------------------------------------
+   * 3. DEMONSTRAÇÃO INTERATIVA DE CRUD (GESTÃO DE PEDIDOS)
    * ------------------------------------------------------------------------- */
   const crudTableBody = document.getElementById('crud-table-body');
   const crudSearch = document.getElementById('crud-search');
@@ -163,12 +334,9 @@
   if (crudTableBody) {
     renderCrudTable();
 
-    if (crudSearch) {
-      crudSearch.addEventListener('input', renderCrudTable);
-    }
-    if (crudFilter) {
-      crudFilter.addEventListener('change', renderCrudTable);
-    }
+    if (crudSearch) crudSearch.addEventListener('input', renderCrudTable);
+    if (crudFilter) crudFilter.addEventListener('change', renderCrudTable);
+
     if (crudAddBtn) {
       crudAddBtn.addEventListener('click', () => {
         const nextId = sampleRecords.length
@@ -212,7 +380,119 @@
   }
 
   /* -------------------------------------------------------------------------
-   * 3. CÓPIA RÁPIDA DE E-MAIL CORPORATIVO
+   * 4. CALCULADORA DE PREJUÍZO COM PLANILHAS (INDEX.HTML)
+   * ------------------------------------------------------------------------- */
+  const sliderFuncionarios = document.getElementById('calc-funcionarios');
+  const sliderHoras = document.getElementById('calc-horas');
+  const labelFuncionarios = document.getElementById('calc-funcionarios-val');
+  const labelHoras = document.getElementById('calc-horas-val');
+  const outPrejuizoAnual = document.getElementById('calc-prejuizo-anual');
+  const outPrejuizoMensal = document.getElementById('calc-prejuizo-mensal');
+  const outHorasAno = document.getElementById('calc-horas-ano');
+  const btnEliminarPrejuizo = document.getElementById('calc-eliminar-btn');
+
+  function formatBRL(value) {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      maximumFractionDigits: 0,
+    }).format(value);
+  }
+
+  function formatBRLDetailed(value) {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(value);
+  }
+
+  const CUSTO_HORA_MEDIO_BRL = 45; // Custo hora médio com encargos B2B
+  const SEMANAS_ANO = 52;
+
+  function updateLossCalculator() {
+    if (!sliderFuncionarios || !sliderHoras) return;
+
+    const funcionarios = Number(sliderFuncionarios.value) || 1;
+    const horasSemana = Number(sliderHoras.value) || 1;
+
+    const horasAno = funcionarios * horasSemana * SEMANAS_ANO;
+    const custoAnual = horasAno * CUSTO_HORA_MEDIO_BRL;
+    const custoMensal = custoAnual / 12;
+
+    if (labelFuncionarios) {
+      labelFuncionarios.textContent = `${funcionarios} ${funcionarios === 1 ? 'pessoa' : 'pessoas'}`;
+    }
+    if (labelHoras) {
+      labelHoras.textContent = `${horasSemana}h / sem`;
+    }
+    if (outPrejuizoAnual) {
+      outPrejuizoAnual.textContent = formatBRL(custoAnual);
+    }
+    if (outPrejuizoMensal) {
+      outPrejuizoMensal.textContent = `${formatBRL(custoMensal)} / mês`;
+    }
+    if (outHorasAno) {
+      outHorasAno.textContent = `${horasAno.toLocaleString('pt-BR')} horas/ano`;
+    }
+
+    return { funcionarios, horasSemana, custoAnual, horasAno };
+  }
+
+  if (sliderFuncionarios && sliderHoras) {
+    updateLossCalculator();
+    sliderFuncionarios.addEventListener('input', updateLossCalculator);
+    sliderHoras.addEventListener('input', updateLossCalculator);
+
+    if (btnEliminarPrejuizo) {
+      btnEliminarPrejuizo.addEventListener('click', () => {
+        const stats = updateLossCalculator();
+        window.registrarConversao('calculadora_prejuizo');
+
+        const desafioField = document.getElementById('desafio');
+        if (desafioField && stats) {
+          desafioField.value = `Temos ${stats.funcionarios} pessoa(s) gastando cerca de ${stats.horasSemana}h/semana em planilhas (estimativa de ${formatBRL(stats.custoAnual)}/ano perdidos). Queremos automatizar esse processo.`;
+        }
+      });
+    }
+  }
+
+  /* -------------------------------------------------------------------------
+   * 5. FAQ COMERCIAL ACCORDION
+   * ------------------------------------------------------------------------- */
+  const faqTriggers = document.querySelectorAll('.faq-trigger');
+  faqTriggers.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const targetId = btn.getAttribute('aria-controls');
+      const panel = targetId ? document.getElementById(targetId) : null;
+      if (!panel) return;
+
+      const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+
+      // Fecha outros itens abertos para manter interface limpa
+      faqTriggers.forEach((otherBtn) => {
+        if (otherBtn !== btn) {
+          otherBtn.setAttribute('aria-expanded', 'false');
+          const otherPanelId = otherBtn.getAttribute('aria-controls');
+          const otherPanel = otherPanelId ? document.getElementById(otherPanelId) : null;
+          if (otherPanel) otherPanel.classList.add('hidden');
+          const otherIcon = otherBtn.querySelector('.faq-chevron');
+          if (otherIcon) otherIcon.classList.remove('rotate-180');
+        }
+      });
+
+      btn.setAttribute('aria-expanded', String(!isExpanded));
+      panel.classList.toggle('hidden', isExpanded);
+      const chevron = btn.querySelector('.faq-chevron');
+      if (chevron) {
+        chevron.classList.toggle('rotate-180', !isExpanded);
+      }
+    });
+  });
+
+  /* -------------------------------------------------------------------------
+   * 6. CÓPIA RÁPIDA DE E-MAIL CORPORATIVO
    * ------------------------------------------------------------------------- */
   const copyEmailBtn = document.getElementById('copy-email-btn');
   const copyEmailLabel = document.getElementById('copy-email-label');
@@ -232,7 +512,7 @@
   }
 
   /* -------------------------------------------------------------------------
-   * 4. MÁSCARA DE WHATSAPP E VALIDAÇÃO DO FORMULÁRIO
+   * 7. MÁSCARA DE WHATSAPP, VALIDAÇÃO DO FORMULÁRIO E REDIRECT /OBRIGADO
    * ------------------------------------------------------------------------- */
   const form = document.getElementById('lead-form');
   const whatsappInput = document.getElementById('whatsapp');
@@ -326,7 +606,6 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const { isValid, nome, empresa, whatsapp, desafio } = validateForm();
-
       if (!isValid) return;
 
       const structuredMessage = [
@@ -335,30 +614,143 @@
         `*Nome:* ${nome}`,
         `*Empresa:* ${empresa}`,
         `*WhatsApp:* ${whatsapp}`,
-        `*Necessidade:*`,
+        '*Necessidade:*',
         desafio,
         '',
         '_Enviado via control4sistemas.com.br_',
       ].join('\n');
 
-      const whatsappUrl = `https://wa.me/${WHATSAPP_BUDGET_NUMBER}?text=${encodeURIComponent(structuredMessage)}`;
+      const whatsappUrl = buildWhatsAppUrl(structuredMessage);
 
       if (feedbackBox) {
         feedbackBox.innerHTML = `
           <div class="font-semibold text-emerald-700">Mensagem pronta para a Juliana!</div>
           <p class="mt-1 text-xs text-slate-600">
-            Abrindo o WhatsApp (+55 12 98860-0746). Caso não abra automaticamente,
-            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="underline text-sky-600 font-semibold">clique aqui para enviar</a>.
+            Abrindo o WhatsApp (+55 12 98860-0746) e redirecionando para os próximos passos...
+            <a href="${whatsappUrl}" target="_blank" rel="noopener noreferrer" class="underline text-sky-600 font-semibold">Clique aqui caso não abra</a>.
           </p>
         `;
         feedbackBox.classList.remove('hidden');
       }
 
-      if (typeof window.registrarConversao === 'function') {
-        window.registrarConversao('contato_formulario');
-      }
-
+      window.registrarConversao('contato_formulario');
       window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+
+      setTimeout(() => {
+        window.location.href = '/obrigado';
+      }, 900);
+    });
+  }
+
+  /* -------------------------------------------------------------------------
+   * 8. CALCULADORA DE COMISSÃO (PARCEIROS.HTML)
+   * ------------------------------------------------------------------------- */
+  const parceirosClientes = document.getElementById('parceiros-clientes');
+  const parceirosTicket = document.getElementById('parceiros-ticket');
+
+  function updateParceirosCalc() {
+    if (!parceirosClientes || !parceirosTicket) return;
+
+    const clientes = Number(parceirosClientes.value) || 1;
+    const ticketSetup = Number(parceirosTicket.value) || 5000;
+
+    // Modelo transparente: 15% no setup + R$ 150/mês de recorrência por cliente ativo
+    const comissaoSetup = clientes * (ticketSetup * 0.15);
+    const recorrenciaMensal = clientes * 150;
+    const ganhoAnual = comissaoSetup + recorrenciaMensal * 12;
+
+    const elClientesVal = document.getElementById('parceiros-clientes-val');
+    const elTicketVal = document.getElementById('parceiros-ticket-val');
+    const elSetupOut = document.getElementById('parceiros-setup-total');
+    const elRecorrenteMesOut = document.getElementById('parceiros-recorrente-mes');
+    const elAnualOut = document.getElementById('parceiros-ganho-anual');
+    const waBtn = document.getElementById('parceiros-wa-btn');
+
+    if (elClientesVal) elClientesVal.textContent = `${clientes} ${clientes === 1 ? 'cliente' : 'clientes'}`;
+    if (elTicketVal) elTicketVal.textContent = formatBRL(ticketSetup);
+    if (elSetupOut) elSetupOut.textContent = formatBRL(comissaoSetup);
+    if (elRecorrenteMesOut) elRecorrenteMesOut.textContent = `${formatBRL(recorrenciaMensal)} / mês`;
+    if (elAnualOut) elAnualOut.textContent = formatBRL(ganhoAnual);
+
+    if (waBtn) {
+      const msg = `Olá Juliana! Quero me cadastrar no Programa de Parceiros da Control 4 Sistemas. Simulei ${clientes} indicação(ões) com ticket médio de ${formatBRL(ticketSetup)}.`;
+      waBtn.href = buildWhatsAppUrl(msg);
+    }
+  }
+
+  if (parceirosClientes && parceirosTicket) {
+    updateParceirosCalc();
+    parceirosClientes.addEventListener('input', updateParceirosCalc);
+    parceirosTicket.addEventListener('input', updateParceirosCalc);
+  }
+
+  /* -------------------------------------------------------------------------
+   * 9. CALCULADORA DE PRECIFICAÇÃO E MARGEM (CALCULADORA-MARGEM.HTML)
+   * ------------------------------------------------------------------------- */
+  const mCusto = document.getElementById('margem-custo');
+  const mVariaveis = document.getElementById('margem-variaveis');
+  const mImpostos = document.getElementById('margem-impostos');
+  const mTaxas = document.getElementById('margem-taxas');
+  const mLucro = document.getElementById('margem-lucro');
+
+  function updateMargemCalc() {
+    if (!mCusto || !mVariaveis || !mImpostos || !mTaxas || !mLucro) return;
+
+    const custoBase = Math.max(0, Number(mCusto.value) || 0);
+    const custoVariavel = Math.max(0, Number(mVariaveis.value) || 0);
+    const impostosPct = Math.max(0, Number(mImpostos.value) || 0);
+    const taxasPct = Math.max(0, Number(mTaxas.value) || 0);
+    const margemDesejadaPct = Math.max(0, Number(mLucro.value) || 0);
+
+    const custoTotal = custoBase + custoVariavel;
+    const somaPercentuais = impostosPct + taxasPct + margemDesejadaPct;
+
+    const warningEl = document.getElementById('margem-warning');
+    const outPreco = document.getElementById('margem-preco-venda');
+    const outLucro = document.getElementById('margem-lucro-valor');
+    const outMarkup = document.getElementById('margem-markup');
+    const outImpostosTaxas = document.getElementById('margem-impostos-valor');
+
+    const barCusto = document.getElementById('bar-custo');
+    const barTaxas = document.getElementById('bar-taxas');
+    const barLucro = document.getElementById('bar-lucro');
+
+    if (somaPercentuais >= 100) {
+      if (warningEl) warningEl.classList.remove('hidden');
+      if (outPreco) outPreco.textContent = 'Inválido';
+      if (outLucro) outLucro.textContent = 'R$ 0,00';
+      if (outMarkup) outMarkup.textContent = '0%';
+      if (outImpostosTaxas) outImpostosTaxas.textContent = 'R$ 0,00';
+      return;
+    }
+
+    if (warningEl) warningEl.classList.add('hidden');
+
+    const divisor = 1 - somaPercentuais / 100;
+    const precoVenda = custoTotal / divisor;
+    const valorImpostosTaxas = precoVenda * ((impostosPct + taxasPct) / 100);
+    const lucroLiquido = precoVenda * (margemDesejadaPct / 100);
+    const markupPct = custoTotal > 0 ? ((precoVenda - custoTotal) / custoTotal) * 100 : 0;
+
+    if (outPreco) outPreco.textContent = formatBRLDetailed(precoVenda);
+    if (outLucro) outLucro.textContent = formatBRLDetailed(lucroLiquido);
+    if (outMarkup) outMarkup.textContent = `${markupPct.toFixed(1).replace('.', ',')}%`;
+    if (outImpostosTaxas) outImpostosTaxas.textContent = formatBRLDetailed(valorImpostosTaxas);
+
+    if (precoVenda > 0 && barCusto && barTaxas && barLucro) {
+      const pctCusto = (custoTotal / precoVenda) * 100;
+      const pctTaxas = impostosPct + taxasPct;
+      const pctLucro = margemDesejadaPct;
+      barCusto.style.width = `${pctCusto.toFixed(1)}%`;
+      barTaxas.style.width = `${pctTaxas.toFixed(1)}%`;
+      barLucro.style.width = `${pctLucro.toFixed(1)}%`;
+    }
+  }
+
+  if (mCusto && mVariaveis && mImpostos && mTaxas && mLucro) {
+    updateMargemCalc();
+    [mCusto, mVariaveis, mImpostos, mTaxas, mLucro].forEach((input) => {
+      input.addEventListener('input', updateMargemCalc);
     });
   }
 })();

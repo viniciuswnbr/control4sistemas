@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control 4 // Sistemas — Painel Administrativo &amp; Comercial</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#FFFFFF" />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#FFFFFF',
+              subtle: '#F8FAFC',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#475569',
+              cyan: '#0284C7',
+              emerald: '#10B981',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="../styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- html2pdf.js (CDN) para geração de propostas em PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <style>
+    /* Ajustes específicos do Painel Admin */
+    .kanban-col {
+      min-height: 420px;
+    }
+    .kanban-card {
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    }
+    .kanban-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px -6px rgba(15, 23, 42, 0.12);
+    }
+    .kanban-drop-active {
+      background-color: rgba(2, 132, 199, 0.06);
+      border-color: #0284C7 !important;
+    }
+    /* Área de renderização A4 do PDF */
+    .pdf-a4-sheet {
+      width: 100%;
+      max-width: 794px;
+      background: #FFFFFF;
+      color: #0F172A;
+    }
+    @media print {
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-brand-subtle text-brand-text font-sans antialiased selection:bg-sky-100 selection:text-sky-900">
+
+  <!-- ======================================================================
+       TELA DE LOGIN (PROTEÇÃO SHA-256 / TOKEN)
+       ====================================================================== -->
+  <div id="auth-gate" class="min-h-screen bg-grid-light flex items-center justify-center p-4">
+    <div class="w-full max-w-md bg-white border border-brand-border rounded-2xl shadow-xl shadow-slate-200/70 p-8">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-sm">
+            C4
+          </div>
+          <div>
+            <p class="font-mono text-xs font-bold tracking-wider text-slate-900 uppercase">CONTROL 4 // SISTEMAS</p>
+            <p class="text-[11px] text-brand-muted">Acesso Restrito à Equipe</p>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-mono font-medium bg-sky-50 text-brand-cyan border border-sky-200">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+          SHA-256
+        </span>
+      </div>
+
+      <h1 class="text-xl font-bold text-slate-900 mb-1">Portal Operacional &amp; CRM</h1>
+      <p class="text-sm text-brand-muted mb-6">
+        Insira a senha da equipe ou o token de acesso configurado para liberar o painel.
+      </p>
+
+      <form id="login-form" class="space-y-4">
+        <div>
+          <label for="login-secret" class="block text-xs font-semibold text-slate-700 uppercase tracking-wide mb-1.5">
+            Senha ou Token de Acesso
+          </label>
+          <div class="relative">
+            <input
+              id="login-secret"
+              type="password"
+              autocomplete="current-password"
+              required
+              placeholder="Digite sua senha de acesso..."
+              class="w-full rounded-xl border border-brand-border bg-brand-subtle px-4 py-3 pr-11 text-sm text-slate-900 focus:bg-white focus:border-brand-cyan focus:ring-2 focus:ring-sky-100 outline-none transition"
+            />
+            <button
+              type="button"
+              id="toggle-password-visibility"
+              aria-label="Mostrar ou ocultar senha"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 p-1"
+            >
+              <i data-lucide="eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <p id="login-error" class="hidden text-xs font-medium text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+          Credencial inválida. Verifique a senha ou token e tente novamente.
+        </p>
+
+        <button
+          type="submit"
+          class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm py-3 px-4 transition shadow-sm"
+        >
+          <i data-lucide="lock-open" class="w-4 h-4"></i>
+          Entrar no Painel
+        </button>
+      </form>
+
+      <div class="mt-6 pt-5 border-t border-brand-border flex items-center justify-between text-xs text-brand-muted">
+        <a href="../index.html" class="inline-flex items-center gap-1 hover:text-brand-cyan transition">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+          Voltar ao site
+        </a>
+        <span class="font-mono text-[11px] text-slate-400">v2.4 • Taubaté/SP</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       PAINEL ADMINISTRATIVO PRINCIPAL (VISÍVEL APÓS AUTENTICAÇÃO)
+       ====================================================================== -->
+  <div id="admin-shell" class="hidden min-h-screen flex flex-col">
+
+    <!-- Top Navbar -->
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-brand-border">
+      <div class="max-w-[1440px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-sm shrink-0">
+            C4
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono font-bold text-sm tracking-tight text-slate-900">CONTROL 4 // SISTEMAS</span>
+              <span class="hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                ADMIN OPERACIONAL
+              </span>
+            </div>
+            <p class="text-[11px] text-brand-muted hidden sm:block">
+              CRM Comercial, Gerador de Propostas PDF &amp; Prospecção Cirúrgica
+            </p>
+          </div>
+        </div>
+
+        <!-- Navegação das 3 Abas (Desktop) -->
+        <nav class="hidden md:flex items-center gap-1 bg-brand-subtle p-1 rounded-xl border border-brand-border" aria-label="Abas do Painel">
+          <button
+            type="button"
+            data-tab="crm"
+            class="tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition"
+          >
+            <i data-lucide="kanban" class="w-4 h-4"></i>
+            1. CRM &amp; Triagem (Juliana)
+          </button>
+          <button
+            type="button"
+            data-tab="proposta"
+            class="tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition"
+          >
+            <i data-lucide="file-text" class="w-4 h-4"></i>
+            2. Proposta PDF (10s)
+          </button>
+          <button
+            type="button"
+            data-tab="prospeccao"
+            class="tab-btn inline-flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition"
+          >
+            <i data-lucide="crosshair" class="w-4 h-4"></i>
+            3. Prospecção Cirúrgica
+          </button>
+        </nav>
+
+        <!-- Ações Rápidas -->
+        <div class="flex items-center gap-2">
+          <button
+            type="button"
+            id="open-settings-btn"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-brand-border bg-white hover:bg-brand-subtle text-xs font-medium text-slate-700 transition"
+            title="Configurações de API e Segurança"
+          >
+            <i data-lucide="settings" class="w-4 h-4 text-slate-500"></i>
+            <span class="hidden lg:inline">Configurações</span>
+          </button>
+          <button
+            type="button"
+            id="logout-btn"
+            class="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg border border-brand-border bg-white hover:bg-rose-50 hover:border-rose-200 hover:text-rose-700 text-xs font-medium text-slate-700 transition"
+            title="Bloquear Painel"
+          >
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Sair</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegação Mobile -->
+      <div class="md:hidden border-t border-brand-border px-3 py-2 flex items-center gap-1 overflow-x-auto bg-brand-subtle">
+        <button type="button" data-tab="crm" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold">
+          <i data-lucide="kanban" class="w-3.5 h-3.5"></i> 1. CRM
+        </button>
+        <button type="button" data-tab="proposta" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i> 2. Proposta PDF
+        </button>
+        <button type="button" data-tab="prospeccao" class="tab-btn shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold">
+          <i data-lucide="crosshair" class="w-3.5 h-3.5"></i> 3. Prospecção
+        </button>
+      </div>
+    </header>
+
+    <!-- Conteúdo Principal -->
+    <main class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-6">
+
+      <!-- ==================================================================
+           ABA 1: TRIAGEM COMERCIAL & CRM (JULIANA)
+           ================================================================== -->
+      <section id="tab-crm" class="tab-panel space-y-6">
+        <!-- KPIs + Controles -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+          <div class="bg-white border border-brand-border rounded-xl p-4">
+            <p class="text-[11px] font-mono uppercase text-brand-muted">Total de Leads</p>
+            <p id="kpi-total" class="text-2xl font-bold text-slate-900 mt-1">0</p>
+          </div>
+          <div class="bg-white border border-brand-border rounded-xl p-4">
+            <p class="text-[11px] font-mono uppercase text-brand-muted">Novos / Triagem</p>
+            <p id="kpi-novos" class="text-2xl font-bold text-sky-600 mt-1">0</p>
+          </div>
+          <div class="bg-white border border-brand-border rounded-xl p-4">
+            <p class="text-[11px] font-mono uppercase text-brand-muted">Diagnósticos</p>
+            <p id="kpi-diagnostico" class="text-2xl font-bold text-amber-600 mt-1">0</p>
+          </div>
+          <div class="bg-white border border-brand-border rounded-xl p-4">
+            <p class="text-[11px] font-mono uppercase text-brand-muted">Propostas Enviadas</p>
+            <p id="kpi-proposta" class="text-2xl font-bold text-indigo-600 mt-1">0</p>
+          </div>
+          <div class="bg-white border border-brand-border rounded-xl p-4 col-span-2 lg:col-span-1">
+            <p class="text-[11px] font-mono uppercase text-brand-muted">Fechados</p>
+            <p id="kpi-fechado" class="text-2xl font-bold text-emerald-600 mt-1">0</p>
+          </div>
+        </div>
+
+        <!-- Barra de Ações do CRM -->
+        <div class="bg-white border border-brand-border rounded-xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center gap-2.5 flex-1">
+            <div class="relative flex-1 min-w-[200px] max-w-sm">
+              <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input
+                id="crm-search"
+                type="text"
+                placeholder="Buscar por nome, empresa ou dor..."
+                class="w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-brand-border bg-brand-subtle focus:bg-white focus:border-brand-cyan outline-none"
+              />
+            </div>
+
+            <select id="crm-filter-origin" class="px-3 py-2 text-xs rounded-lg border border-brand-border bg-white text-slate-700 outline-none focus:border-brand-cyan">
+              <option value="Todas">Origem: Todas</option>
+              <option value="Site">Site</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Prospecção">Prospecção</option>
+              <option value="Parceiro">Parceiro</option>
+            </select>
+
+            <div class="inline-flex rounded-lg border border-brand-border bg-brand-subtle p-0.5">
+              <button type="button" id="view-kanban-btn" class="px-2.5 py-1.5 rounded-md text-xs font-semibold bg-white text-slate-900 shadow-sm inline-flex items-center gap-1">
+                <i data-lucide="columns-3" class="w-3.5 h-3.5"></i> Kanban
+              </button>
+              <button type="button" id="view-table-btn" class="px-2.5 py-1.5 rounded-md text-xs font-semibold text-slate-600 hover:text-slate-900 inline-flex items-center gap-1">
+                <i data-lucide="table-2" class="w-3.5 h-3.5"></i> Tabela
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              id="new-lead-btn"
+              class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-cyan hover:bg-sky-700 text-white text-xs font-semibold transition shadow-sm"
+            >
+              <i data-lucide="plus" class="w-4 h-4"></i>
+              Novo Lead
+            </button>
+          </div>
+        </div>
+
+        <!-- Visão Kanban -->
+        <div id="crm-kanban-view" class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-4">
+          <!-- Colunas renderizadas via JS -->
+        </div>
+
+        <!-- Visão Tabela -->
+        <div id="crm-table-view" class="hidden bg-white border border-brand-border rounded-xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-brand-subtle border-b border-brand-border text-[11px] font-mono uppercase text-brand-muted">
+                  <th class="py-3 px-4">Lead / Empresa</th>
+                  <th class="py-3 px-4">WhatsApp</th>
+                  <th class="py-3 px-4">Dor Principal</th>
+                  <th class="py-3 px-4">Origem</th>
+                  <th class="py-3 px-4">Próx. Follow-up</th>
+                  <th class="py-3 px-4">Status</th>
+                  <th class="py-3 px-4 text-right">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="crm-table-body" class="divide-y divide-brand-border text-xs">
+                <!-- Linhas renderizadas via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           ABA 2: GERADOR AUTOMÁTICO DE ESCOPO E PROPOSTA COMERCIAL (PDF 10s)
+           ================================================================== -->
+      <section id="tab-proposta" class="tab-panel hidden">
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+
+          <!-- Formulário Rápido (5 colunas) -->
+          <div class="xl:col-span-5 bg-white border border-brand-border rounded-xl p-5 sm:p-6 space-y-5">
+            <div class="flex items-center justify-between border-b border-brand-border pb-4">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Gerador de Proposta em 10s</h2>
+                <p class="text-xs text-brand-muted">Preencha os dados e gere o PDF corporativo instantaneamente.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-sky-50 text-brand-cyan border border-sky-200">
+                html2pdf.js
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Nome do Cliente *</label>
+                <input id="prop-client-name" type="text" placeholder="Ex: Carlos Mendes" value="Carlos Mendes"
+                  class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Empresa *</label>
+                <input id="prop-company" type="text" placeholder="Ex: Vale Distribuidora Ltda" value="Vale Distribuidora Ltda"
+                  class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Prazo Estimado</label>
+                <input id="prop-timeline" type="text" placeholder="Ex: 30 dias úteis" value="30 dias úteis"
+                  class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Valor Base (R$)</label>
+                <input id="prop-base-value" type="number" min="0" step="100" value="8500"
+                  class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm font-mono focus:bg-white focus:border-brand-cyan outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Sustentação Mensal (R$/mês)</label>
+                <input id="prop-monthly-value" type="number" min="0" step="50" value="490"
+                  class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm font-mono focus:bg-white focus:border-brand-cyan outline-none" />
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-700 mb-1">Validade da Proposta (dias)</label>
+                <input id="prop-validity-days" type="number" min="1" max="90" value="10"
+                  class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm font-mono focus:bg-white focus:border-brand-cyan outline-none" />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-2">Módulos do Escopo Técnico</label>
+              <div id="prop-modules-list" class="space-y-2">
+                <!-- Checkboxes renderizados via JS -->
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-700 mb-1">Observações / Objetivo do Projeto</label>
+              <textarea id="prop-notes" rows="2" placeholder="Resumo da dor operacional e objetivo principal..."
+                class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-xs focus:bg-white focus:border-brand-cyan outline-none">Substituição de planilhas manuais por sistema web centralizado com controle de acesso, rastreabilidade e indicadores gerenciais em tempo real.</textarea>
+            </div>
+
+            <button
+              type="button"
+              id="generate-pdf-btn"
+              class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-sm py-3 px-4 transition shadow-sm"
+            >
+              <i data-lucide="download" class="w-4 h-4"></i>
+              Gerar Proposta PDF
+            </button>
+          </div>
+
+          <!-- Pré-visualização Corporativa A4 (7 colunas) -->
+          <div class="xl:col-span-7 flex flex-col items-center">
+            <div class="w-full max-w-[794px] flex items-center justify-between mb-2 px-1">
+              <span class="text-xs font-mono text-brand-muted uppercase">Pré-visualização do Documento (A4)</span>
+              <span id="prop-code-badge" class="text-xs font-mono font-semibold text-slate-700">PROP-2026-001</span>
+            </div>
+
+            <div class="w-full overflow-x-auto pb-4 flex justify-center">
+              <div id="proposal-pdf-document" class="pdf-a4-sheet border border-brand-border rounded-xl shadow-sm p-8 sm:p-10 text-slate-900">
+                <!-- Conteúdo dinâmico da proposta renderizado via JS -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ==================================================================
+           ABA 3: PROSPECÇÃO ATIVA CIRÚRGICA (SEM SPAM — TRAVA DIÁRIA)
+           ================================================================== -->
+      <section id="tab-prospeccao" class="tab-panel hidden space-y-6">
+
+        <!-- Cabeçalho + Trava Diária -->
+        <div class="bg-white border border-brand-border rounded-xl p-5 sm:p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-5 border-b border-brand-border">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <h2 class="text-base font-bold text-slate-900">Prospecção Ativa Cirúrgica (Vale do Paraíba)</h2>
+                <span id="prospector-mode-badge" class="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                  Modo Simulado
+                </span>
+              </div>
+              <p class="text-xs text-brand-muted max-w-2xl">
+                Mapeamento diário limitado a <strong>20 empresas</strong> priorizando negócios sem website ou com presença digital fraca — forte indício de controles manuais em planilhas.
+              </p>
+            </div>
+
+            <!-- Card de Status da Trava Diária -->
+            <div id="daily-lock-card" class="shrink-0 rounded-xl border border-brand-border bg-brand-subtle px-4 py-3 flex items-center gap-3">
+              <div class="w-9 h-9 rounded-lg bg-white border border-brand-border flex items-center justify-center text-brand-cyan">
+                <i data-lucide="clock" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p id="daily-lock-label" class="text-[11px] font-mono uppercase text-brand-muted">Janela Diária</p>
+                <p id="daily-lock-countdown" class="text-sm font-mono font-bold text-slate-900">Disponível agora</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filtros e Botão Principal -->
+          <div class="pt-5 grid grid-cols-1 md:grid-cols-12 gap-3 items-end">
+            <div class="md:col-span-4">
+              <label for="prospect-niche" class="block text-xs font-semibold text-slate-700 mb-1">Segmento / Nicho</label>
+              <select id="prospect-niche" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-brand-cyan outline-none">
+                <option value="Distribuidoras">Distribuidoras</option>
+                <option value="Autopeças">Autopeças</option>
+                <option value="Clínicas e Estúdios">Clínicas e Estúdios</option>
+                <option value="Transportadoras">Transportadoras</option>
+                <option value="Oficinas e Manutenção">Oficinas e Manutenção</option>
+                <option value="Construtoras">Construtoras</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-4">
+              <label for="prospect-city" class="block text-xs font-semibold text-slate-700 mb-1">Cidade (Região)</label>
+              <select id="prospect-city" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2.5 text-sm text-slate-900 focus:bg-white focus:border-brand-cyan outline-none">
+                <option value="Taubaté, SP" selected>Taubaté, SP</option>
+                <option value="São José dos Campos, SP">São José dos Campos, SP</option>
+                <option value="Jacareí, SP">Jacareí, SP</option>
+                <option value="Pindamonhangaba, SP">Pindamonhangaba, SP</option>
+              </select>
+            </div>
+
+            <div class="md:col-span-4">
+              <button
+                type="button"
+                id="run-prospect-btn"
+                class="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-brand-cyan hover:bg-sky-700 disabled:bg-slate-200 disabled:text-slate-500 disabled:cursor-not-allowed text-white font-semibold text-sm py-2.5 px-4 transition shadow-sm"
+              >
+                <i data-lucide="radar" class="w-4 h-4"></i>
+                <span id="run-prospect-btn-text">Atualizar / Mapear 20 Empresas</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lista de 20 Empresas Mapeadas -->
+        <div class="bg-white border border-brand-border rounded-xl overflow-hidden">
+          <div class="px-5 py-3.5 border-b border-brand-border bg-brand-subtle flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-bold text-slate-900">Empresas Mapeadas Hoje</span>
+              <span id="prospect-count-badge" class="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-white border border-brand-border text-slate-700">
+                0 / 20
+              </span>
+            </div>
+            <span id="prospect-meta-info" class="text-[11px] text-brand-muted font-mono">
+              Prioridade: Sem Site &rarr; Site Desatualizado
+            </span>
+          </div>
+
+          <div id="prospect-list-container" class="divide-y divide-brand-border">
+            <!-- Itens renderizados via JS -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: NOVO / EDITAR LEAD (CRM)
+       ====================================================================== -->
+  <div id="lead-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white border border-brand-border rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+        <h3 id="lead-modal-title" class="text-base font-bold text-slate-900">Novo Lead</h3>
+        <button type="button" class="close-lead-modal text-slate-400 hover:text-slate-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="lead-form" class="p-6 space-y-4">
+        <input type="hidden" id="lead-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nome do Contato *</label>
+            <input id="lead-name" type="text" required placeholder="Ex: Marcos Oliveira"
+              class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Empresa *</label>
+            <input id="lead-company" type="text" required placeholder="Ex: Auto Peças Taubaté"
+              class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">WhatsApp *</label>
+            <input id="lead-whatsapp" type="text" required placeholder="(12) 99999-0000"
+              class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm font-mono focus:bg-white focus:border-brand-cyan outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Origem</label>
+            <select id="lead-origin" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none">
+              <option value="Site">Site</option>
+              <option value="YouTube">YouTube</option>
+              <option value="Prospecção">Prospecção</option>
+              <option value="Parceiro">Parceiro</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Próximo Follow-up</label>
+            <input id="lead-followup" type="date"
+              class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm font-mono focus:bg-white focus:border-brand-cyan outline-none" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+            <select id="lead-status" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none">
+              <option value="Novo">Novo</option>
+              <option value="Diagnóstico Agendado">Diagnóstico Agendado</option>
+              <option value="Proposta Enviada">Proposta Enviada</option>
+              <option value="Fechado">Fechado</option>
+              <option value="Perdido">Perdido</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Dor Principal *</label>
+          <textarea id="lead-pain" rows="3" required placeholder="Ex: Controle de estoque em 4 planilhas diferentes sem histórico de saída..."
+            class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none"></textarea>
+        </div>
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" class="close-lead-modal px-4 py-2 rounded-lg border border-brand-border text-xs font-semibold text-slate-700 hover:bg-brand-subtle">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold">
+            Salvar Lead
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: SCRIPTS DE WHATSAPP (ABORDAGEM / FOLLOW-UP)
+       ====================================================================== -->
+  <div id="wa-script-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white border border-brand-border rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-bold text-slate-900">Enviar Mensagem WhatsApp</h3>
+          <p id="wa-modal-subtitle" class="text-xs text-brand-muted"></p>
+        </div>
+        <button type="button" class="close-wa-modal text-slate-400 hover:text-slate-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Script Pronto</label>
+          <select id="wa-script-template" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-xs font-medium text-slate-800 outline-none focus:border-brand-cyan">
+            <option value="primeiro_contato">1. Primeiro Contato (Lead Novo / Triagem)</option>
+            <option value="lembrete_diagnostico">2. Lembrete de Diagnóstico Agendado</option>
+            <option value="followup_proposta">3. Follow-up de Proposta Enviada</option>
+            <option value="reativacao">4. Reativação Consultiva (Sem Pressão)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1.5">Prévia da Mensagem (Editável)</label>
+          <textarea id="wa-script-text" rows="5" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2.5 text-xs text-slate-800 focus:bg-white focus:border-brand-cyan outline-none"></textarea>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2">
+          <button type="button" class="close-wa-modal px-4 py-2 rounded-lg border border-brand-border text-xs font-semibold text-slate-700 hover:bg-brand-subtle">
+            Cancelar
+          </button>
+          <a id="wa-open-link" href="#" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-brand-emerald hover:bg-emerald-600 text-white text-xs font-semibold transition shadow-sm">
+            <i data-lucide="message-circle" class="w-4 h-4"></i>
+            Abrir WhatsApp Agora
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       MODAL: CONFIGURAÇÕES (API KEYS & SEGURANÇA SHA-256)
+       ====================================================================== -->
+  <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white border border-brand-border rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden">
+      <div class="px-6 py-4 border-b border-brand-border flex items-center justify-between">
+        <h3 class="text-base font-bold text-slate-900">Configurações do Painel</h3>
+        <button type="button" class="close-settings-modal text-slate-400 hover:text-slate-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="settings-form" class="p-6 space-y-5">
+        <div class="space-y-3">
+          <h4 class="text-xs font-mono uppercase font-bold text-slate-500">Motor de Prospecção (Aba 3)</h4>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Provedor de Busca</label>
+            <select id="cfg-places-provider" class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm outline-none focus:border-brand-cyan">
+              <option value="serper">Serper.dev Places API (Recomendado para Frontend/CORS)</option>
+              <option value="google">Google Places API (Text Search)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">API Key (armazenada apenas no seu navegador)</label>
+            <input id="cfg-places-apikey" type="password" placeholder="Cole sua chave Serper.dev ou Google Places..."
+              class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm font-mono focus:bg-white focus:border-brand-cyan outline-none" />
+            <p class="text-[11px] text-brand-muted mt-1">
+              Se vazio, a Aba 3 utiliza dados simulados realistas da região do Vale do Paraíba.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-brand-border space-y-3">
+          <h4 class="text-xs font-mono uppercase font-bold text-slate-500">Segurança de Acesso (SHA-256)</h4>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nova Senha / Token da Equipe (opcional)</label>
+            <input id="cfg-new-password" type="password" placeholder="Deixe em branco para manter a senha atual"
+              class="w-full rounded-lg border border-brand-border bg-brand-subtle px-3 py-2 text-sm focus:bg-white focus:border-brand-cyan outline-none" />
+            <p class="text-[11px] text-brand-muted mt-1">
+              A senha é convertida em hash SHA-256 antes de ser salva no <code class="font-mono">localStorage</code>.
+            </p>
+          </div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2">
+          <button type="button" class="close-settings-modal px-4 py-2 rounded-lg border border-brand-border text-xs font-semibold text-slate-700 hover:bg-brand-subtle">
+            Cancelar
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold">
+            Salvar Configurações
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast de Notificação -->
+  <div id="admin-toast" class="hidden fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-xs font-medium px-4 py-3 rounded-xl shadow-lg flex items-center gap-2">
+    <i data-lucide="check-circle-2" class="w-4 h-4 text-brand-emerald"></i>
+    <span id="admin-toast-msg">Ação concluída.</span>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

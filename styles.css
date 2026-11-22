@@ -35,11 +35,64 @@
 
 /* Compensação da navbar fixa ao navegar por âncoras */
 section[id] {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 5.5rem;
 }
 
 /* Destaque de erro em inputs */
 .input-error {
   border-color: #E11D48 !important;
   box-shadow: 0 0 0 1px rgba(225, 29, 72, 0.25);
+}
+
+/* Range Sliders B2B Clean */
+input[type="range"].c4-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 9999px;
+  background: #E2E8F0;
+  outline: none;
+  cursor: pointer;
+}
+
+input[type="range"].c4-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #0284C7;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+  transition: transform 0.15s ease, background-color 0.15s ease;
+}
+
+input[type="range"].c4-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  background: #0369A1;
+}
+
+input[type="range"].c4-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  background: #0284C7;
+  border: 3px solid #FFFFFF;
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+}
+
+/* Pulso sutil para o botão flutuante de WhatsApp */
+@keyframes wa-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(16, 185, 129, 0);
+  }
+}
+
+.wa-float-pulse {
+  animation: wa-pulse 2.6s infinite;
 }

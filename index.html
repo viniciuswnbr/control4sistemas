@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Control 4 Sistemas | Sistemas de Gestão e Controle no Vale do Paraíba, SP e Brasil</title>
+  <title>Control 4 Sistemas | Sistemas de Gestão Sob Medida no Vale do Paraíba, SP e Brasil</title>
   <meta
     name="description"
-    content="Desenvolvimento de sistemas web sob medida para gerenciamento, controle financeiro, estoque, clientes e automação no Vale do Paraíba (SP) e em todo o Brasil."
+    content="Desenvolvimento de sistemas web sob medida para gerenciamento, controle financeiro, estoque, pedidos, ordens de serviço e automação no Vale do Paraíba (SP) e em todo o Brasil."
   />
   <meta name="robots" content="index, follow" />
   <meta name="geo.region" content="BR-SP" />
@@ -21,7 +21,7 @@
   <meta property="og:title" content="Control 4 Sistemas | Sistemas de Gestão e Controle Sob Medida" />
   <meta
     property="og:description"
-    content="Painéis limpos, fáceis de navegar e feitos sob medida para gerenciar sua empresa. Atendimento no Vale do Paraíba, SP e todo o Brasil."
+    content="Painéis limpos, fáceis de navegar e feitos sob medida para eliminar planilhas e gerenciar sua empresa. Atendimento no Vale do Paraíba, SP e todo o Brasil."
   />
 
   <!-- Dados Estruturados (SEO Local / Google) -->
@@ -91,7 +91,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- DNS Prefetch para Analytics (não compete com recursos críticos no CWV) -->
+  <!-- DNS Prefetch para Analytics -->
   <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
   <link rel="dns-prefetch" href="https://www.clarity.ms" />
 
@@ -122,7 +122,7 @@
     })(window, document, 'clarity', 'script', 'zh9ji51ore');
   </script>
 
-  <!-- Rastreamento Global de Conversão -->
+  <!-- Rastreamento Global de Conversão (enriquecido pelo app.js com UTM) -->
   <script>
     function registrarConversao(origem) {
       if (typeof gtag === 'function') {
@@ -145,7 +145,7 @@
        ===================================================================== -->
   <header
     id="navbar"
-    class="fixed top-0 inset-x-0 z-50 border-b border-slate-200/80 bg-white/85 backdrop-blur-md"
+    class="fixed top-0 inset-x-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md"
   >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16 md:h-20">
@@ -160,18 +160,21 @@
         </a>
 
         <!-- Navegação Desktop -->
-        <nav class="hidden md:flex items-center gap-8" aria-label="Navegação principal">
-          <a href="#solucoes" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
-            Soluções
-          </a>
-          <a href="#diferenciais" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
-            Diferenciais
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Navegação principal">
+          <a href="#bases" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
+            Bases Prontas
           </a>
           <a href="#projetos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
-            Sistemas
+            Portfólio V1
           </a>
-          <a href="#contato" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
-            Orçamento
+          <a href="#servicos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
+            Serviços
+          </a>
+          <a href="/calculadora-margem" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
+            Calculadora de Margem
+          </a>
+          <a href="/parceiros" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">
+            Parceiros
           </a>
         </nav>
 
@@ -189,7 +192,7 @@
           <button
             id="mobile-menu-btn"
             type="button"
-            class="md:hidden inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-700 hover:bg-slate-50 transition-colors"
+            class="lg:hidden inline-flex items-center justify-center rounded-lg border border-slate-200 bg-white p-2 text-slate-700 hover:bg-slate-50 transition-colors"
             aria-expanded="false"
             aria-controls="mobile-menu"
             aria-label="Abrir menu de navegação"
@@ -202,19 +205,25 @@
     </div>
 
     <!-- Menu Mobile -->
-    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white">
-      <div class="px-4 py-4 space-y-2">
-        <a href="#solucoes" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
-          Soluções
-        </a>
-        <a href="#diferenciais" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
-          Diferenciais
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white">
+      <div class="px-4 py-4 space-y-1.5">
+        <a href="#bases" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
+          Bases Prontas
         </a>
         <a href="#projetos" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
-          Sistemas
+          Portfólio V1 (8 Sistemas)
         </a>
-        <a href="#contato" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
-          Orçamento
+        <a href="#servicos" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
+          Serviços Estratégicos
+        </a>
+        <a href="/calculadora-margem" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
+          Calculadora de Margem (Grátis)
+        </a>
+        <a href="/parceiros" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
+          Programa de Parceiros
+        </a>
+        <a href="#faq" class="mobile-nav-link block rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-sky-600">
+          Dúvidas Frequentes
         </a>
         <div class="pt-2">
           <a
@@ -234,15 +243,19 @@
     <!-- ===================================================================
          2. HERO SECTION + DEMONSTRAÇÃO INTERATIVA DE CRUD NO NAVEGADOR
          =================================================================== -->
-    <section id="hero" class="relative pt-28 pb-16 md:pt-36 md:pb-24 bg-grid-light border-b border-slate-200">
+    <section
+      id="hero"
+      data-wa-section="hero"
+      class="relative pt-28 pb-16 md:pt-36 md:pb-20 bg-grid-light border-b border-slate-200"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          <!-- Coluna Esquerda: Texto Curto e Direto -->
+          <!-- Coluna Esquerda -->
           <div class="lg:col-span-5 space-y-6">
             <div class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-1.5 shadow-xs">
               <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
               <span class="font-mono text-xs font-medium uppercase tracking-wider text-sky-700">
-                Sistemas de Gestão &amp; Controle
+                Sistemas de Gestão &amp; Controle B2B
               </span>
             </div>
 
@@ -269,19 +282,19 @@
                 href="#projetos"
                 class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-6 py-3.5 text-sm sm:text-base font-medium text-slate-700 hover:bg-slate-50 transition-colors"
               >
-                <span>Ver Exemplos</span>
+                <span>Testar Portfólio V1</span>
                 <i data-lucide="chevron-down" class="w-4 h-4 text-slate-500"></i>
               </a>
             </div>
 
-            <div class="pt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-slate-500">
+            <div class="pt-2 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-mono text-slate-500">
               <span class="flex items-center gap-1.5">
                 <i data-lucide="monitor" class="w-3.5 h-3.5 text-sky-600"></i>
                 Funciona no Navegador
               </span>
               <span class="flex items-center gap-1.5">
                 <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i>
-                Fácil de Usar
+                Sem Mensalidade por Usuário
               </span>
               <span class="flex items-center gap-1.5">
                 <i data-lucide="shield-check" class="w-3.5 h-3.5 text-sky-600"></i>
@@ -293,7 +306,6 @@
           <!-- Coluna Direita: Mockup Interativo de Navegador Windows + Sistema CRUD -->
           <div class="lg:col-span-7">
             <div class="rounded-xl border border-slate-200 bg-white shadow-xl overflow-hidden">
-              <!-- Barra estilo Navegador / Windows (sem ícones de Mac) -->
               <div class="flex items-center justify-between px-4 py-2.5 bg-slate-100 border-b border-slate-200">
                 <div class="flex items-center gap-2 min-w-0">
                   <i data-lucide="globe" class="w-4 h-4 text-sky-600 shrink-0"></i>
@@ -301,7 +313,6 @@
                     https://app.control4sistemas.com.br/pedidos
                   </div>
                 </div>
-                <!-- Controles estilo Windows -->
                 <div class="flex items-center gap-1 text-slate-500 shrink-0 ml-3" aria-hidden="true">
                   <span class="p-1 rounded hover:bg-slate-200"><i data-lucide="minus" class="w-3.5 h-3.5"></i></span>
                   <span class="p-1 rounded hover:bg-slate-200"><i data-lucide="square" class="w-3 h-3"></i></span>
@@ -309,9 +320,7 @@
                 </div>
               </div>
 
-              <!-- Corpo do Sistema CRUD Interativo -->
               <div class="p-4 sm:p-5 space-y-4">
-                <!-- Cabeçalho interno + Botão Criar (C do CRUD) -->
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <div class="text-sm font-bold text-slate-900">Controle de Pedidos &amp; Clientes</div>
@@ -327,7 +336,6 @@
                   </button>
                 </div>
 
-                <!-- Barra de Busca e Filtro (R do CRUD) -->
                 <div class="flex flex-col sm:flex-row gap-2.5">
                   <div class="relative flex-1">
                     <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
@@ -350,7 +358,6 @@
                   </select>
                 </div>
 
-                <!-- Tabela CRUD -->
                 <div class="overflow-x-auto rounded-lg border border-slate-200">
                   <table class="w-full text-left border-collapse text-xs">
                     <thead>
@@ -368,7 +375,6 @@
                   </table>
                 </div>
 
-                <!-- Rodapé do Preview -->
                 <div class="flex items-center justify-between text-[11px] font-mono text-slate-500 pt-1">
                   <span id="crud-count">3 registros exibidos</span>
                   <span class="text-emerald-600 font-medium">Clique nos ícones para testar</span>
@@ -381,221 +387,686 @@
     </section>
 
     <!-- ===================================================================
-         3. SEÇÃO DE SOLUÇÕES (GRID 3 COLUNAS, POUCO TEXTO)
+         3. BLOCO DE MÉTRICAS DE AUTORIDADE
          =================================================================== -->
-    <section id="solucoes" class="py-16 md:py-20 bg-white">
+    <section id="metricas" data-wa-section="metricas" class="bg-slate-50 border-b border-slate-200 py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-xl mb-10">
-          <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
-            Soluções
-          </span>
-          <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            O que desenvolvemos para sua empresa
-          </h2>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6">
-          <!-- Card 1 -->
-          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs hover:border-sky-400 transition-colors">
-            <div class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
-              <i data-lucide="layout-grid" class="w-5 h-5"></i>
+        <div class="grid md:grid-cols-3 gap-5">
+          <div class="rounded-xl border border-slate-200 bg-white p-5 flex items-center gap-4 shadow-xs">
+            <div class="shrink-0 rounded-lg bg-emerald-50 p-3 text-emerald-600">
+              <i data-lucide="trending-down" class="w-6 h-6"></i>
             </div>
-            <h3 class="mt-4 text-lg font-bold text-slate-900">
-              Sistemas de Gestão &amp; Controle
-            </h3>
-            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-              ERPs, controle financeiro, estoque, vendas e ordens de serviço feitos sob medida.
-            </p>
-          </article>
-
-          <!-- Card 2 -->
-          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs hover:border-emerald-400 transition-colors">
-            <div class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
-              <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+            <div>
+              <div class="text-lg sm:text-xl font-extrabold text-slate-900">-70% de retrabalho operacional</div>
+              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                Menos digitação manual e erros de conferência entre setores.
+              </p>
             </div>
-            <h3 class="mt-4 text-lg font-bold text-slate-900">
-              Painéis &amp; Relatórios Claros
-            </h3>
-            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-              Visualize faturamento, metas, pendências e indicadores em tempo real no navegador.
-            </p>
-          </article>
+          </div>
 
-          <!-- Card 3 -->
-          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs hover:border-sky-400 transition-colors">
-            <div class="inline-flex h-11 w-11 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
-              <i data-lucide="repeat" class="w-5 h-5"></i>
+          <div class="rounded-xl border border-slate-200 bg-white p-5 flex items-center gap-4 shadow-xs">
+            <div class="shrink-0 rounded-lg bg-sky-50 p-3 text-sky-600">
+              <i data-lucide="zap" class="w-6 h-6"></i>
             </div>
-            <h3 class="mt-4 text-lg font-bold text-slate-900">
-              Automação &amp; Integrações
-            </h3>
-            <p class="mt-2 text-sm text-slate-600 leading-relaxed">
-              Integramos seu sistema com WhatsApp, planilhas, boletos, notas fiscais e APIs.
-            </p>
-          </article>
+            <div>
+              <div class="text-lg sm:text-xl font-extrabold text-slate-900">Entrega ágil por etapas</div>
+              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                Sua equipe começa a usar as primeiras telas em semanas, não em anos.
+              </p>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-200 bg-white p-5 flex items-center gap-4 shadow-xs">
+            <div class="shrink-0 rounded-lg bg-emerald-50 p-3 text-emerald-600">
+              <i data-lucide="sliders-horizontal" class="w-6 h-6"></i>
+            </div>
+            <div>
+              <div class="text-lg sm:text-xl font-extrabold text-slate-900">100% adaptado ao seu processo</div>
+              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                O sistema se molda à sua regra de negócio — nunca o contrário.
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         4. DIFERENCIAIS (CLEAN & DIRETO)
+         4. CALCULADORA DE PREJUÍZO COM PLANILHAS (WIDGET INTERATIVO CRO)
          =================================================================== -->
-    <section id="diferenciais" class="py-16 md:py-20 bg-slate-50 border-y border-slate-200">
+    <section id="calculadora-prejuizo" data-wa-section="calculadora-prejuizo" class="py-16 md:py-20 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-xl mb-10">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-6 sm:p-10 shadow-sm">
+          <div class="grid lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+            <!-- Esquerda: Controles -->
+            <div class="lg:col-span-7 space-y-6">
+              <div>
+                <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
+                  Diagnóstico Financeiro Rápido
+                </span>
+                <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+                  Quanto sua empresa perde por ano com planilhas manuais?
+                </h2>
+                <p class="mt-2 text-sm sm:text-base text-slate-600">
+                  Ajuste os controles abaixo para estimar o custo oculto de retrabalho, conferência duplicada e preenchimento manual na sua operação.
+                </p>
+              </div>
+
+              <div class="space-y-5 bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
+                <!-- Slider 1 -->
+                <div class="space-y-2.5">
+                  <div class="flex items-center justify-between text-sm">
+                    <label for="calc-funcionarios" class="font-semibold text-slate-800">
+                      Nº de funcionários usando planilhas
+                    </label>
+                    <span id="calc-funcionarios-val" class="font-mono font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-md">
+                      5 pessoas
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    id="calc-funcionarios"
+                    min="1"
+                    max="40"
+                    value="5"
+                    class="c4-slider"
+                  />
+                  <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                    <span>1 pessoa</span>
+                    <span>20 pessoas</span>
+                    <span>40 pessoas</span>
+                  </div>
+                </div>
+
+                <!-- Slider 2 -->
+                <div class="space-y-2.5 pt-2 border-t border-slate-100">
+                  <div class="flex items-center justify-between text-sm">
+                    <label for="calc-horas" class="font-semibold text-slate-800">
+                      Horas gastas por semana (por pessoa)
+                    </label>
+                    <span id="calc-horas-val" class="font-mono font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-md">
+                      6h / sem
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    id="calc-horas"
+                    min="1"
+                    max="30"
+                    value="6"
+                    class="c4-slider"
+                  />
+                  <div class="flex justify-between text-[11px] font-mono text-slate-400">
+                    <span>1h/sem</span>
+                    <span>15h/sem</span>
+                    <span>30h/sem</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Direita: Resultado em Tempo Real -->
+            <div class="lg:col-span-5">
+              <div class="rounded-xl border border-slate-200 bg-white p-6 sm:p-7 shadow-md space-y-5">
+                <div class="flex items-center justify-between">
+                  <span class="font-mono text-xs uppercase tracking-wider text-slate-500">
+                    Custo Anual Estimado
+                  </span>
+                  <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-mono font-semibold text-rose-700 border border-rose-200">
+                    <i data-lucide="alert-triangle" class="w-3 h-3"></i>
+                    Prejuízo Invisível
+                  </span>
+                </div>
+
+                <div>
+                  <div id="calc-prejuizo-anual" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 font-mono">
+                    R$ 70.200
+                  </div>
+                  <p class="mt-1 text-xs text-slate-500">
+                    Baseado em custo médio operacional de R$ 45/hora (salário + encargos).
+                  </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-2 border-t border-slate-100">
+                  <div class="rounded-lg bg-slate-50 p-3 border border-slate-200/80">
+                    <div class="text-[11px] font-mono uppercase text-slate-500">Impacto Mensal</div>
+                    <div id="calc-prejuizo-mensal" class="text-sm font-bold text-slate-800 font-mono mt-0.5">
+                      R$ 5.850 / mês
+                    </div>
+                  </div>
+                  <div class="rounded-lg bg-slate-50 p-3 border border-slate-200/80">
+                    <div class="text-[11px] font-mono uppercase text-slate-500">Tempo Perdido</div>
+                    <div id="calc-horas-ano" class="text-sm font-bold text-slate-800 font-mono mt-0.5">
+                      1.560 horas/ano
+                    </div>
+                  </div>
+                </div>
+
+                <a
+                  href="#contato"
+                  id="calc-eliminar-btn"
+                  class="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-600 px-5 py-3.5 text-sm sm:text-base font-semibold text-white shadow-sm hover:bg-emerald-700 transition-colors"
+                >
+                  <span>Eliminar esse prejuízo agora</span>
+                  <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         5. VITRINE DAS 3 BASES PRONTAS CUSTOMIZÁVEIS
+         =================================================================== -->
+    <section id="bases" data-wa-section="bases" class="py-16 md:py-20 bg-slate-50 border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mb-10">
           <span class="font-mono text-xs font-semibold uppercase tracking-widest text-emerald-600">
-            Por que a Control 4?
+            Arquitetura Acelerada
           </span>
           <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Fácil de usar para sua equipe, seguro para sua gestão
+            3 Bases Prontas Customizáveis para sua operação
           </h2>
+          <p class="mt-3 inline-flex items-center gap-2 rounded-lg border border-sky-200 bg-sky-50 px-3.5 py-2 text-sm font-medium text-sky-900">
+            <i data-lucide="layers" class="w-4 h-4 text-sky-600 shrink-0"></i>
+            <span>Base estruturada para implantação rápida — 100% personalizável para a regra do seu negócio</span>
+          </p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
-          <div class="rounded-xl border border-slate-200 bg-white p-6 flex items-start gap-4">
-            <div class="shrink-0 rounded-lg bg-sky-50 p-2.5 text-sky-600">
-              <i data-lucide="mouse-pointer-click" class="w-5 h-5"></i>
-            </div>
+          <!-- Base 1 -->
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs flex flex-col justify-between hover:border-sky-400 transition-colors">
             <div>
-              <h3 class="font-bold text-slate-900">Navegação Intuitiva</h3>
-              <p class="mt-1 text-sm text-slate-600">
-                Telas limpas, busca rápida e cadastros simples que qualquer colaborador aprende em minutos.
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">
+                  BASE 01
+                </span>
+                <div class="rounded-lg bg-sky-50 p-2.5 text-sky-600">
+                  <i data-lucide="package-check" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">
+                1. Pedidos &amp; Estoque
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                Ideal para distribuidoras, comércios e indústrias que precisam controlar entradas, saídas, reservas e faturamento sem furos.
               </p>
+              <ul class="mt-4 space-y-2 text-xs text-slate-700">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Baixa automática de estoque por pedido</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Tabelas de preço por cliente ou volume</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Alertas de estoque mínimo e histórico</span>
+                </li>
+              </ul>
             </div>
-          </div>
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <a
+                href="#contato"
+                onclick="registrarConversao('base_pedidos_estoque')"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 hover:text-sky-700"
+              >
+                <span>Adaptar esta base para meu negócio</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </article>
 
-          <div class="rounded-xl border border-slate-200 bg-white p-6 flex items-start gap-4">
-            <div class="shrink-0 rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
-              <i data-lucide="trending-up" class="w-5 h-5"></i>
-            </div>
+          <!-- Base 2 -->
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs flex flex-col justify-between hover:border-emerald-400 transition-colors">
             <div>
-              <h3 class="font-bold text-slate-900">Menos Retrabalho</h3>
-              <p class="mt-1 text-sm text-slate-600">
-                Elimine digitação duplicada e erros de planilha com regras automáticas e dados centralizados.
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded">
+                  BASE 02
+                </span>
+                <div class="rounded-lg bg-emerald-50 p-2.5 text-emerald-600">
+                  <i data-lucide="calendar-check-2" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">
+                2. Agendamento &amp; Serviços
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                Para prestadores de serviço, assistências técnicas, clínicas e equipes de campo que precisam de agenda e O.S. integradas.
               </p>
+              <ul class="mt-4 space-y-2 text-xs text-slate-700">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Agenda por técnico, sala ou equipamento</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Checklist em campo e assinatura digital</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Lembretes automáticos via WhatsApp</span>
+                </li>
+              </ul>
             </div>
-          </div>
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <a
+                href="#contato"
+                onclick="registrarConversao('base_agendamento_servicos')"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700"
+              >
+                <span>Adaptar esta base para meu negócio</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </article>
 
-          <div class="rounded-xl border border-slate-200 bg-white p-6 flex items-start gap-4">
-            <div class="shrink-0 rounded-lg bg-sky-50 p-2.5 text-sky-600">
-              <i data-lucide="headphones" class="w-5 h-5"></i>
-            </div>
+          <!-- Base 3 -->
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs flex flex-col justify-between hover:border-sky-400 transition-colors">
             <div>
-              <h3 class="font-bold text-slate-900">Atendimento Direto</h3>
-              <p class="mt-1 text-sm text-slate-600">
-                Você conversa direto com quem desenvolve e mantém seu sistema, sem burocracia.
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">
+                  BASE 03
+                </span>
+                <div class="rounded-lg bg-sky-50 p-2.5 text-sky-600">
+                  <i data-lucide="wallet" class="w-5 h-5"></i>
+                </div>
+              </div>
+              <h3 class="mt-4 text-xl font-bold text-slate-900">
+                3. Financeiro &amp; Comissões
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                Clareza total sobre fluxo de caixa, contas a pagar/receber, DRE gerencial e cálculo automático de comissões de vendedores.
               </p>
+              <ul class="mt-4 space-y-2 text-xs text-slate-700">
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Regras customizadas de comissão por meta</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Conciliação, centros de custo e boletos</span>
+                </li>
+                <li class="flex items-center gap-2">
+                  <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                  <span>Relatórios em PDF/Excel em 1 clique</span>
+                </li>
+              </ul>
             </div>
-          </div>
+            <div class="mt-6 pt-4 border-t border-slate-100">
+              <a
+                href="#contato"
+                onclick="registrarConversao('base_financeiro_comissoes')"
+                class="inline-flex items-center gap-1.5 text-sm font-semibold text-sky-600 hover:text-sky-700"
+              >
+                <span>Adaptar esta base para meu negócio</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
+            </div>
+          </article>
         </div>
       </div>
     </section>
 
     <!-- ===================================================================
-         5. VITRINE DE SISTEMAS E EXEMPLOS DE CRUD
+         6. CATÁLOGO DE PORTFÓLIO (8 SOLUÇÕES V1)
          =================================================================== -->
-    <section id="projetos" class="py-16 md:py-20 bg-white">
+    <section id="projetos" data-wa-section="projetos" class="py-16 md:py-20 bg-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="max-w-xl mb-10">
-          <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
-            Exemplos de Sistemas
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <div class="max-w-2xl">
+            <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
+              Portfólio Interativo V1
+            </span>
+            <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+              8 Soluções prontas para testar agora no navegador
+            </h2>
+            <p class="mt-2 text-sm sm:text-base text-slate-600">
+              Explore nossas versões V1 funcionais e veja na prática a velocidade e clareza das interfaces da Control 4 Sistemas.
+            </p>
+          </div>
+          <span class="font-mono text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-lg self-start md:self-auto">
+            8 demos V1 disponíveis
+          </span>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- 1. Pedidos/Comissões -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-sky-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
+                  Comercial
+                </span>
+                <i data-lucide="shopping-bag" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Pedidos &amp; Comissões</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Emissão rápida de pedidos com cálculo automático de comissão por vendedor e status de faturamento.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/pedidos-comissoes.html"
+                onclick="registrarConversao('portfolio_pedidos_comissoes')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 2. Ordens de Serviço com Assinatura -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-emerald-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  Serviços
+                </span>
+                <i data-lucide="clipboard-signature" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Ordens de Serviço com Assinatura</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Abertura de O.S., checklist técnico, fotos e coleta de assinatura digital do cliente direto na tela.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/ordens-servico-assinatura.html"
+                onclick="registrarConversao('portfolio_os_assinatura')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 3. Estoque com Leitor de Barras -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-sky-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
+                  Logística
+                </span>
+                <i data-lucide="scan-barcode" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Estoque com Leitor de Barras</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Movimentação ágil de entradas, saídas e inventário com leitura de código de barras USB ou câmera.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/estoque-leitor-barras.html"
+                onclick="registrarConversao('portfolio_estoque_barras')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 4. Agendamento Clínicas -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-emerald-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  Saúde
+                </span>
+                <i data-lucide="stethoscope" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Agendamento para Clínicas</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Grade de horários por profissional, confirmação de consultas, histórico do paciente e sala de espera.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/agendamento-clinicas.html"
+                onclick="registrarConversao('portfolio_agendamento_clinicas')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 5. Portal de Cotação Fornecedores -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-sky-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
+                  Compras B2B
+                </span>
+                <i data-lucide="file-spreadsheet" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Portal de Cotação Fornecedores</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Envio de cotações por link único para fornecedores preencherem preços e comparação automática do menor valor.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/portal-cotacao-fornecedores.html"
+                onclick="registrarConversao('portfolio_portal_cotacao')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 6. Controle de Frota -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-emerald-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  Operações
+                </span>
+                <i data-lucide="truck" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Controle de Frota</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Gestão de veículos, quilometragem, abastecimentos, manutenções preventivas e vencimento de CNH/IPVA.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/controle-frota.html"
+                onclick="registrarConversao('portfolio_controle_frota')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 7. Gestor de Obras -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-sky-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">
+                  Engenharia
+                </span>
+                <i data-lucide="hard-hat" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Gestor de Obras</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Acompanhamento físico-financeiro por obra, diário de campo, medições e controle de materiais por etapa.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/gestor-obras.html"
+                onclick="registrarConversao('portfolio_gestor_obras')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+
+          <!-- 8. Gestão de Revenda/Consignado -->
+          <article class="rounded-xl border border-slate-200 bg-white p-5 shadow-xs flex flex-col justify-between hover:border-emerald-400 transition-colors">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">
+                  Varejo &amp; B2B
+                </span>
+                <i data-lucide="repeat-2" class="w-4 h-4 text-slate-400"></i>
+              </div>
+              <h3 class="mt-3 text-base font-bold text-slate-900">Gestão de Revenda &amp; Consignado</h3>
+              <p class="mt-1.5 text-xs text-slate-600 leading-relaxed">
+                Controle de remessas com revendedores, acerto de vendas, devoluções e saldo em poder de terceiros.
+              </p>
+            </div>
+            <div class="mt-5 pt-3 border-t border-slate-100">
+              <a
+                href="/portfolio/gestao-revenda-consignado.html"
+                onclick="registrarConversao('portfolio_revenda_consignado')"
+                class="flex w-full items-center justify-center gap-1.5 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-xs font-semibold text-sky-700 hover:bg-sky-600 hover:text-white transition-colors"
+              >
+                <span>Testar Versão V1</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+              </a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         7. SERVIÇOS ESTRATÉGICOS (PRODUTOS DE ENTRADA & RECORRÊNCIA)
+         =================================================================== -->
+    <section id="servicos" data-wa-section="servicos" class="py-16 md:py-20 bg-slate-50 border-y border-slate-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mb-10">
+          <span class="font-mono text-xs font-semibold uppercase tracking-widest text-emerald-600">
+            Serviços Estratégicos
           </span>
           <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Visualização clara e controle em poucos cliques
+            Comece rápido com entregas de alto impacto
           </h2>
+          <p class="mt-2 text-sm sm:text-base text-slate-600">
+            Além dos sistemas sob medida, oferecemos pacotes objetivos para destravar sua operação digital imediatamente.
+          </p>
         </div>
 
         <div class="grid md:grid-cols-3 gap-6">
-          <!-- Exemplo 1: Controle Financeiro -->
-          <article class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs flex flex-col justify-between">
-            <div class="p-6 space-y-4">
+          <!-- Serviço 1: Auditoria -->
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+            <div>
               <div class="flex items-center justify-between">
                 <span class="font-mono text-xs font-semibold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">
-                  Financeiro
+                  Diagnóstico Express
                 </span>
-                <i data-lucide="wallet" class="w-5 h-5 text-slate-400"></i>
+                <span class="font-mono text-lg font-extrabold text-slate-900">R$ 297</span>
               </div>
-              <h3 class="text-lg font-bold text-slate-900">Contas a Pagar e Receber</h3>
-              <p class="text-sm text-slate-600">
-                Cadastre lançamentos, filtre por vencimento e acompanhe o fluxo de caixa sem planilhas.
+              <h3 class="mt-4 text-lg font-bold text-slate-900">
+                Auditoria de Velocidade e Segurança
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                Raio-X completo do seu site ou sistema atual: gargalos de lentidão, falhas de segurança, SEO técnico e plano de ação priorizado.
               </p>
-
-              <!-- Mini preview visual -->
-              <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 space-y-2 text-xs">
-                <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
-                  <span class="font-medium text-slate-700">Fornecedor Alpha</span>
-                  <span class="text-emerald-600 font-mono font-semibold">Pago</span>
-                </div>
-                <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
-                  <span class="font-medium text-slate-700">Fatura Energia</span>
-                  <span class="text-amber-600 font-mono font-semibold">Vence Hoje</span>
-                </div>
-              </div>
+              <ul class="mt-4 space-y-1.5 text-xs text-slate-600">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Relatório técnico em até 48h</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Reunião de entrega explicativa</li>
+              </ul>
             </div>
-            <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 text-xs font-mono text-slate-600">
-              CRUD completo + Exportação PDF/Excel
+            <div class="mt-6">
+              <a
+                href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Quero%20contratar%20a%20Auditoria%20de%20Velocidade%20e%20Seguran%C3%A7a%20(R%24%20297)."
+                data-wa-base-msg="Olá Juliana! Quero contratar a Auditoria de Velocidade e Segurança (R$ 297)."
+                target="_blank"
+                rel="noopener noreferrer"
+                onclick="registrarConversao('servico_auditoria_297')"
+                class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:border-sky-500 hover:text-sky-600 transition-colors"
+              >
+                <span>Solicitar Auditoria</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
             </div>
           </article>
 
-          <!-- Exemplo 2: Gestão de Estoque -->
-          <article class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs flex flex-col justify-between">
-            <div class="p-6 space-y-4">
+          <!-- Serviço 2: Presença Digital B2B Express -->
+          <article class="rounded-xl border-2 border-sky-600 bg-white p-6 shadow-md flex flex-col justify-between relative">
+            <div>
               <div class="flex items-center justify-between">
                 <span class="font-mono text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded">
-                  Estoque
+                  Mais Procurado
                 </span>
-                <i data-lucide="package" class="w-5 h-5 text-slate-400"></i>
+                <span class="font-mono text-xs font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">
+                  5 dias úteis
+                </span>
               </div>
-              <h3 class="text-lg font-bold text-slate-900">Controle de Produtos &amp; Entradas</h3>
-              <p class="text-sm text-slate-600">
-                Visualize saldo atual, registre entradas/saídas e receba alertas de estoque mínimo.
+              <h3 class="mt-4 text-lg font-bold text-slate-900">
+                Pacote Presença Digital B2B Express
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                Página institucional ou landing page B2B de alta conversão no ar em 5 dias, otimizada para Google, WhatsApp e rastreamento UTM.
               </p>
-
-              <!-- Mini preview visual -->
-              <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 space-y-2 text-xs">
-                <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
-                  <span class="font-medium text-slate-700">Item #402 — Sensor</span>
-                  <span class="text-sky-600 font-mono font-semibold">48 un.</span>
-                </div>
-                <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
-                  <span class="font-medium text-slate-700">Item #118 — Cabo 2m</span>
-                  <span class="text-rose-600 font-mono font-semibold">3 un. (Baixo)</span>
-                </div>
-              </div>
+              <ul class="mt-4 space-y-1.5 text-xs text-slate-600">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Copy comercial + Design limpo</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Analytics, Clarity e WhatsApp integrados</li>
+              </ul>
             </div>
-            <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 text-xs font-mono text-slate-600">
-              Busca instantânea + Histórico de movimentação
+            <div class="mt-6">
+              <a
+                href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Tenho%20interesse%20no%20Pacote%20Presen%C3%A7a%20Digital%20B2B%20Express%20(5%20dias)."
+                data-wa-base-msg="Olá Juliana! Tenho interesse no Pacote Presença Digital B2B Express (5 dias)."
+                target="_blank"
+                rel="noopener noreferrer"
+                onclick="registrarConversao('servico_b2b_express')"
+                class="flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-sky-700 transition-colors"
+              >
+                <span>Quero meu B2B Express</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
             </div>
           </article>
 
-          <!-- Exemplo 3: Gestão de Clientes & O.S. -->
-          <article class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-xs flex flex-col justify-between">
-            <div class="p-6 space-y-4">
+          <!-- Serviço 3: Assinatura CTO Sob Demanda -->
+          <article class="rounded-xl border border-slate-200 bg-white p-6 shadow-xs flex flex-col justify-between">
+            <div>
               <div class="flex items-center justify-between">
-                <span class="font-mono text-xs font-semibold text-sky-700 bg-sky-50 px-2.5 py-1 rounded">
-                  Clientes &amp; O.S.
+                <span class="font-mono text-xs font-semibold text-slate-700 bg-slate-100 px-2.5 py-1 rounded">
+                  Acompanhamento Contínuo
                 </span>
-                <i data-lucide="users" class="w-5 h-5 text-slate-400"></i>
+                <i data-lucide="shield-check" class="w-5 h-5 text-emerald-600"></i>
               </div>
-              <h3 class="text-lg font-bold text-slate-900">Cadastro de Clientes e Chamados</h3>
-              <p class="text-sm text-slate-600">
-                Centralize contatos, histórico de atendimentos e status de cada ordem de serviço.
+              <h3 class="mt-4 text-lg font-bold text-slate-900">
+                Assinatura CTO Sob Demanda
+              </h3>
+              <p class="mt-2 text-sm text-slate-600 leading-relaxed">
+                Liderança técnica recorrente para sua empresa: decisões de arquitetura, evolução de sistemas, integrações e suporte estratégico.
               </p>
-
-              <!-- Mini preview visual -->
-              <div class="rounded-lg border border-slate-200 bg-slate-50 p-3 space-y-2 text-xs">
-                <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
-                  <span class="font-medium text-slate-700">OS #891 — Manutenção</span>
-                  <span class="text-sky-600 font-mono font-semibold">Em Andamento</span>
-                </div>
-                <div class="flex items-center justify-between bg-white px-2.5 py-1.5 rounded border border-slate-200">
-                  <span class="font-medium text-slate-700">OS #890 — Instalação</span>
-                  <span class="text-emerald-600 font-mono font-semibold">Concluída</span>
-                </div>
-              </div>
+              <ul class="mt-4 space-y-1.5 text-xs text-slate-600">
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Sem custo trabalhista de CTO CLT</li>
+                <li class="flex items-center gap-2"><i data-lucide="check" class="w-3.5 h-3.5 text-emerald-600"></i> Prioridade em melhorias e automações</li>
+              </ul>
             </div>
-            <div class="px-6 py-3 bg-slate-50 border-t border-slate-200 text-xs font-mono text-slate-600">
-              Edição rápida + Controle de permissões
+            <div class="mt-6">
+              <a
+                href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Gostaria%20de%20saber%20como%20funciona%20a%20Assinatura%20CTO%20Sob%20Demanda."
+                data-wa-base-msg="Olá Juliana! Gostaria de saber como funciona a Assinatura CTO Sob Demanda."
+                target="_blank"
+                rel="noopener noreferrer"
+                onclick="registrarConversao('servico_cto_sob_demanda')"
+                class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-800 hover:border-emerald-500 hover:text-emerald-700 transition-colors"
+              >
+                <span>Consultar Planos</span>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </a>
             </div>
           </article>
         </div>
@@ -603,9 +1074,173 @@
     </section>
 
     <!-- ===================================================================
-         6. SEÇÃO DE ORÇAMENTO / CONTATO (WHATSAPP JULIANA)
+         8. PARA QUEM É / PARA QUEM NÃO É
          =================================================================== -->
-    <section id="contato" class="py-16 md:py-20 bg-slate-50 border-t border-slate-200">
+    <section id="para-quem" data-wa-section="para-quem" class="py-16 md:py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-2xl mb-10">
+          <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
+            Alinhamento de Expectativa
+          </span>
+          <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Para quem a Control 4 Sistemas é ideal?
+          </h2>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-6">
+          <!-- Para Quem É -->
+          <div class="rounded-xl border border-emerald-200 bg-emerald-50/40 p-6 sm:p-8 space-y-4">
+            <div class="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-3 py-1 text-xs font-mono font-bold text-emerald-800">
+              <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+              <span>PARA QUEM É</span>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-700">
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Empresas que já faturam e perderam o controle operando com dezenas de planilhas soltas.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Operações com regras próprias (comissões, consignado, O.S., cotações) que ERPs engessados não atendem.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Gestores que valorizam atendimento direto com quem desenvolve e entrega ágil por etapas.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="check" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
+                <span>Negócios que querem ter propriedade sobre seus dados sem pagar licença cara por cada usuário.</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Para Quem Não É -->
+          <div class="rounded-xl border border-slate-200 bg-slate-50 p-6 sm:p-8 space-y-4">
+            <div class="inline-flex items-center gap-2 rounded-full bg-slate-200 px-3 py-1 text-xs font-mono font-bold text-slate-700">
+              <i data-lucide="x-circle" class="w-4 h-4"></i>
+              <span>PARA QUEM NÃO É</span>
+            </div>
+            <ul class="space-y-3 text-sm text-slate-600">
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="x" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
+                <span>Quem procura apenas um aplicativo gratuito genérico para uso pessoal.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="x" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
+                <span>Empresas que não querem dedicar 15 minutos para validar as telas junto com a equipe.</span>
+              </li>
+              <li class="flex items-start gap-2.5">
+                <i data-lucide="x" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
+                <span>Projetos que buscam apenas "o mais barato possível" abrindo mão de segurança e estabilidade.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         9. FAQ COMERCIAL (5 PERGUNTAS FREQUENTES)
+         =================================================================== -->
+    <section id="faq" data-wa-section="faq" class="py-16 md:py-20 bg-slate-50 border-t border-slate-200">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-10">
+          <span class="font-mono text-xs font-semibold uppercase tracking-widest text-sky-600">
+            Dúvidas Comerciais
+          </span>
+          <h2 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Perguntas Frequentes
+          </h2>
+        </div>
+
+        <div class="space-y-3">
+          <!-- FAQ 1: Código -->
+          <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+            <button
+              type="button"
+              class="faq-trigger w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              aria-expanded="true"
+              aria-controls="faq-panel-1"
+            >
+              <span>1. O código-fonte e os dados do sistema são meus?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-500 shrink-0 transition-transform rotate-180"></i>
+            </button>
+            <div id="faq-panel-1" class="px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              Sim. Diferente de softwares alugados (SaaS), no modelo sob medida você tem controle total sobre o banco de dados da sua empresa e pode hospedar em servidor próprio ou nuvem gerenciada por nós.
+            </div>
+          </div>
+
+          <!-- FAQ 2: Celular -->
+          <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+            <button
+              type="button"
+              class="faq-trigger w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              aria-expanded="false"
+              aria-controls="faq-panel-2"
+            >
+              <span>2. O sistema funciona no celular, tablet e computador?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-500 shrink-0 transition-transform"></i>
+            </button>
+            <div id="faq-panel-2" class="hidden px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              Sim! Desenvolvemos aplicações web responsivas que funcionam direto no navegador do computador, notebook, tablet ou celular (Android e iOS), sem precisar instalar nada pesado.
+            </div>
+          </div>
+
+          <!-- FAQ 3: Mensalidade -->
+          <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+            <button
+              type="button"
+              class="faq-trigger w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              aria-expanded="false"
+              aria-controls="faq-panel-3"
+            >
+              <span>3. Existe mensalidade obrigatória por usuário?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-500 shrink-0 transition-transform"></i>
+            </button>
+            <div id="faq-panel-3" class="hidden px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              Não cobramos por quantidade de usuários cadastrados. Você paga pelo desenvolvimento/implantação do sistema e, caso deseje, pode contratar um plano opcional de hospedagem, backups e suporte contínuo.
+            </div>
+          </div>
+
+          <!-- FAQ 4: Integração -->
+          <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+            <button
+              type="button"
+              class="faq-trigger w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              aria-expanded="false"
+              aria-controls="faq-panel-4"
+            >
+              <span>4. Consigo integrar com planilhas antigas, WhatsApp ou outros sistemas?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-500 shrink-0 transition-transform"></i>
+            </button>
+            <div id="faq-panel-4" class="hidden px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              Sim. Importamos seus cadastros atuais de Excel/CSV para você não começar do zero e integramos via API com WhatsApp, gateways de pagamento/boletos, emissão fiscal e ERPs existentes.
+            </div>
+          </div>
+
+          <!-- FAQ 5: Prazo -->
+          <div class="rounded-xl border border-slate-200 bg-white overflow-hidden">
+            <button
+              type="button"
+              class="faq-trigger w-full flex items-center justify-between gap-4 px-5 py-4 text-left font-semibold text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              aria-expanded="false"
+              aria-controls="faq-panel-5"
+            >
+              <span>5. Qual é o prazo médio de entrega?</span>
+              <i data-lucide="chevron-down" class="faq-chevron w-5 h-5 text-slate-500 shrink-0 transition-transform"></i>
+            </button>
+            <div id="faq-panel-5" class="hidden px-5 pb-4 text-sm text-slate-600 leading-relaxed border-t border-slate-100 pt-3">
+              Partindo de uma das nossas 3 Bases Prontas Customizáveis, a primeira versão funcional entra em produção entre 2 e 4 semanas, com entregas semanais para sua equipe validar cada etapa.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         10. SEÇÃO DE ORÇAMENTO / CONTATO (WHATSAPP JULIANA)
+         =================================================================== -->
+    <section id="contato" data-wa-section="contato" class="py-16 md:py-20 bg-white border-t border-slate-200">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-12 gap-10 items-start">
           <!-- Coluna Esquerda: WhatsApp Juliana & E-mail -->
@@ -618,14 +1253,14 @@
                 Solicite um orçamento para seu sistema
               </h2>
               <p class="mt-3 text-sm sm:text-base text-slate-600">
-                Conte o que você precisa controlar na sua empresa e receba uma proposta clara.
+                Conte o que você precisa controlar na sua empresa e agende uma conversa rápida de 15 minutos para receber uma proposta clara.
               </p>
             </div>
 
             <!-- Card WhatsApp Juliana -->
-            <div class="rounded-xl border border-emerald-200 bg-white p-5 shadow-xs space-y-4">
+            <div class="rounded-xl border border-emerald-200 bg-slate-50 p-5 shadow-xs space-y-4">
               <div class="flex items-center gap-3">
-                <div class="rounded-lg bg-emerald-50 p-3 text-emerald-600">
+                <div class="rounded-lg bg-emerald-100 p-3 text-emerald-700">
                   <i data-lucide="message-circle" class="w-5 h-5"></i>
                 </div>
                 <div>
@@ -635,6 +1270,7 @@
               </div>
               <a
                 href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento%20para%20um%20sistema%20da%20Control%204%20Sistemas."
+                data-wa-base-msg="Olá Juliana! Gostaria de solicitar um orçamento para um sistema da Control 4 Sistemas."
                 target="_blank"
                 rel="noopener noreferrer"
                 onclick="registrarConversao('contato_whatsapp')"
@@ -774,13 +1410,12 @@
   </main>
 
   <!-- =====================================================================
-       7. FOOTER
+       11. FOOTER
        ===================================================================== -->
-  <footer class="border-t border-slate-200 bg-white py-10">
+  <footer class="border-t border-slate-200 bg-slate-50 py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid md:grid-cols-12 gap-6 items-center">
-        <!-- Marca & Copyright -->
-        <div class="md:col-span-5 space-y-1.5">
+        <div class="md:col-span-4 space-y-1.5">
           <div class="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-slate-900">
             <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
             <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
@@ -793,21 +1428,21 @@
           </p>
         </div>
 
-        <!-- Links Institucionais -->
-        <nav class="md:col-span-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-600" aria-label="Links do rodapé">
-          <a href="#solucoes" class="hover:text-sky-600 transition-colors">Soluções</a>
-          <a href="#diferenciais" class="hover:text-sky-600 transition-colors">Diferenciais</a>
-          <a href="#projetos" class="hover:text-sky-600 transition-colors">Sistemas</a>
+        <nav class="md:col-span-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="Links do rodapé">
+          <a href="#bases" class="hover:text-sky-600 transition-colors">Bases Prontas</a>
+          <a href="#projetos" class="hover:text-sky-600 transition-colors">Portfólio V1</a>
+          <a href="#servicos" class="hover:text-sky-600 transition-colors">Serviços</a>
+          <a href="/calculadora-margem" class="hover:text-sky-600 transition-colors">Calculadora de Margem</a>
+          <a href="/parceiros" class="hover:text-sky-600 transition-colors">Parceiros</a>
           <a href="#contato" onclick="registrarConversao('footer')" class="hover:text-sky-600 transition-colors">Orçamento</a>
         </nav>
 
-        <!-- Espaço Preparado para Canal Oficial do YouTube -->
         <div class="md:col-span-3 md:text-right">
           <a
             href="https://www.youtube.com/@control4sistemas"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-2 text-xs font-mono text-slate-700 hover:border-rose-300 hover:text-rose-600 transition-colors"
+            class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-mono text-slate-700 hover:border-rose-300 hover:text-rose-600 transition-colors"
             aria-label="Canal Oficial da Control 4 Sistemas no YouTube"
           >
             <i data-lucide="youtube" class="w-4 h-4 text-rose-600"></i>
@@ -818,6 +1453,24 @@
       </div>
     </div>
   </footer>
+
+  <!-- =====================================================================
+       BOTÃO FLUTUANTE DE WHATSAPP INTELIGENTE (INTERSECTION OBSERVER)
+       ===================================================================== -->
+  <a
+    id="wa-float-btn"
+    href="https://wa.me/5512988600746?text=Ol%C3%A1%20Juliana!%20Gostaria%20de%20um%20or%C3%A7amento."
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Falar com Juliana no WhatsApp"
+    class="wa-float-pulse fixed bottom-5 right-5 z-40 inline-flex items-center gap-2.5 rounded-full bg-emerald-600 px-4 py-3 text-white shadow-lg hover:bg-emerald-700 transition-all"
+  >
+    <i data-lucide="message-circle" class="w-5 h-5 shrink-0"></i>
+    <span class="hidden sm:flex flex-col text-left leading-tight">
+      <span class="text-[10px] font-mono uppercase tracking-wider text-emerald-100">Juliana • Online</span>
+      <span id="wa-float-label" class="text-xs font-semibold">Orçamento Sob Medida</span>
+    </span>
+  </a>
 
   <!-- Script Principal -->
   <script src="app.js"></script>

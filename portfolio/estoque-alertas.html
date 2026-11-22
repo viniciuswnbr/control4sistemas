@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Estoque e Alertas | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Controle de Estoque e Alertas" data-storage-key="c4_v1_estoque_alertas"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="package" class="w-4 h-4"></i>
+          <span>Logística &amp; Almoxarifado V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Controle de Estoque &amp; Alertas Mínimos
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Leitura rápida por código de barras, destaque automático de rupturas e simulação de alerta no WhatsApp.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-sim-wa" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm transition">
+          <i data-lucide="message-circle" class="w-4 h-4"></i>
+          <span>Simular Alerta WhatsApp</span>
+        </button>
+        <button id="btn-new-item" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm transition">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Novo Produto</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Leitor de Código de Barras -->
+    <section class="bg-white border-2 border-sky-200 rounded-xl p-4 sm:p-5 shadow-sm">
+      <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+        <div class="flex-1">
+          <label for="barcode-input" class="block text-xs font-mono font-bold uppercase tracking-wider text-sky-700 mb-1.5">
+            Leitor de Código de Barras (EAN-13 / SKU) — Digite ou Bipe e pressione Enter
+          </label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <div class="relative flex-1">
+              <i data-lucide="scan-barcode" class="w-5 h-5 text-sky-600 absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input id="barcode-input" type="text" placeholder="Ex: 7891000100103" class="w-full pl-10 pr-3 py-2.5 text-sm font-mono border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+            </div>
+            <select id="scan-mode" class="px-3 py-2.5 text-sm font-semibold border border-slate-300 rounded-lg bg-slate-50">
+              <option value="out">Modo: Baixa (-1 Saída)</option>
+              <option value="in">Modo: Entrada (+1 Reposição)</option>
+            </select>
+            <button id="btn-scan-exec" type="button" class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold rounded-lg">
+              Registrar Bipe
+            </button>
+            <button id="btn-scan-sim" type="button" class="px-4 py-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 text-sm font-semibold rounded-lg inline-flex items-center justify-center gap-1.5">
+              <i data-lucide="zap" class="w-4 h-4"></i>
+              <span>Simular Leitura</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div id="last-scan-banner" class="hidden mt-3 text-xs font-mono px-3 py-2 rounded-lg bg-slate-100 text-slate-700"></div>
+    </section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="search-input" type="text" placeholder="Buscar produto, SKU ou código..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <select id="filter-category" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">Todas as Categorias</option>
+        </select>
+        <select id="filter-alert" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">Todos os Níveis</option>
+          <option value="critical">Somente Abaixo do Mínimo (Crítico)</option>
+          <option value="ok">Somente Estoque Normal</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Tabela -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-mono uppercase tracking-wider text-slate-500">
+              <th class="py-3 px-4">Código / SKU</th>
+              <th class="py-3 px-4">Produto</th>
+              <th class="py-3 px-4">Categoria</th>
+              <th class="py-3 px-4 text-center">Qtd Atual</th>
+              <th class="py-3 px-4 text-center">Mínimo</th>
+              <th class="py-3 px-4 text-right">Custo Unit.</th>
+              <th class="py-3 px-4 text-right">Movimentação Rápida</th>
+            </tr>
+          </thead>
+          <tbody id="stock-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Simulação Alerta WhatsApp -->
+  <div id="wa-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 bg-emerald-600 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2 font-bold">
+          <i data-lucide="message-circle" class="w-5 h-5"></i>
+          <span>Simulação de Alerta Automático WhatsApp</span>
+        </div>
+        <button id="btn-close-wa" class="text-white/80 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <div class="p-6 space-y-4">
+        <p class="text-xs text-slate-500">
+          Assim que um item atinge o estoque mínimo, o sistema dispara esta mensagem para o gestor de compras:
+        </p>
+        <div class="bg-[#E7FFDB] border border-emerald-200 rounded-xl p-4 text-xs sm:text-sm text-slate-800 whitespace-pre-wrap font-sans leading-relaxed" id="wa-preview-text"></div>
+        <div class="flex justify-end gap-2">
+          <button id="btn-copy-wa" class="px-4 py-2 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg">Copiar Mensagem</button>
+          <button id="btn-close-wa-2" class="px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Novo Produto -->
+  <div id="item-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Cadastrar Produto</h3>
+        <button id="btn-close-item" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="item-form" class="p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Nome do Produto *</label>
+            <input id="f-name" type="text" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Código de Barras (EAN) *</label>
+            <input id="f-barcode" type="text" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Categoria *</label>
+            <input id="f-cat" type="text" required placeholder="Ex: Informática" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Qtd Atual *</label>
+            <input id="f-qty" type="number" min="0" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Estoque Mínimo *</label>
+            <input id="f-min" type="number" min="0" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custo Unitário (R$) *</label>
+            <input id="f-cost" type="number" step="0.01" min="0" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-item" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg">Salvar Produto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_estoque_alertas';
+
+      const DEFAULT_DATA = [
+        { id: 1, barcode: '7891000100103', name: 'Bobina Térmica 80mm x 40m (Cx 30un)', category: 'Suprimentos', qty: 4, min: 8, cost: 118.50 },
+        { id: 2, barcode: '7891000200201', name: 'Cabo de Rede Cat6 Furukawa 305m', category: 'Redes', qty: 12, min: 5, cost: 640.00 },
+        { id: 3, barcode: '7891000300309', name: 'Toner Compatível HP 105A Preto', category: 'Impressão', qty: 2, min: 6, cost: 54.90 },
+        { id: 4, barcode: '7891000400407', name: 'SSD NVMe 500GB Kingston', category: 'Hardware', qty: 15, min: 5, cost: 229.00 },
+        { id: 5, barcode: '7891000500505', name: 'Etiqueta Adesiva Couche 100x50mm', category: 'Suprimentos', qty: 3, min: 10, cost: 32.00 },
+        { id: 6, barcode: '7891000600603', name: 'Nobreak SMS 1200VA Bivolt', category: 'Energia', qty: 7, min: 3, cost: 589.00 },
+      ];
+
+      let items = loadData();
+      let movesToday = 0;
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      }
+
+      window.resetDemoData = function () {
+        items = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        movesToday = 0;
+        saveData();
+        renderAll();
+        window.C4Utils.toast('Estoque demo restaurado!', 'info');
+      };
+
+      function playBeep() {
+        try {
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1200, ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start();
+          osc.stop(ctx.currentTime + 0.08);
+        } catch (e) {}
+      }
+
+      function renderKPIs() {
+        const critical = items.filter((i) => i.qty <= i.min).length;
+        const totalValue = items.reduce((acc, i) => acc + i.qty * i.cost, 0);
+        const totalUnits = items.reduce((acc, i) => acc + i.qty, 0);
+
+        const cards = [
+          { label: 'SKUs Cadastrados', value: items.length, sub: `${totalUnits} unidades totais`, icon: 'boxes', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Abaixo do Mínimo', value: critical, sub: critical > 0 ? 'Reposição urgente!' : 'Tudo abastecido', icon: 'alert-triangle', color: critical > 0 ? 'text-rose-600 bg-rose-50' : 'text-emerald-600 bg-emerald-50' },
+          { label: 'Valor em Estoque', value: window.C4Utils.formatBRL(totalValue), sub: 'Custo de inventário', icon: 'wallet', color: 'text-indigo-600 bg-indigo-50' },
+          { label: 'Bipes / Movimentos', value: movesToday, sub: 'Nesta sessão', icon: 'scan-barcode', color: 'text-emerald-600 bg-emerald-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border ${c.label === 'Abaixo do Mínimo' && critical > 0 ? 'border-rose-300 bg-rose-50/40' : 'border-slate-200'} rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-2xl font-extrabold font-mono mt-1 ${c.label === 'Abaixo do Mínimo' && critical > 0 ? 'text-rose-600' : 'text-slate-900'}">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg ${c.color}">
+              <i data-lucide="${c.icon}" class="w-5 h-5"></i>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function populateCategories() {
+        const cats = [...new Set(items.map((i) => i.category))];
+        const sel = document.getElementById('filter-category');
+        const cur = sel.value;
+        sel.innerHTML = '<option value="all">Todas as Categorias</option>' +
+          cats.map((c) => `<option value="${window.C4Utils.escapeHtml(c)}">${window.C4Utils.escapeHtml(c)}</option>`).join('');
+        if (cats.includes(cur)) sel.value = cur;
+      }
+
+      function renderTable() {
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const cat = document.getElementById('filter-category').value;
+        const alertFilter = document.getElementById('filter-alert').value;
+
+        const filtered = items.filter((i) => {
+          if (cat !== 'all' && i.category !== cat) return false;
+          const isCrit = i.qty <= i.min;
+          if (alertFilter === 'critical' && !isCrit) return false;
+          if (alertFilter === 'ok' && isCrit) return false;
+          if (q && !`${i.barcode} ${i.name} ${i.category}`.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        document.getElementById('stock-tbody').innerHTML = filtered.map((i) => {
+          const isCrit = i.qty <= i.min;
+          return `
+            <tr class="${isCrit ? 'bg-rose-50/90 hover:bg-rose-100/70' : 'hover:bg-slate-50'} transition">
+              <td class="py-3.5 px-4 font-mono text-xs font-semibold ${isCrit ? 'text-rose-800' : 'text-slate-600'}">
+                ${window.C4Utils.escapeHtml(i.barcode)}
+              </td>
+              <td class="py-3.5 px-4">
+                <div class="font-semibold ${isCrit ? 'text-rose-900' : 'text-slate-900'}">${window.C4Utils.escapeHtml(i.name)}</div>
+                ${isCrit ? `<span class="inline-flex items-center gap-1 text-[11px] font-bold text-rose-700 mt-0.5"><i data-lucide="alert-circle" class="w-3 h-3"></i> Abaixo do estoque mínimo!</span>` : ''}
+              </td>
+              <td class="py-3.5 px-4 text-xs text-slate-600">${window.C4Utils.escapeHtml(i.category)}</td>
+              <td class="py-3.5 px-4 text-center">
+                <span class="inline-block font-mono font-extrabold text-sm px-2.5 py-0.5 rounded-full ${isCrit ? 'bg-rose-600 text-white' : 'bg-slate-100 text-slate-800'}">
+                  ${i.qty}
+                </span>
+              </td>
+              <td class="py-3.5 px-4 text-center font-mono text-xs text-slate-500">${i.min}</td>
+              <td class="py-3.5 px-4 text-right font-mono text-slate-700">${window.C4Utils.formatBRL(i.cost)}</td>
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <div class="inline-flex items-center gap-1">
+                  <button onclick="adjustStock(${i.id}, -1)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-300 hover:bg-rose-50 hover:border-rose-300 text-slate-700 rounded-md">-1</button>
+                  <button onclick="adjustStock(${i.id}, 1)" class="px-2.5 py-1 text-xs font-bold bg-white border border-slate-300 hover:bg-emerald-50 hover:border-emerald-300 text-slate-700 rounded-md">+1</button>
+                  <button onclick="deleteItem(${i.id})" class="p-1.5 text-slate-400 hover:text-rose-600 rounded" title="Excluir">
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+      function renderAll() {
+        populateCategories();
+        renderKPIs();
+        renderTable();
+        lucide.createIcons();
+      }
+
+      window.adjustStock = function (id, delta) {
+        const item = items.find((i) => i.id === id);
+        if (!item) return;
+        item.qty = Math.max(0, item.qty + delta);
+        movesToday++;
+        saveData();
+        renderAll();
+        if (item.qty <= item.min) {
+          window.C4Utils.toast(`Alerta: "${item.name}" atingiu estoque crítico (${item.qty} un)!`, 'error');
+        } else {
+          window.C4Utils.toast(`Estoque atualizado: ${item.name} (${item.qty} un)`);
+        }
+      };
+
+      window.deleteItem = function (id) {
+        items = items.filter((i) => i.id !== id);
+        saveData();
+        renderAll();
+      };
+
+      function processBarcode(code) {
+        const clean = code.trim();
+        if (!clean) return;
+        const item = items.find((i) => i.barcode === clean);
+        const mode = document.getElementById('scan-mode').value;
+        const banner = document.getElementById('last-scan-banner');
+
+        if (!item) {
+          banner.className = 'mt-3 text-xs font-mono px-3 py-2 rounded-lg bg-rose-50 text-rose-700 border border-rose-200';
+          banner.textContent = `Código "${clean}" não encontrado no cadastro.`;
+          banner.classList.remove('hidden');
+          window.C4Utils.toast('Código de barras não encontrado!', 'warning');
+          return;
+        }
+
+        playBeep();
+        const delta = mode === 'in' ? 1 : -1;
+        window.adjustStock(item.id, delta);
+        banner.className = 'mt-3 text-xs font-mono px-3 py-2 rounded-lg bg-sky-50 text-sky-800 border border-sky-200';
+        banner.textContent = `BIP OK [${clean}] → ${item.name} (${delta > 0 ? '+1 Entrada' : '-1 Saída'}) | Saldo atual: ${item.qty} un`;
+        banner.classList.remove('hidden');
+        document.getElementById('barcode-input').value = '';
+      }
+
+      document.getElementById('barcode-input').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          processBarcode(e.target.value);
+        }
+      });
+      document.getElementById('btn-scan-exec').addEventListener('click', () => {
+        processBarcode(document.getElementById('barcode-input').value);
+      });
+      document.getElementById('btn-scan-sim').addEventListener('click', () => {
+        if (!items.length) return;
+        const randomItem = items[Math.floor(Math.random() * items.length)];
+        document.getElementById('barcode-input').value = randomItem.barcode;
+        processBarcode(randomItem.barcode);
+      });
+
+      // WhatsApp Alert Simulation
+      const waModal = document.getElementById('wa-modal');
+      document.getElementById('btn-sim-wa').addEventListener('click', () => {
+        const crits = items.filter((i) => i.qty <= i.min);
+        const listText = crits.length
+          ? crits.map((c) => `• *${c.name}* (EAN: ${c.barcode})\n   Atual: ${c.qty} un | Mínimo: ${c.min} un | Sugestão compra: ${Math.max(5, c.min * 2 - c.qty)} un`).join('\n\n')
+          : '✅ Nenhum item abaixo do estoque mínimo no momento!';
+
+        const msg = `🚨 *ALERTA DE ESTOQUE MÍNIMO — CONTROL 4*\n\nOlá Gestor, os seguintes itens precisam de reposição imediata:\n\n${listText}\n\n_Enviado automaticamente pelo Sistema de Estoque V1._`;
+        document.getElementById('wa-preview-text').textContent = msg;
+        waModal.classList.remove('hidden');
+      });
+      document.getElementById('btn-close-wa').addEventListener('click', () => waModal.classList.add('hidden'));
+      document.getElementById('btn-close-wa-2').addEventListener('click', () => waModal.classList.add('hidden'));
+      document.getElementById('btn-copy-wa').addEventListener('click', () => {
+        navigator.clipboard.writeText(document.getElementById('wa-preview-text').textContent);
+        window.C4Utils.toast('Mensagem copiada para a área de transferência!');
+      });
+
+      // New item modal
+      const itemModal = document.getElementById('item-modal');
+      document.getElementById('btn-new-item').addEventListener('click', () => {
+        document.getElementById('item-form').reset();
+        document.getElementById('f-barcode').value = '7891000' + Math.floor(100000 + Math.random() * 899999);
+        itemModal.classList.remove('hidden');
+      });
+      document.getElementById('btn-close-item').addEventListener('click', () => itemModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-item').addEventListener('click', () => itemModal.classList.add('hidden'));
+
+      document.getElementById('item-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        items.unshift({
+          id: Date.now(),
+          name: document.getElementById('f-name').value.trim(),
+          barcode: document.getElementById('f-barcode').value.trim(),
+          category: document.getElementById('f-cat').value.trim(),
+          qty: Number(document.getElementById('f-qty').value || 0),
+          min: Number(document.getElementById('f-min').value || 0),
+          cost: Number(document.getElementById('f-cost').value || 0),
+        });
+        saveData();
+        itemModal.classList.add('hidden');
+        renderAll();
+        window.C4Utils.toast('Produto cadastrado!');
+      });
+
+      ['search-input', 'filter-category', 'filter-alert'].forEach((id) => {
+        document.getElementById(id).addEventListener('input', renderTable);
+        document.getElementById(id).addEventListener('change', renderTable);
+      });
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

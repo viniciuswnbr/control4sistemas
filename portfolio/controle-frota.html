@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestão de Frota e Manutenção | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Gestão de Frota e Manutenção" data-storage-key="c4_v1_controle_frota"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="truck" class="w-4 h-4"></i>
+          <span>Logística &amp; Frotas V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Controle de Frota, Abastecimento &amp; Revisões
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Cálculo automático de consumo (km/L) e alertas inteligentes de troca de óleo por quilometragem.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-new-fuel" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm">
+          <i data-lucide="fuel" class="w-4 h-4"></i>
+          <span>Registrar Abastecimento</span>
+        </button>
+        <button id="btn-new-vehicle" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Novo Veículo</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="sm:col-span-2 relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="search-input" type="text" placeholder="Buscar por placa, modelo ou motorista..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <select id="filter-oil" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
+          <option value="all">Todas as Situações</option>
+          <option value="alert">Atenção / Troca Vencida</option>
+          <option value="ok">Em Dia</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Grid de Veículos -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4" id="vehicles-grid"></section>
+
+    <!-- Histórico de Abastecimentos -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-200 flex items-center justify-between">
+        <h2 class="text-base font-bold text-slate-900">Últimos Abastecimentos &amp; Rendimento (km/L)</h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-mono uppercase tracking-wider text-slate-500">
+              <th class="py-3 px-4">Data</th>
+              <th class="py-3 px-4">Veículo</th>
+              <th class="py-3 px-4 text-right">Odômetro</th>
+              <th class="py-3 px-4 text-right">Rodado</th>
+              <th class="py-3 px-4 text-right">Litros</th>
+              <th class="py-3 px-4 text-right">Média (km/L)</th>
+              <th class="py-3 px-4 text-right">Valor</th>
+            </tr>
+          </thead>
+          <tbody id="fuel-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Abastecimento -->
+  <div id="fuel-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Registrar Abastecimento</h3>
+        <button id="btn-close-fuel" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="fuel-form" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Veículo *</label>
+          <select id="ff-vehicle" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white"></select>
+          <p id="ff-current-km" class="text-[11px] font-mono text-slate-500 mt-1"></p>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Novo Odômetro (km) *</label>
+            <input id="ff-km" type="number" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Litros *</label>
+            <input id="ff-liters" type="number" step="0.01" min="1" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Valor Total (R$) *</label>
+          <input id="ff-cost" type="number" step="0.01" min="1" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+        </div>
+        <div class="bg-sky-50 border border-sky-200 rounded-lg p-3 text-xs font-mono text-sky-800" id="ff-preview">
+          Preencha os campos para calcular o km/L automaticamente.
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-fuel" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg">Salvar Abastecimento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Novo Veículo -->
+  <div id="vehicle-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Cadastrar Veículo</h3>
+        <button id="btn-close-veh" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="vehicle-form" class="p-6 space-y-4">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Placa *</label>
+            <input id="fv-plate" type="text" required placeholder="ABC-1D23" class="w-full px-3 py-2 text-sm font-mono uppercase border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Motorista *</label>
+            <input id="fv-driver" type="text" required placeholder="Nome" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div class="col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Modelo / Marca *</label>
+            <input id="fv-model" type="text" required placeholder="Ex: Fiat Fiorino Endurance 1.4" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Odômetro Atual (km) *</label>
+            <input id="fv-km" type="number" min="0" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Intervalo Troca Óleo *</label>
+            <input id="fv-interval" type="number" min="1000" value="10000" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-veh" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg">Cadastrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_controle_frota';
+
+      const DEFAULT_DATA = {
+        vehicles: [
+          { id: 1, plate: 'FTR-4A92', model: 'Fiat Fiorino Endurance 1.4', driver: 'Carlos Silva', km: 64850, lastOilKm: 55000, oilInterval: 10000 },
+          { id: 2, plate: 'VWC-8B11', model: 'VW Delivery Express 3.0', driver: 'Marcos Souza', km: 112400, lastOilKm: 102000, oilInterval: 10000 },
+          { id: 3, plate: 'RNT-2C45', model: 'Renault Master Furgão L2H2', driver: 'André Lima', km: 83200, lastOilKm: 80000, oilInterval: 10000 },
+          { id: 4, plate: 'HYN-9E07', model: 'Hyundai HR Bau Refrigerado', driver: 'Paulo Henrique', km: 49100, lastOilKm: 40000, oilInterval: 10000 },
+        ],
+        fuelLogs: [
+          { id: 101, date: '2026-11-21', vehicleId: 1, plate: 'FTR-4A92', model: 'Fiat Fiorino', km: 64850, dist: 420, liters: 38.5, kmPerL: 10.91, cost: 229.00 },
+          { id: 102, date: '2026-11-20', vehicleId: 2, plate: 'VWC-8B11', model: 'VW Delivery', km: 112400, dist: 560, liters: 72.0, kmPerL: 7.78, cost: 439.20 },
+          { id: 103, date: '2026-11-19', vehicleId: 3, plate: 'RNT-2C45', model: 'Renault Master', km: 83200, dist: 480, liters: 52.0, kmPerL: 9.23, cost: 317.20 },
+        ],
+      };
+
+      let state = loadData();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      window.resetDemoData = function () {
+        state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+        renderAll();
+        window.C4Utils.toast('Dados da frota restaurados!', 'info');
+      };
+
+      function getOilStatus(v) {
+        const nextKm = v.lastOilKm + v.oilInterval;
+        const remaining = nextKm - v.km;
+        const pct = Math.min(100, Math.max(0, ((v.km - v.lastOilKm) / v.oilInterval) * 100));
+        if (remaining <= 0) return { level: 'overdue', label: `Vencida há ${Math.abs(remaining)} km`, remaining, nextKm, pct: 100 };
+        if (remaining <= 1000) return { level: 'warn', label: `Troca em ${remaining} km`, remaining, nextKm, pct };
+        return { level: 'ok', label: `Faltam ${remaining} km`, remaining, nextKm, pct };
+      }
+
+      function renderKPIs() {
+        const alerts = state.vehicles.filter((v) => getOilStatus(v).level !== 'ok').length;
+        const avgKmL = state.fuelLogs.length
+          ? state.fuelLogs.reduce((a, b) => a + b.kmPerL, 0) / state.fuelLogs.length
+          : 0;
+        const totalFuel = state.fuelLogs.reduce((a, b) => a + b.cost, 0);
+
+        const cards = [
+          { label: 'Veículos na Frota', value: state.vehicles.length, sub: 'Ativos em operação', icon: 'truck', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Média Geral da Frota', value: `${window.C4Utils.formatNumber(avgKmL, 2)} km/L`, sub: `${state.fuelLogs.length} abastecimentos`, icon: 'gauge', color: 'text-emerald-600 bg-emerald-50' },
+          { label: 'Gasto Combustível', value: window.C4Utils.formatBRL(totalFuel), sub: 'Acumulado no período', icon: 'fuel', color: 'text-indigo-600 bg-indigo-50' },
+          { label: 'Alertas de Revisão/Óleo', value: alerts, sub: alerts > 0 ? 'Ação necessária' : 'Toda frota em dia', icon: 'alert-triangle', color: alerts > 0 ? 'text-rose-600 bg-rose-50' : 'text-emerald-600 bg-emerald-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-2xl font-extrabold font-mono text-slate-900 mt-1">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg ${c.color}"><i data-lucide="${c.icon}" class="w-5 h-5"></i></div>
+          </div>
+        `).join('');
+      }
+
+      function renderVehicles() {
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const oilF = document.getElementById('filter-oil').value;
+
+        const filtered = state.vehicles.filter((v) => {
+          const st = getOilStatus(v);
+          if (oilF === 'alert' && st.level === 'ok') return false;
+          if (oilF === 'ok' && st.level !== 'ok') return false;
+          if (q && !`${v.plate} ${v.model} ${v.driver}`.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        document.getElementById('vehicles-grid').innerHTML = filtered.map((v) => {
+          const st = getOilStatus(v);
+          const badgeCls = st.level === 'overdue'
+            ? 'bg-rose-100 text-rose-800 border-rose-300'
+            : st.level === 'warn'
+              ? 'bg-amber-100 text-amber-800 border-amber-300'
+              : 'bg-emerald-50 text-emerald-700 border-emerald-200';
+          const barCls = st.level === 'overdue' ? 'bg-rose-600' : st.level === 'warn' ? 'bg-amber-500' : 'bg-sky-600';
+
+          return `
+            <div class="bg-white border ${st.level === 'overdue' ? 'border-rose-300' : 'border-slate-200'} rounded-xl p-5 shadow-sm space-y-4">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <span class="font-mono text-xs font-extrabold bg-slate-900 text-white px-2.5 py-1 rounded">${window.C4Utils.escapeHtml(v.plate)}</span>
+                  <h3 class="font-bold text-slate-900 text-base mt-2">${window.C4Utils.escapeHtml(v.model)}</h3>
+                  <p class="text-xs text-slate-500">Motorista: <strong>${window.C4Utils.escapeHtml(v.driver)}</strong></p>
+                </div>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full border ${badgeCls}">${st.label}</span>
+              </div>
+
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs font-mono text-slate-600">
+                  <span>Odômetro: <strong>${v.km.toLocaleString('pt-BR')} km</strong></span>
+                  <span>Próx. Troca: <strong>${st.nextKm.toLocaleString('pt-BR')} km</strong></span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full ${barCls} transition-all" style="width:${st.pct.toFixed(0)}%"></div>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-between gap-2">
+                <button onclick="registerOilChange(${v.id})" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-700 border border-slate-200">
+                  ✓ Registrar Troca de Óleo
+                </button>
+                <button onclick="openFuelFor(${v.id})" class="text-xs font-semibold px-3 py-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200">
+                  + Abastecer
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function renderFuelLogs() {
+        document.getElementById('fuel-tbody').innerHTML = state.fuelLogs.map((l) => `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-mono text-xs text-slate-500">${l.date.split('-').reverse().join('/')}</td>
+            <td class="py-3 px-4">
+              <span class="font-mono font-bold text-xs bg-slate-100 px-2 py-0.5 rounded">${window.C4Utils.escapeHtml(l.plate)}</span>
+              <span class="text-slate-700 ml-1.5 font-medium">${window.C4Utils.escapeHtml(l.model)}</span>
+            </td>
+            <td class="py-3 px-4 text-right font-mono">${l.km.toLocaleString('pt-BR')} km</td>
+            <td class="py-3 px-4 text-right font-mono text-slate-600">+${l.dist} km</td>
+            <td class="py-3 px-4 text-right font-mono">${window.C4Utils.formatNumber(l.liters, 1)} L</td>
+            <td class="py-3 px-4 text-right font-mono font-extrabold text-emerald-600">${window.C4Utils.formatNumber(l.kmPerL, 2)} km/L</td>
+            <td class="py-3 px-4 text-right font-mono font-semibold">${window.C4Utils.formatBRL(l.cost)}</td>
+          </tr>
+        `).join('');
+      }
+
+      function renderAll() {
+        renderKPIs();
+        renderVehicles();
+        renderFuelLogs();
+        lucide.createIcons();
+      }
+
+      window.registerOilChange = function (id) {
+        const v = state.vehicles.find((x) => x.id === id);
+        if (!v) return;
+        v.lastOilKm = v.km;
+        saveData();
+        renderAll();
+        window.C4Utils.toast(`Troca de óleo registrada para ${v.plate} aos ${v.km.toLocaleString('pt-BR')} km!`);
+      };
+
+      const fuelModal = document.getElementById('fuel-modal');
+      const ffVehicle = document.getElementById('ff-vehicle');
+
+      function updateFuelPreview() {
+        const v = state.vehicles.find((x) => x.id === Number(ffVehicle.value));
+        if (!v) return;
+        document.getElementById('ff-current-km').textContent = `Odômetro anterior: ${v.km.toLocaleString('pt-BR')} km`;
+        const newKm = Number(document.getElementById('ff-km').value || 0);
+        const liters = Number(document.getElementById('ff-liters').value || 0);
+        const dist = newKm - v.km;
+        const preview = document.getElementById('ff-preview');
+        if (dist > 0 && liters > 0) {
+          const avg = dist / liters;
+          preview.textContent = `Distância: ${dist} km | Média calculada: ${avg.toFixed(2)} km/L`;
+        } else {
+          preview.textContent = 'Informe um odômetro maior que o atual e os litros abastecidos.';
+        }
+      }
+
+      window.openFuelFor = function (vehId = null) {
+        ffVehicle.innerHTML = state.vehicles.map((v) => `<option value="${v.id}">${v.plate} — ${v.model}</option>`).join('');
+        if (vehId) ffVehicle.value = vehId;
+        const v = state.vehicles.find((x) => x.id === Number(ffVehicle.value));
+        document.getElementById('ff-km').value = v ? v.km + 350 : '';
+        document.getElementById('ff-liters').value = '';
+        document.getElementById('ff-cost').value = '';
+        updateFuelPreview();
+        fuelModal.classList.remove('hidden');
+      };
+
+      document.getElementById('btn-new-fuel').addEventListener('click', () => window.openFuelFor());
+      document.getElementById('btn-close-fuel').addEventListener('click', () => fuelModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-fuel').addEventListener('click', () => fuelModal.classList.add('hidden'));
+      ['ff-vehicle', 'ff-km', 'ff-liters'].forEach((id) => document.getElementById(id).addEventListener('input', updateFuelPreview));
+
+      document.getElementById('fuel-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const v = state.vehicles.find((x) => x.id === Number(ffVehicle.value));
+        if (!v) return;
+        const newKm = Number(document.getElementById('ff-km').value);
+        const liters = Number(document.getElementById('ff-liters').value);
+        const cost = Number(document.getElementById('ff-cost').value);
+        if (newKm <= v.km) {
+          window.C4Utils.toast('O novo odômetro deve ser maior que o atual!', 'error');
+          return;
+        }
+        const dist = newKm - v.km;
+        const kmPerL = dist / liters;
+        v.km = newKm;
+        state.fuelLogs.unshift({
+          id: Date.now(),
+          date: new Date().toISOString().slice(0, 10),
+          vehicleId: v.id,
+          plate: v.plate,
+          model: v.model,
+          km: newKm,
+          dist,
+          liters,
+          kmPerL,
+          cost,
+        });
+        saveData();
+        fuelModal.classList.add('hidden');
+        renderAll();
+        window.C4Utils.toast(`Abastecimento salvo! Média: ${kmPerL.toFixed(2)} km/L`);
+      });
+
+      const vehModal = document.getElementById('vehicle-modal');
+      document.getElementById('btn-new-vehicle').addEventListener('click', () => vehModal.classList.remove('hidden'));
+      document.getElementById('btn-close-veh').addEventListener('click', () => vehModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-veh').addEventListener('click', () => vehModal.classList.add('hidden'));
+
+      document.getElementById('vehicle-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const km = Number(document.getElementById('fv-km').value || 0);
+        state.vehicles.unshift({
+          id: Date.now(),
+          plate: document.getElementById('fv-plate').value.trim().toUpperCase(),
+          driver: document.getElementById('fv-driver').value.trim(),
+          model: document.getElementById('fv-model').value.trim(),
+          km,
+          lastOilKm: km,
+          oilInterval: Number(document.getElementById('fv-interval').value || 10000),
+        });
+        saveData();
+        vehModal.classList.add('hidden');
+        document.getElementById('vehicle-form').reset();
+        renderAll();
+        window.C4Utils.toast('Veículo cadastrado!');
+      });
+
+      document.getElementById('search-input').addEventListener('input', renderVehicles);
+      document.getElementById('filter-oil').addEventListener('change', renderVehicles);
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

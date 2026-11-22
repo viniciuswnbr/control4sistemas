@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Estoque Consignado | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Controle de Estoque Consignado" data-storage-key="c4_v1_revenda_consignado"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="shopping-bag" class="w-4 h-4"></i>
+          <span>Atacado, Semijoias &amp; Moda V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Revenda &amp; Estoque Consignado
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Controle peças enviadas para revendedores, calcule a margem líquida real e faça o fechamento financeiro.
+        </p>
+      </div>
+      <button id="btn-new-consign" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span>Nova Remessa Consignada</span>
+      </button>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="search-input" type="text" placeholder="Buscar revendedor ou produto..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <select id="filter-reseller" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
+          <option value="all">Todos os Revendedores</option>
+        </select>
+        <select id="filter-status" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
+          <option value="all">Todos os Status</option>
+          <option value="Em Aberto">Em Aberto (Consignado)</option>
+          <option value="Fechado">Acerto Fechado</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Tabela Consignado -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-mono uppercase tracking-wider text-slate-500">
+              <th class="py-3 px-4">Revendedor</th>
+              <th class="py-3 px-4">Produto / Lote</th>
+              <th class="py-3 px-4 text-center">Enviado</th>
+              <th class="py-3 px-4 text-center">Vendido (Editar)</th>
+              <th class="py-3 px-4 text-center">Devolvido</th>
+              <th class="py-3 px-4 text-right">A Receber</th>
+              <th class="py-3 px-4 text-right">Margem Líq.</th>
+              <th class="py-3 px-4 text-right">Acerto</th>
+            </tr>
+          </thead>
+          <tbody id="consign-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Fechamento de Acerto -->
+  <div id="settle-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="text-base font-bold">Resumo do Acerto Financeiro</h3>
+        <button id="btn-close-settle" class="text-slate-400 hover:text-white"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div id="settle-body" class="p-6 space-y-4 text-sm"></div>
+    </div>
+  </div>
+
+  <!-- Modal Nova Remessa -->
+  <div id="consign-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Nova Remessa Consignada</h3>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="consign-form" class="p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Revendedor(a) *</label>
+            <input id="f-reseller" type="text" required placeholder="Ex: Maria Clara" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">% Comissão Revendedor *</label>
+            <input id="f-rate" type="number" min="0" max="70" value="30" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Produto / Kit *</label>
+            <input id="f-product" type="text" required placeholder="Ex: Kit Semijoias Banho Ouro 18k" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Qtd Enviada *</label>
+            <input id="f-qty" type="number" min="1" value="20" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Custo Unitário (R$) *</label>
+            <input id="f-cost" type="number" step="0.01" min="0" value="25" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Preço de Venda Final (R$) *</label>
+            <input id="f-price" type="number" step="0.01" min="0" value="89.90" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-modal" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg">Registrar Remessa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_revenda_consignado';
+
+      const DEFAULT_DATA = [
+        { id: 1, reseller: 'Maria Clara', rate: 30, product: 'Anéis & Brincos Prata 925', sent: 40, sold: 28, cost: 22.0, price: 79.90, status: 'Em Aberto' },
+        { id: 2, reseller: 'Boutique Joana', rate: 35, product: 'Vestidos Midi Verão', sent: 25, sold: 19, cost: 68.0, price: 189.00, status: 'Em Aberto' },
+        { id: 3, reseller: 'Camila Express', rate: 25, product: 'Perfumes Árabes 100ml', sent: 15, sold: 12, cost: 95.0, price: 249.00, status: 'Em Aberto' },
+        { id: 4, reseller: 'Studio Renata', rate: 30, product: 'Kit Skincare Facial', sent: 30, sold: 30, cost: 34.0, price: 119.00, status: 'Fechado' },
+      ];
+
+      let rows = loadData();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(rows));
+      }
+
+      window.resetDemoData = function () {
+        rows = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+        renderAll();
+        window.C4Utils.toast('Dados de consignado restaurados!', 'info');
+      };
+
+      function calcRow(r) {
+        const returned = Math.max(0, r.sent - r.sold);
+        const grossSold = r.sold * r.price;
+        const resellerComm = grossSold * (r.rate / 100);
+        const toReceive = grossSold - resellerComm;
+        const productCost = r.sold * r.cost;
+        const netProfit = toReceive - productCost;
+        const netMarginPct = grossSold > 0 ? (netProfit / grossSold) * 100 : 0;
+        const inStreetValue = returned * r.price;
+        return { returned, grossSold, resellerComm, toReceive, productCost, netProfit, netMarginPct, inStreetValue };
+      }
+
+      function populateResellers() {
+        const resellers = [...new Set(rows.map((r) => r.reseller))];
+        const sel = document.getElementById('filter-reseller');
+        const cur = sel.value;
+        sel.innerHTML = '<option value="all">Todos os Revendedores</option>' +
+          resellers.map((n) => `<option value="${window.C4Utils.escapeHtml(n)}">${window.C4Utils.escapeHtml(n)}</option>`).join('');
+        if (resellers.includes(cur)) sel.value = cur;
+      }
+
+      function renderKPIs() {
+        let inStreet = 0;
+        let openReceive = 0;
+        let totalNetProfit = 0;
+        let closedCount = 0;
+
+        rows.forEach((r) => {
+          const c = calcRow(r);
+          if (r.status === 'Em Aberto') {
+            inStreet += c.inStreetValue;
+            openReceive += c.toReceive;
+          } else {
+            closedCount++;
+          }
+          totalNetProfit += c.netProfit;
+        });
+
+        const cards = [
+          { label: 'Estoque na Rua (Em Aberto)', value: window.C4Utils.formatBRL(inStreet), sub: 'Saldo em poder de revendedores', icon: 'package-open', color: 'text-amber-600 bg-amber-50' },
+          { label: 'A Receber (Acertos Abertos)', value: window.C4Utils.formatBRL(openReceive), sub: 'Já descontada comissão', icon: 'wallet', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Lucro Líquido Real', value: window.C4Utils.formatBRL(totalNetProfit), sub: 'Após custo + comissão', icon: 'trending-up', color: 'text-emerald-600 bg-emerald-50' },
+          { label: 'Acertos Fechados', value: closedCount, sub: `De ${rows.length} remessas`, icon: 'check-circle-2', color: 'text-indigo-600 bg-indigo-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 mt-1">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg ${c.color}"><i data-lucide="${c.icon}" class="w-5 h-5"></i></div>
+          </div>
+        `).join('');
+      }
+
+      function renderTable() {
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const resF = document.getElementById('filter-reseller').value;
+        const stF = document.getElementById('filter-status').value;
+
+        const filtered = rows.filter((r) => {
+          if (resF !== 'all' && r.reseller !== resF) return false;
+          if (stF !== 'all' && r.status !== stF) return false;
+          if (q && !`${r.reseller} ${r.product}`.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        document.getElementById('consign-tbody').innerHTML = filtered.map((r) => {
+          const c = calcRow(r);
+          const isClosed = r.status === 'Fechado';
+          return `
+            <tr class="${isClosed ? 'bg-slate-50/70' : 'hover:bg-slate-50'}">
+              <td class="py-3.5 px-4">
+                <div class="font-bold text-slate-900">${window.C4Utils.escapeHtml(r.reseller)}</div>
+                <div class="text-[11px] font-mono text-slate-500">${r.rate}% comissão</div>
+              </td>
+              <td class="py-3.5 px-4">
+                <div class="font-medium text-slate-900">${window.C4Utils.escapeHtml(r.product)}</div>
+                <div class="text-[11px] font-mono text-slate-400">Custo: ${window.C4Utils.formatBRL(r.cost)} | Venda: ${window.C4Utils.formatBRL(r.price)}</div>
+              </td>
+              <td class="py-3.5 px-4 text-center font-mono font-semibold">${r.sent}</td>
+              <td class="py-3.5 px-4 text-center">
+                <input
+                  type="number"
+                  min="0"
+                  max="${r.sent}"
+                  value="${r.sold}"
+                  ${isClosed ? 'disabled' : ''}
+                  onchange="updateSold(${r.id}, this.value)"
+                  class="w-16 text-center py-1 text-sm font-mono font-bold border border-slate-300 rounded-lg ${isClosed ? 'bg-slate-100 text-slate-500' : 'bg-white focus:ring-2 focus:ring-sky-500'}"
+                />
+              </td>
+              <td class="py-3.5 px-4 text-center font-mono text-slate-600">${c.returned}</td>
+              <td class="py-3.5 px-4 text-right font-mono font-bold text-sky-700 whitespace-nowrap">${window.C4Utils.formatBRL(c.toReceive)}</td>
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <div class="font-mono font-extrabold text-emerald-600">${window.C4Utils.formatBRL(c.netProfit)}</div>
+                <div class="text-[10px] font-mono text-slate-400">${c.netMarginPct.toFixed(1)}% líq.</div>
+              </td>
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                ${isClosed
+                  ? `<span class="text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1 rounded-full">✓ Fechado</span>`
+                  : `<button onclick="openSettle(${r.id})" class="px-3 py-1.5 text-xs font-semibold bg-slate-900 hover:bg-slate-800 text-white rounded-lg">Fechar Acerto</button>`
+                }
+              </td>
+            </tr>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+      function renderAll() {
+        populateResellers();
+        renderKPIs();
+        renderTable();
+        lucide.createIcons();
+      }
+
+      window.updateSold = function (id, val) {
+        const r = rows.find((x) => x.id === id);
+        if (!r) return;
+        r.sold = Math.min(r.sent, Math.max(0, Number(val || 0)));
+        saveData();
+        renderAll();
+      };
+
+      const settleModal = document.getElementById('settle-modal');
+      document.getElementById('btn-close-settle').addEventListener('click', () => settleModal.classList.add('hidden'));
+
+      window.openSettle = function (id) {
+        const r = rows.find((x) => x.id === id);
+        if (!r) return;
+        const c = calcRow(r);
+        document.getElementById('settle-body').innerHTML = `
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-2">
+            <div class="flex justify-between"><span class="text-slate-500">Revendedor:</span><strong>${window.C4Utils.escapeHtml(r.reseller)}</strong></div>
+            <div class="flex justify-between"><span class="text-slate-500">Produto:</span><strong>${window.C4Utils.escapeHtml(r.product)}</strong></div>
+            <div class="flex justify-between font-mono"><span class="text-slate-500">Vendidas / Devolvidas:</span><strong>${r.sold} un / ${c.returned} un</strong></div>
+          </div>
+          <div class="space-y-2 font-mono text-xs border-t border-b border-slate-200 py-3">
+            <div class="flex justify-between"><span>Total Bruto Vendido:</span><span>${window.C4Utils.formatBRL(c.grossSold)}</span></div>
+            <div class="flex justify-between text-amber-700"><span>Comissão Revendedor (${r.rate}%):</span><span>- ${window.C4Utils.formatBRL(c.resellerComm)}</span></div>
+            <div class="flex justify-between text-base font-extrabold text-sky-700 pt-1"><span>Valor Líquido a Receber:</span><span>${window.C4Utils.formatBRL(c.toReceive)}</span></div>
+            <div class="flex justify-between text-emerald-600 font-bold"><span>Seu Lucro Líquido (após custo):</span><span>${window.C4Utils.formatBRL(c.netProfit)}</span></div>
+          </div>
+          <div class="flex justify-end gap-2">
+            <button onclick="document.getElementById('settle-modal').classList.add('hidden')" class="px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+            <button onclick="confirmSettle(${r.id})" class="px-4 py-2 text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg">Confirmar Fechamento</button>
+          </div>
+        `;
+        settleModal.classList.remove('hidden');
+      };
+
+      window.confirmSettle = function (id) {
+        const r = rows.find((x) => x.id === id);
+        if (!r) return;
+        r.status = 'Fechado';
+        saveData();
+        settleModal.classList.add('hidden');
+        renderAll();
+        window.C4Utils.toast(`Acerto fechado com ${r.reseller}!`);
+      };
+
+      const consignModal = document.getElementById('consign-modal');
+      document.getElementById('btn-new-consign').addEventListener('click', () => consignModal.classList.remove('hidden'));
+      document.getElementById('btn-close-modal').addEventListener('click', () => consignModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-modal').addEventListener('click', () => consignModal.classList.add('hidden'));
+
+      document.getElementById('consign-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        rows.unshift({
+          id: Date.now(),
+          reseller: document.getElementById('f-reseller').value.trim(),
+          rate: Number(document.getElementById('f-rate').value || 30),
+          product: document.getElementById('f-product').value.trim(),
+          sent: Number(document.getElementById('f-qty').value || 1),
+          sold: 0,
+          cost: Number(document.getElementById('f-cost').value || 0),
+          price: Number(document.getElementById('f-price').value || 0),
+          status: 'Em Aberto',
+        });
+        saveData();
+        consignModal.classList.add('hidden');
+        document.getElementById('consign-form').reset();
+        renderAll();
+        window.C4Utils.toast('Remessa consignada registrada!');
+      });
+
+      ['search-input', 'filter-reseller', 'filter-status'].forEach((id) => {
+        document.getElementById(id).addEventListener('input', renderTable);
+        document.getElementById(id).addEventListener('change', renderTable);
+      });
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

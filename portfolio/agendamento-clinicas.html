@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agenda para Clínicas e Estúdios | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Agenda para Clínicas e Estúdios" data-storage-key="c4_v1_agendamento_clinicas"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="calendar-check-2" class="w-4 h-4"></i>
+          <span>Saúde, Estética &amp; Estúdios V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Agenda Inteligente &amp; Confirmação 24h
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Reduza faltas com visão diária/semanal e fluxo de confirmação automática 24h via WhatsApp.
+        </p>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="inline-flex bg-white border border-slate-200 rounded-lg p-1 shadow-xs">
+          <button id="btn-view-day" class="px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white">Diária</button>
+          <button id="btn-view-week" class="px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900">Semanal</button>
+        </div>
+        <button id="btn-new-appt" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm transition">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Novo Agendamento</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="search-input" type="text" placeholder="Buscar paciente ou procedimento..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <input id="filter-date" type="date" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        <select id="filter-pro" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">Todos os Profissionais</option>
+        </select>
+        <select id="filter-status" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">Todos os Status 24h</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Enviado 24h">Enviado 24h</option>
+          <option value="Confirmado">Confirmado</option>
+          <option value="Remarcar">Remarcar</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Agenda Container -->
+    <section id="agenda-container" class="space-y-3"></section>
+  </main>
+
+  <!-- Modal Novo Agendamento -->
+  <div id="appt-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Novo Agendamento</h3>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="appt-form" class="p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Paciente / Cliente *</label>
+            <input id="f-patient" type="text" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">WhatsApp *</label>
+            <input id="f-phone" type="text" required placeholder="(12) 99999-0000" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Profissional *</label>
+            <select id="f-pro" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white">
+              <option value="Dra. Camila Souza">Dra. Camila Souza</option>
+              <option value="Dr. Henrique Lima">Dr. Henrique Lima</option>
+              <option value="Esteticista Larissa">Esteticista Larissa</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Data *</label>
+            <input id="f-date" type="date" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Horário *</label>
+            <input id="f-time" type="time" required value="09:00" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Procedimento *</label>
+            <input id="f-proc" type="text" required placeholder="Ex: Limpeza de Pele / Consulta" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Valor (R$) *</label>
+            <input id="f-val" type="number" step="0.01" min="0" required value="220" class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-modal" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg">Agendar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_agendamento_clinicas';
+      const TODAY = '2026-11-22';
+
+      const DEFAULT_DATA = [
+        { id: 1, date: '2026-11-22', time: '08:30', patient: 'Mariana Tavares', phone: '(12) 99111-2233', pro: 'Dra. Camila Souza', procedure: 'Avaliação Odontológica', value: 180, status: 'Confirmado' },
+        { id: 2, date: '2026-11-22', time: '09:30', patient: 'Roberto Almeida', phone: '(12) 98844-5566', pro: 'Dr. Henrique Lima', procedure: 'Sessão Fisioterapia', value: 160, status: 'Enviado 24h' },
+        { id: 3, date: '2026-11-22', time: '10:30', patient: 'Fernanda Nogueira', phone: '(12) 99777-8899', pro: 'Esteticista Larissa', procedure: 'Limpeza de Pele Profunda', value: 240, status: 'Pendente' },
+        { id: 4, date: '2026-11-22', time: '14:00', patient: 'Carlos Eduardo', phone: '(12) 98123-9876', pro: 'Dra. Camila Souza', procedure: 'Profilaxia + Clareamento', value: 450, status: 'Confirmado' },
+        { id: 5, date: '2026-11-23', time: '09:00', patient: 'Juliana Ribeiro', phone: '(12) 99654-3210', pro: 'Esteticista Larissa', procedure: 'Drenagem Linfática', value: 190, status: 'Enviado 24h' },
+        { id: 6, date: '2026-11-23', time: '11:00', patient: 'Patrícia Gomes', phone: '(12) 99222-3344', pro: 'Dr. Henrique Lima', procedure: 'RPG Postural', value: 180, status: 'Pendente' },
+        { id: 7, date: '2026-11-24', time: '15:30', patient: 'Lucas Andrade', phone: '(12) 98765-4321', pro: 'Dra. Camila Souza', procedure: 'Retorno Ortodontia', value: 200, status: 'Remarcar' },
+      ];
+
+      let appts = loadData();
+      let viewMode = 'day';
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appts));
+      }
+
+      window.resetDemoData = function () {
+        appts = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+        document.getElementById('filter-date').value = TODAY;
+        renderAll();
+        window.C4Utils.toast('Agenda de demonstração restaurada!', 'info');
+      };
+
+      document.getElementById('filter-date').value = TODAY;
+
+      function populatePros() {
+        const pros = [...new Set(appts.map((a) => a.pro))];
+        const sel = document.getElementById('filter-pro');
+        const cur = sel.value;
+        sel.innerHTML = '<option value="all">Todos os Profissionais</option>' +
+          pros.map((p) => `<option value="${window.C4Utils.escapeHtml(p)}">${window.C4Utils.escapeHtml(p)}</option>`).join('');
+        if (pros.includes(cur)) sel.value = cur;
+      }
+
+      function renderKPIs() {
+        const todayAppts = appts.filter((a) => a.date === document.getElementById('filter-date').value);
+        const confirmed = appts.filter((a) => a.status === 'Confirmado').length;
+        const pending = appts.filter((a) => a.status === 'Pendente' || a.status === 'Enviado 24h').length;
+        const revenue = appts.filter((a) => a.status !== 'Remarcar').reduce((acc, a) => acc + Number(a.value || 0), 0);
+
+        const cards = [
+          { label: 'Atendimentos no Dia', value: todayAppts.length, sub: 'Data selecionada', icon: 'calendar', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Confirmados (24h)', value: confirmed, sub: 'Presença garantida', icon: 'check-circle-2', color: 'text-emerald-600 bg-emerald-50' },
+          { label: 'Aguardando Confirmação', value: pending, sub: 'Enviar lembrete WhatsApp', icon: 'message-square', color: 'text-amber-600 bg-amber-50' },
+          { label: 'Receita Prevista', value: window.C4Utils.formatBRL(revenue), sub: `${appts.length} agendamentos`, icon: 'wallet', color: 'text-indigo-600 bg-indigo-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-2xl font-extrabold font-mono text-slate-900 mt-1">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg ${c.color}"><i data-lucide="${c.icon}" class="w-5 h-5"></i></div>
+          </div>
+        `).join('');
+      }
+
+      function statusStyle(st) {
+        const map = {
+          'Confirmado': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+          'Enviado 24h': 'bg-sky-50 text-sky-700 border-sky-200',
+          'Pendente': 'bg-amber-50 text-amber-700 border-amber-200',
+          'Remarcar': 'bg-rose-50 text-rose-700 border-rose-200',
+        };
+        return map[st] || 'bg-slate-100 text-slate-700 border-slate-200';
+      }
+
+      function renderAgenda() {
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const dateFilter = document.getElementById('filter-date').value;
+        const proFilter = document.getElementById('filter-pro').value;
+        const stFilter = document.getElementById('filter-status').value;
+
+        const filtered = appts.filter((a) => {
+          if (viewMode === 'day' && dateFilter && a.date !== dateFilter) return false;
+          if (proFilter !== 'all' && a.pro !== proFilter) return false;
+          if (stFilter !== 'all' && a.status !== stFilter) return false;
+          if (q && !`${a.patient} ${a.procedure} ${a.pro}`.toLowerCase().includes(q)) return false;
+          return true;
+        }).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+
+        const container = document.getElementById('agenda-container');
+        if (!filtered.length) {
+          container.innerHTML = '<div class="bg-white border border-slate-200 rounded-xl py-12 text-center text-slate-400 text-sm">Nenhum atendimento encontrado para os filtros selecionados.</div>';
+          return;
+        }
+
+        if (viewMode === 'day') {
+          container.innerHTML = filtered.map((a) => `
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex items-start sm:items-center gap-4">
+                <div class="bg-slate-900 text-white font-mono font-bold text-sm px-3 py-2 rounded-lg text-center min-w-[74px]">
+                  ${a.time}
+                </div>
+                <div>
+                  <div class="flex flex-wrap items-center gap-2">
+                    <h3 class="font-bold text-slate-900 text-base">${window.C4Utils.escapeHtml(a.patient)}</h3>
+                    <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full border ${statusStyle(a.status)}">${a.status}</span>
+                  </div>
+                  <p class="text-xs text-slate-600 mt-0.5">
+                    <strong>${window.C4Utils.escapeHtml(a.procedure)}</strong> • ${window.C4Utils.escapeHtml(a.pro)} • <span class="font-mono">${window.C4Utils.escapeHtml(a.phone)}</span>
+                  </p>
+                </div>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 justify-end">
+                <span class="font-mono font-bold text-slate-800 text-sm mr-2">${window.C4Utils.formatBRL(a.value)}</span>
+                <button onclick="sendReminder24h(${a.id})" class="px-3 py-1.5 text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg inline-flex items-center gap-1.5">
+                  <i data-lucide="message-circle" class="w-3.5 h-3.5"></i>
+                  <span>Lembrete 24h</span>
+                </button>
+                <button onclick="setStatus(${a.id}, 'Confirmado')" class="px-3 py-1.5 text-xs font-semibold bg-sky-50 hover:bg-sky-100 text-sky-700 border border-sky-200 rounded-lg">
+                  Confirmar
+                </button>
+                <button onclick="setStatus(${a.id}, 'Remarcar')" class="px-2.5 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-rose-50 hover:text-rose-700 text-slate-600 rounded-lg">
+                  Remarcar
+                </button>
+                <button onclick="deleteAppt(${a.id})" class="p-1.5 text-slate-400 hover:text-rose-600 rounded">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          // Weekly grouped view
+          const byDate = {};
+          filtered.forEach((a) => {
+            if (!byDate[a.date]) byDate[a.date] = [];
+            byDate[a.date].push(a);
+          });
+          container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-4">` +
+            Object.keys(byDate).sort().map((dt) => `
+              <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+                <div class="px-4 py-3 bg-slate-900 text-white font-mono text-xs font-bold flex justify-between">
+                  <span>${dt.split('-').reverse().join('/')}</span>
+                  <span>${byDate[dt].length} atend.</span>
+                </div>
+                <div class="divide-y divide-slate-100 p-3 space-y-2">
+                  ${byDate[dt].map((a) => `
+                    <div class="pt-2 first:pt-0">
+                      <div class="flex items-center justify-between">
+                        <span class="font-mono text-xs font-bold text-sky-700">${a.time}</span>
+                        <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${statusStyle(a.status)}">${a.status}</span>
+                      </div>
+                      <div class="font-semibold text-sm text-slate-900 mt-0.5">${window.C4Utils.escapeHtml(a.patient)}</div>
+                      <div class="text-xs text-slate-500">${window.C4Utils.escapeHtml(a.procedure)}</div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `).join('') + `</div>`;
+        }
+        lucide.createIcons();
+      }
+
+      function renderAll() {
+        populatePros();
+        renderKPIs();
+        renderAgenda();
+        lucide.createIcons();
+      }
+
+      window.sendReminder24h = function (id) {
+        const a = appts.find((x) => x.id === id);
+        if (!a) return;
+        a.status = 'Enviado 24h';
+        saveData();
+        renderAll();
+        window.C4Utils.toast(`Lembrete WhatsApp 24h enviado para ${a.patient} (${a.time})!`);
+      };
+
+      window.setStatus = function (id, status) {
+        const a = appts.find((x) => x.id === id);
+        if (!a) return;
+        a.status = status;
+        saveData();
+        renderAll();
+        window.C4Utils.toast(`Status atualizado para "${status}".`);
+      };
+
+      window.deleteAppt = function (id) {
+        appts = appts.filter((x) => x.id !== id);
+        saveData();
+        renderAll();
+      };
+
+      // View switcher
+      const btnDay = document.getElementById('btn-view-day');
+      const btnWeek = document.getElementById('btn-view-week');
+      btnDay.addEventListener('click', () => {
+        viewMode = 'day';
+        btnDay.className = 'px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white';
+        btnWeek.className = 'px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900';
+        renderAgenda();
+      });
+      btnWeek.addEventListener('click', () => {
+        viewMode = 'week';
+        btnWeek.className = 'px-3 py-1.5 text-xs font-semibold rounded-md bg-sky-600 text-white';
+        btnDay.className = 'px-3 py-1.5 text-xs font-semibold rounded-md text-slate-600 hover:text-slate-900';
+        renderAgenda();
+      });
+
+      // Modal
+      const modal = document.getElementById('appt-modal');
+      document.getElementById('btn-new-appt').addEventListener('click', () => {
+        document.getElementById('f-date').value = document.getElementById('filter-date').value || TODAY;
+        modal.classList.remove('hidden');
+      });
+      document.getElementById('btn-close-modal').addEventListener('click', () => modal.classList.add('hidden'));
+      document.getElementById('btn-cancel-modal').addEventListener('click', () => modal.classList.add('hidden'));
+
+      document.getElementById('appt-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        appts.push({
+          id: Date.now(),
+          patient: document.getElementById('f-patient').value.trim(),
+          phone: document.getElementById('f-phone').value.trim(),
+          pro: document.getElementById('f-pro').value,
+          date: document.getElementById('f-date').value,
+          time: document.getElementById('f-time').value,
+          procedure: document.getElementById('f-proc').value.trim(),
+          value: Number(document.getElementById('f-val').value || 0),
+          status: 'Pendente',
+        });
+        saveData();
+        modal.classList.add('hidden');
+        document.getElementById('appt-form').reset();
+        renderAll();
+        window.C4Utils.toast('Agendamento criado!');
+      });
+
+      ['search-input', 'filter-date', 'filter-pro', 'filter-status'].forEach((id) => {
+        document.getElementById(id).addEventListener('input', renderAll);
+        document.getElementById(id).addEventListener('change', renderAll);
+      });
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

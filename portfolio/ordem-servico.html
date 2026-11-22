@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestor de Ordens de Serviço (OS) | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @media print {
+      body * { visibility: hidden; }
+      #receipt-print-area, #receipt-print-area * { visibility: visible; }
+      #receipt-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        padding: 20px;
+        background: #fff;
+      }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Gestor de Ordens de Serviço (OS)" data-storage-key="c4_v1_ordem_servico"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="wrench" class="w-4 h-4"></i>
+          <span>Assistência Técnica &amp; Serviços V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Ordens de Serviço &amp; Assinatura Digital
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Gerencie chamados técnicos, colete assinatura na tela (dedo ou mouse) e gere comprovantes imprimíveis.
+        </p>
+      </div>
+      <button id="btn-new-os" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm transition">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span>Nova Ordem de Serviço</span>
+      </button>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div class="sm:col-span-2 relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="search-input" type="text" placeholder="Buscar por nº OS, cliente, equipamento ou técnico..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <select id="filter-status" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+          <option value="all">Todos os Status</option>
+          <option value="Aberta">Aberta</option>
+          <option value="Em Execução">Em Execução</option>
+          <option value="Aguardando Peça">Aguardando Peça</option>
+          <option value="Concluída">Concluída</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Lista de OS -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4" id="os-grid"></section>
+    <div id="empty-state" class="hidden bg-white border border-slate-200 rounded-xl py-12 text-center text-slate-400 text-sm">
+      Nenhuma Ordem de Serviço encontrada.
+    </div>
+  </main>
+
+  <!-- Modal Nova/Editar OS + Assinatura -->
+  <div id="os-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-2xl my-8 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 id="modal-title" class="text-lg font-bold text-slate-900">Nova Ordem de Serviço</h3>
+        <button id="btn-close-modal" class="text-slate-400 hover:text-slate-700 p-1">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="os-form" class="p-6 space-y-4 max-h-[82vh] overflow-y-auto">
+        <input type="hidden" id="field-id" />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Cliente *</label>
+            <input id="field-client" type="text" required placeholder="Ex: João Almeida / Padaria Central" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Telefone / WhatsApp</label>
+            <input id="field-phone" type="text" placeholder="(12) 99999-0000" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Equipamento / Local *</label>
+            <input id="field-equipment" type="text" required placeholder="Ex: Ar-Condicionado Split 18k BTUs" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Técnico Responsável *</label>
+            <input id="field-tech" type="text" required placeholder="Ex: Marcos Oliveira" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Status</label>
+            <select id="field-status" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-sky-500">
+              <option value="Aberta">Aberta</option>
+              <option value="Em Execução">Em Execução</option>
+              <option value="Aguardando Peça">Aguardando Peça</option>
+              <option value="Concluída">Concluída</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Valor Total (R$) *</label>
+            <input id="field-value" type="number" step="0.01" min="0" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg font-mono focus:outline-none focus:ring-2 focus:ring-sky-500" />
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Defeito Relatado / Serviço Executado *</label>
+          <textarea id="field-desc" rows="2" required placeholder="Descreva o diagnóstico, peças trocadas e serviços realizados..." class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"></textarea>
+        </div>
+
+        <!-- Canvas Assinatura Digital -->
+        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
+                <i data-lucide="pen-tool" class="w-3.5 h-3.5 text-sky-600"></i>
+                <span>Assinatura Digital do Cliente (Dedo ou Mouse)</span>
+              </span>
+              <p class="text-[11px] text-slate-500">Assine no quadro abaixo para validar a execução do serviço.</p>
+            </div>
+            <button type="button" id="btn-clear-sig" class="text-xs font-semibold text-rose-600 hover:text-rose-700 px-2.5 py-1 rounded border border-rose-200 bg-white">
+              Limpar Assinatura
+            </button>
+          </div>
+          <div class="bg-white border-2 border-dashed border-slate-300 rounded-lg overflow-hidden relative">
+            <canvas id="signature-canvas" class="w-full h-40 block cursor-crosshair" style="touch-action: none;"></canvas>
+            <span id="sig-placeholder" class="pointer-events-none absolute inset-0 flex items-center justify-center text-xs text-slate-300 font-mono uppercase tracking-widest">
+              Assine Aqui
+            </span>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-modal" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg shadow-sm">Salvar OS</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Comprovante Imprimível -->
+  <div id="receipt-modal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-xl my-8 overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50 no-print">
+        <h3 class="text-base font-bold text-slate-900">Comprovante de Ordem de Serviço</h3>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="inline-flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold px-3 py-1.5 rounded-lg">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>Imprimir / PDF</span>
+          </button>
+          <button id="btn-close-receipt" class="text-slate-400 hover:text-slate-700 p-1">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+      <div id="receipt-print-area" class="p-6 space-y-5 text-sm"></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_ordem_servico';
+
+      // Sample SVG signature encoded as data URL for demo OS
+      const DEMO_SIG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="360" height="120" viewBox="0 0 360 120">' +
+        '<path d="M35,78 C55,35 72,32 76,74 C80,92 98,55 112,62 C125,68 122,82 140,70 C158,58 175,40 185,68 C195,90 220,55 245,65 C270,75 295,62 325,58" fill="none" stroke="#0F172A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>' +
+        '</svg>'
+      );
+
+      const DEFAULT_DATA = [
+        {
+          id: 'OS-4091',
+          date: '2026-11-20',
+          client: 'Restaurante Sabor da Serra',
+          phone: '(12) 99123-4567',
+          equipment: 'Câmara Fria Industrial - Compressor',
+          tech: 'Marcos Oliveira',
+          status: 'Concluída',
+          value: 1450.0,
+          desc: 'Substituição de relé térmico, recarga de gás R404A e calibração do controlador digital.',
+          signature: DEMO_SIG,
+        },
+        {
+          id: 'OS-4092',
+          date: '2026-11-21',
+          client: 'Escritório Contábil Horizonte',
+          phone: '(12) 98812-3300',
+          equipment: 'Servidor Dell PowerEdge T150',
+          tech: 'Lucas Ferreira',
+          status: 'Em Execução',
+          value: 680.0,
+          desc: 'Limpeza interna, troca de pasta térmica e configuração de rotina de backup em nuvem.',
+          signature: '',
+        },
+        {
+          id: 'OS-4093',
+          date: '2026-11-22',
+          client: 'Academia Corpo Ativo',
+          phone: '(12) 99744-1122',
+          equipment: 'Esteira Ergométrica Movement LX',
+          tech: 'Marcos Oliveira',
+          status: 'Aguardando Peça',
+          value: 890.0,
+          desc: 'Inversor de frequência queimado. Peça solicitada ao fornecedor com previsão para amanhã.',
+          signature: '',
+        },
+        {
+          id: 'OS-4094',
+          date: '2026-11-22',
+          client: 'Condomínio Residencial Jardins',
+          phone: '(12) 98100-9988',
+          equipment: 'Portão Eletrônico PPA JetFlex',
+          tech: 'Rafael Santos',
+          status: 'Aberta',
+          value: 420.0,
+          desc: 'Sensor de fim de curso desregulado e necessidade de reprogramação de 12 controles.',
+          signature: '',
+        },
+      ];
+
+      let orders = loadData();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(orders));
+      }
+
+      window.resetDemoData = function () {
+        orders = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+        renderAll();
+        window.C4Utils.toast('Dados de demonstração restaurados!', 'info');
+      };
+
+      function renderKPIs() {
+        const open = orders.filter((o) => o.status === 'Aberta' || o.status === 'Aguardando Peça').length;
+        const running = orders.filter((o) => o.status === 'Em Execução').length;
+        const done = orders.filter((o) => o.status === 'Concluída').length;
+        const totalVal = orders.reduce((acc, o) => acc + Number(o.value || 0), 0);
+
+        const cards = [
+          { label: 'OS Abertas / Aguardando', value: open, sub: 'Na fila de atendimento', icon: 'clock', color: 'text-amber-600 bg-amber-50' },
+          { label: 'Em Execução', value: running, sub: 'Técnicos em campo', icon: 'wrench', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Concluídas & Assinadas', value: done, sub: 'Comprovante pronto', icon: 'check-circle-2', color: 'text-emerald-600 bg-emerald-50' },
+          { label: 'Volume Total em OS', value: window.C4Utils.formatBRL(totalVal), sub: `${orders.length} ordens registradas`, icon: 'banknote', color: 'text-indigo-600 bg-indigo-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-2xl font-extrabold text-slate-900 font-mono mt-1">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg ${c.color}">
+              <i data-lucide="${c.icon}" class="w-5 h-5"></i>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      function statusBadge(status) {
+        const map = {
+          'Aberta': 'bg-slate-100 text-slate-700 border-slate-200',
+          'Em Execução': 'bg-sky-50 text-sky-700 border-sky-200',
+          'Aguardando Peça': 'bg-amber-50 text-amber-700 border-amber-200',
+          'Concluída': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+        };
+        return map[status] || 'bg-slate-100 text-slate-700 border-slate-200';
+      }
+
+      function renderGrid() {
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const st = document.getElementById('filter-status').value;
+
+        const filtered = orders.filter((o) => {
+          if (st !== 'all' && o.status !== st) return false;
+          if (q) {
+            const hay = `${o.id} ${o.client} ${o.equipment} ${o.tech} ${o.desc}`.toLowerCase();
+            if (!hay.includes(q)) return false;
+          }
+          return true;
+        });
+
+        const grid = document.getElementById('os-grid');
+        const empty = document.getElementById('empty-state');
+
+        if (!filtered.length) {
+          grid.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        grid.innerHTML = filtered.map((o) => `
+          <article class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col justify-between gap-4">
+            <div class="space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <span class="font-mono text-xs font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded">${window.C4Utils.escapeHtml(o.id)}</span>
+                  <span class="text-xs text-slate-400 ml-2">${o.date.split('-').reverse().join('/')}</span>
+                </div>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border ${statusBadge(o.status)}">${o.status}</span>
+              </div>
+
+              <div>
+                <h3 class="font-bold text-slate-900 text-base">${window.C4Utils.escapeHtml(o.client)}</h3>
+                <p class="text-xs font-medium text-slate-600 mt-0.5 flex items-center gap-1.5">
+                  <i data-lucide="cpu" class="w-3.5 h-3.5 text-slate-400"></i>
+                  <span>${window.C4Utils.escapeHtml(o.equipment)}</span>
+                </p>
+              </div>
+
+              <p class="text-xs text-slate-500 bg-slate-50 p-3 rounded-lg border border-slate-100 leading-relaxed">
+                ${window.C4Utils.escapeHtml(o.desc)}
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div class="text-[11px] text-slate-400">Técnico: <strong class="text-slate-700">${window.C4Utils.escapeHtml(o.tech)}</strong></div>
+                <div class="text-base font-extrabold font-mono text-slate-900">${window.C4Utils.formatBRL(o.value)}</div>
+              </div>
+              <div class="flex items-center gap-1.5">
+                ${o.signature
+                  ? `<span class="text-[11px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-1 rounded inline-flex items-center gap-1"><i data-lucide="check" class="w-3 h-3"></i>Assinada</span>`
+                  : `<span class="text-[11px] text-slate-400 bg-slate-50 border border-slate-200 px-2 py-1 rounded">Sem assinatura</span>`
+                }
+                <button onclick="openReceipt('${o.id}')" class="px-2.5 py-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg inline-flex items-center gap-1" title="Comprovante Imprimível">
+                  <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                  <span>Comprovante</span>
+                </button>
+                <button onclick="editOS('${o.id}')" class="p-1.5 text-slate-500 hover:text-sky-600 hover:bg-sky-50 rounded-lg" title="Editar / Assinar">
+                  <i data-lucide="pen-tool" class="w-4 h-4"></i>
+                </button>
+                <button onclick="deleteOS('${o.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg" title="Excluir">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </div>
+            </div>
+          </article>
+        `).join('');
+      }
+
+      function renderAll() {
+        renderKPIs();
+        renderGrid();
+        lucide.createIcons();
+      }
+
+      // Signature Canvas Logic (supports mouse & touch via Pointer Events)
+      const canvas = document.getElementById('signature-canvas');
+      const ctx = canvas.getContext('2d');
+      const placeholder = document.getElementById('sig-placeholder');
+      let isDrawing = false;
+      let hasSignature = false;
+
+      function resizeCanvas(existingDataUrl = '') {
+        const rect = canvas.getBoundingClientRect();
+        const dpr = window.devicePixelRatio || 1;
+        canvas.width = Math.max(300, rect.width * dpr);
+        canvas.height = Math.max(160, rect.height * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = '#0F172A';
+        hasSignature = false;
+        placeholder.classList.remove('hidden');
+
+        if (existingDataUrl) {
+          const img = new Image();
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0, rect.width, rect.height);
+            hasSignature = true;
+            placeholder.classList.add('hidden');
+          };
+          img.src = existingDataUrl;
+        }
+      }
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      }
+
+      canvas.addEventListener('pointerdown', (e) => {
+        e.preventDefault();
+        canvas.setPointerCapture(e.pointerId);
+        isDrawing = true;
+        hasSignature = true;
+        placeholder.classList.add('hidden');
+        const p = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+      });
+
+      canvas.addEventListener('pointermove', (e) => {
+        if (!isDrawing) return;
+        e.preventDefault();
+        const p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      });
+
+      function stopDrawing(e) {
+        if (!isDrawing) return;
+        isDrawing = false;
+        ctx.closePath();
+      }
+      canvas.addEventListener('pointerup', stopDrawing);
+      canvas.addEventListener('pointercancel', stopDrawing);
+
+      document.getElementById('btn-clear-sig').addEventListener('click', () => {
+        const rect = canvas.getBoundingClientRect();
+        ctx.clearRect(0, 0, rect.width, rect.height);
+        hasSignature = false;
+        placeholder.classList.remove('hidden');
+      });
+
+      // Modal controls
+      const osModal = document.getElementById('os-modal');
+      function openOSModal(os = null) {
+        document.getElementById('modal-title').textContent = os ? `Editar ${os.id}` : 'Nova Ordem de Serviço';
+        document.getElementById('field-id').value = os ? os.id : '';
+        document.getElementById('field-client').value = os ? os.client : '';
+        document.getElementById('field-phone').value = os ? os.phone : '';
+        document.getElementById('field-equipment').value = os ? os.equipment : '';
+        document.getElementById('field-tech').value = os ? os.tech : '';
+        document.getElementById('field-status').value = os ? os.status : 'Aberta';
+        document.getElementById('field-value').value = os ? os.value : '';
+        document.getElementById('field-desc').value = os ? os.desc : '';
+        osModal.classList.remove('hidden');
+        requestAnimationFrame(() => resizeCanvas(os ? os.signature : ''));
+      }
+
+      document.getElementById('btn-new-os').addEventListener('click', () => openOSModal(null));
+      document.getElementById('btn-close-modal').addEventListener('click', () => osModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-modal').addEventListener('click', () => osModal.classList.add('hidden'));
+
+      document.getElementById('os-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('field-id').value;
+        const sigData = hasSignature ? canvas.toDataURL('image/png') : '';
+        const payload = {
+          id: id || ('OS-' + Math.floor(4100 + Math.random() * 5800)),
+          date: id ? (orders.find((x) => x.id === id)?.date || new Date().toISOString().slice(0, 10)) : new Date().toISOString().slice(0, 10),
+          client: document.getElementById('field-client').value.trim(),
+          phone: document.getElementById('field-phone').value.trim(),
+          equipment: document.getElementById('field-equipment').value.trim(),
+          tech: document.getElementById('field-tech').value.trim(),
+          status: document.getElementById('field-status').value,
+          value: Number(document.getElementById('field-value').value || 0),
+          desc: document.getElementById('field-desc').value.trim(),
+          signature: sigData,
+        };
+
+        if (id) {
+          const idx = orders.findIndex((o) => o.id === id);
+          if (idx >= 0) orders[idx] = payload;
+          window.C4Utils.toast(`${payload.id} atualizada!`);
+        } else {
+          orders.unshift(payload);
+          window.C4Utils.toast(`${payload.id} criada!`);
+        }
+        saveData();
+        osModal.classList.add('hidden');
+        renderAll();
+      });
+
+      window.editOS = function (id) {
+        const os = orders.find((o) => o.id === id);
+        if (os) openOSModal(os);
+      };
+
+      window.deleteOS = function (id) {
+        orders = orders.filter((o) => o.id !== id);
+        saveData();
+        renderAll();
+        window.C4Utils.toast(`OS ${id} excluída.`, 'warning');
+      };
+
+      // Receipt Print Modal
+      const receiptModal = document.getElementById('receipt-modal');
+      document.getElementById('btn-close-receipt').addEventListener('click', () => receiptModal.classList.add('hidden'));
+
+      window.openReceipt = function (id) {
+        const os = orders.find((o) => o.id === id);
+        if (!os) return;
+
+        document.getElementById('receipt-print-area').innerHTML = `
+          <div class="border-b-2 border-slate-900 pb-4 flex items-start justify-between">
+            <div>
+              <div class="text-xs font-mono uppercase tracking-widest text-slate-500">Control 4 Sistemas // Modelo OS</div>
+              <h2 class="text-xl font-extrabold text-slate-900 mt-0.5">COMPROVANTE DE ORDEM DE SERVIÇO</h2>
+            </div>
+            <div class="text-right font-mono">
+              <div class="text-lg font-bold text-slate-900">${window.C4Utils.escapeHtml(os.id)}</div>
+              <div class="text-xs text-slate-500">Data: ${os.date.split('-').reverse().join('/')}</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-lg border border-slate-200">
+            <div>
+              <div class="text-[11px] font-mono uppercase text-slate-400">Cliente</div>
+              <div class="font-bold text-slate-900">${window.C4Utils.escapeHtml(os.client)}</div>
+              <div class="text-xs text-slate-600">${window.C4Utils.escapeHtml(os.phone || 'Não informado')}</div>
+            </div>
+            <div>
+              <div class="text-[11px] font-mono uppercase text-slate-400">Técnico &amp; Status</div>
+              <div class="font-bold text-slate-900">${window.C4Utils.escapeHtml(os.tech)}</div>
+              <div class="text-xs text-slate-600">Status: ${window.C4Utils.escapeHtml(os.status)}</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[11px] font-mono uppercase text-slate-400 mb-1">Equipamento / Objeto</div>
+            <div class="font-semibold text-slate-900">${window.C4Utils.escapeHtml(os.equipment)}</div>
+          </div>
+
+          <div>
+            <div class="text-[11px] font-mono uppercase text-slate-400 mb-1">Descrição Técnica dos Serviços</div>
+            <div class="p-3 border border-slate-200 rounded-lg text-slate-700 leading-relaxed">${window.C4Utils.escapeHtml(os.desc)}</div>
+          </div>
+
+          <div class="flex items-center justify-between border-t border-b border-slate-200 py-3">
+            <span class="font-semibold text-slate-700">Valor Total dos Serviços / Peças</span>
+            <span class="text-xl font-extrabold font-mono text-slate-900">${window.C4Utils.formatBRL(os.value)}</span>
+          </div>
+
+          <div class="pt-2">
+            <div class="text-[11px] font-mono uppercase text-slate-400 mb-2">Assinatura Digital do Cliente</div>
+            ${os.signature
+              ? `<div class="border border-slate-200 rounded-lg p-3 bg-white flex flex-col items-center">
+                   <img src="${os.signature}" alt="Assinatura do Cliente" class="max-h-28 object-contain" />
+                   <div class="w-64 border-t border-slate-400 mt-2 pt-1 text-center text-xs text-slate-500">${window.C4Utils.escapeHtml(os.client)}</div>
+                 </div>`
+              : `<div class="border border-dashed border-slate-300 rounded-lg p-6 text-center text-xs text-slate-400">
+                   Ordem de Serviço ainda não assinada digitalmente. Clique em editar para coletar assinatura.
+                 </div>`
+            }
+          </div>
+        `;
+        receiptModal.classList.remove('hidden');
+      };
+
+      document.getElementById('search-input').addEventListener('input', renderGrid);
+      document.getElementById('filter-status').addEventListener('change', renderGrid);
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

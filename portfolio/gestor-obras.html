@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle de Obras e Custos | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Controle de Obras e Custos" data-storage-key="c4_v1_gestor_obras"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="hard-hat" class="w-4 h-4"></i>
+          <span>Engenharia &amp; Construção V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Gestor de Obras: Orçado vs. Realizado
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Controle lançamentos de materiais e mão de obra por etapa e evite estouros no orçamento.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-new-cost" class="inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Lançar Custo na Obra</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Cards de Obras (Orçado vs Realizado) -->
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-4" id="projects-grid"></section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+          <input id="search-input" type="text" placeholder="Buscar lançamento ou fornecedor..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+        </div>
+        <select id="filter-project" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white"></select>
+        <select id="filter-kind" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
+          <option value="all">Materiais &amp; Mão de Obra</option>
+          <option value="Material">Somente Materiais</option>
+          <option value="Mão de Obra">Somente Mão de Obra</option>
+        </select>
+        <select id="filter-stage" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white">
+          <option value="all">Todas as Etapas</option>
+          <option value="Fundação">Fundação</option>
+          <option value="Estrutura & Alvenaria">Estrutura &amp; Alvenaria</option>
+          <option value="Elétrica & Hidráulica">Elétrica &amp; Hidráulica</option>
+          <option value="Acabamento">Acabamento</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Tabela de Lançamentos -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-mono uppercase tracking-wider text-slate-500">
+              <th class="py-3 px-4">Data</th>
+              <th class="py-3 px-4">Obra / Etapa</th>
+              <th class="py-3 px-4">Tipo</th>
+              <th class="py-3 px-4">Descrição / Fornecedor</th>
+              <th class="py-3 px-4 text-right">Valor</th>
+              <th class="py-3 px-4 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="costs-tbody" class="divide-y divide-slate-100 text-sm"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Novo Lançamento -->
+  <div id="cost-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Lançar Custo de Obra</h3>
+        <button id="btn-close-cost" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="cost-form" class="p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Obra *</label>
+            <select id="fc-project" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white"></select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Tipo de Custo *</label>
+            <select id="fc-kind" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white">
+              <option value="Material">Material</option>
+              <option value="Mão de Obra">Mão de Obra</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Etapa *</label>
+            <select id="fc-stage" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg bg-white">
+              <option value="Fundação">Fundação</option>
+              <option value="Estrutura & Alvenaria">Estrutura &amp; Alvenaria</option>
+              <option value="Elétrica & Hidráulica">Elétrica &amp; Hidráulica</option>
+              <option value="Acabamento">Acabamento</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Descrição *</label>
+            <input id="fc-desc" type="text" required placeholder="Ex: 120 sacos Cimento CP-II / Diária Equipe Pedreiros" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Fornecedor / Prestador *</label>
+            <input id="fc-vendor" type="text" required class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Valor (R$) *</label>
+            <input id="fc-val" type="number" step="0.01" min="1" required class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-cost" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg">Salvar Lançamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_gestor_obras';
+
+      const DEFAULT_DATA = {
+        projects: [
+          { id: 1, name: 'Residencial Vila Nova - Casa 04', client: 'Família Azevedo', budget: 180000 },
+          { id: 2, name: 'Reforma Clínica Sorriso', client: 'Grupo Saúde Vale', budget: 85000 },
+          { id: 3, name: 'Galpão Logístico Dutra Km 142', client: 'TransVale Logística', budget: 320000 },
+        ],
+        costs: [
+          { id: 1, date: '2026-11-18', projectId: 1, kind: 'Material', stage: 'Estrutura & Alvenaria', desc: 'Concreto Usinado FCK 25 (18m³)', vendor: 'Concremix Vale', value: 11800 },
+          { id: 2, date: '2026-11-19', projectId: 1, kind: 'Mão de Obra', stage: 'Estrutura & Alvenaria', desc: 'Medição Quinzenal Alvenaria', vendor: 'Empreiteira Rocha', value: 14500 },
+          { id: 3, date: '2026-11-20', projectId: 1, kind: 'Material', stage: 'Elétrica & Hidráulica', desc: 'Tubos, Conexões Tigre e Cabos Flex', vendor: 'Casa do Construtor', value: 9400 },
+          { id: 4, date: '2026-11-19', projectId: 2, kind: 'Material', stage: 'Acabamento', desc: 'Porcelanato 80x80 + Argamassa AC-III', vendor: 'Revestir Prime', value: 24600 },
+          { id: 5, date: '2026-11-21', projectId: 2, kind: 'Mão de Obra', stage: 'Acabamento', desc: 'Instalação Gesso Acartonado e Pintura', vendor: 'Equipe Cardoso', value: 18900 },
+          { id: 6, date: '2026-11-21', projectId: 2, kind: 'Material', stage: 'Elétrica & Hidráulica', desc: 'Luminárias LED e Quadro Disjuntores', vendor: 'EletroLuz', value: 34200 },
+          { id: 7, date: '2026-11-22', projectId: 3, kind: 'Material', stage: 'Fundação', desc: 'Aço CA-50 10mm e 12.5mm (4 Ton)', vendor: 'Gerdau Comercial', value: 31500 },
+          { id: 8, date: '2026-11-22', projectId: 3, kind: 'Mão de Obra', stage: 'Fundação', desc: 'Escavação e Estacas Perfuradas', vendor: 'Sondagens SP', value: 28000 },
+        ],
+      };
+
+      let state = loadData();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      window.resetDemoData = function () {
+        state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+        renderAll();
+        window.C4Utils.toast('Dados de obras restaurados!', 'info');
+      };
+
+      function getProjectSpent(projId) {
+        return state.costs.filter((c) => c.projectId === projId).reduce((a, b) => a + Number(b.value || 0), 0);
+      }
+
+      function renderKPIs() {
+        const totalBudget = state.projects.reduce((a, b) => a + b.budget, 0);
+        const totalSpent = state.costs.reduce((a, b) => a + b.value, 0);
+        const matTotal = state.costs.filter((c) => c.kind === 'Material').reduce((a, b) => a + b.value, 0);
+        const laborTotal = state.costs.filter((c) => c.kind === 'Mão de Obra').reduce((a, b) => a + b.value, 0);
+
+        const cards = [
+          { label: 'Total Orçado (Obras)', value: window.C4Utils.formatBRL(totalBudget), sub: `${state.projects.length} obras ativas`, icon: 'blueprint', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Total Realizado', value: window.C4Utils.formatBRL(totalSpent), sub: `${((totalSpent / (totalBudget || 1)) * 100).toFixed(1)}% do orçamento`, icon: 'wallet', color: 'text-indigo-600 bg-indigo-50' },
+          { label: 'Materiais', value: window.C4Utils.formatBRL(matTotal), sub: 'Insumos e equipamentos', icon: 'package', color: 'text-amber-600 bg-amber-50' },
+          { label: 'Mão de Obra', value: window.C4Utils.formatBRL(laborTotal), sub: 'Equipes e empreiteiros', icon: 'users', color: 'text-emerald-600 bg-emerald-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div>
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-xl sm:text-2xl font-extrabold font-mono text-slate-900 mt-1">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg ${c.color}"><i data-lucide="${c.icon}" class="w-5 h-5"></i></div>
+          </div>
+        `).join('');
+      }
+
+      function renderProjects() {
+        document.getElementById('projects-grid').innerHTML = state.projects.map((p) => {
+          const spent = getProjectSpent(p.id);
+          const pct = (spent / (p.budget || 1)) * 100;
+          const barPct = Math.min(100, pct);
+          const isOver = pct > 100;
+          const isWarn = pct >= 85 && pct <= 100;
+          const barColor = isOver ? 'bg-rose-600' : isWarn ? 'bg-amber-500' : 'bg-emerald-500';
+          const badge = isOver
+            ? `<span class="text-[11px] font-bold bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full">Estourado (${pct.toFixed(1)}%)</span>`
+            : isWarn
+              ? `<span class="text-[11px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Atenção (${pct.toFixed(1)}%)</span>`
+              : `<span class="text-[11px] font-bold bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">No Prazo (${pct.toFixed(1)}%)</span>`;
+
+          return `
+            <div class="bg-white border ${isOver ? 'border-rose-300' : 'border-slate-200'} rounded-xl p-5 shadow-sm space-y-3">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <h3 class="font-bold text-slate-900 text-base">${window.C4Utils.escapeHtml(p.name)}</h3>
+                  <p class="text-xs text-slate-500">Cliente: ${window.C4Utils.escapeHtml(p.client)}</p>
+                </div>
+                ${badge}
+              </div>
+
+              <div class="space-y-1.5">
+                <div class="flex justify-between text-xs font-mono">
+                  <span class="text-slate-600">Realizado: <strong class="${isOver ? 'text-rose-600' : 'text-slate-900'}">${window.C4Utils.formatBRL(spent)}</strong></span>
+                  <span class="text-slate-500">Orçado: <strong>${window.C4Utils.formatBRL(p.budget)}</strong></span>
+                </div>
+                <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full ${barColor} transition-all" style="width:${barPct.toFixed(1)}%"></div>
+                </div>
+                <div class="text-[11px] font-mono ${p.budget - spent < 0 ? 'text-rose-600 font-bold' : 'text-slate-400'}">
+                  Saldo: ${window.C4Utils.formatBRL(p.budget - spent)}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      function populateProjectSelects() {
+        const fProj = document.getElementById('filter-project');
+        const cur = fProj.value;
+        fProj.innerHTML = '<option value="all">Todas as Obras</option>' +
+          state.projects.map((p) => `<option value="${p.id}">${window.C4Utils.escapeHtml(p.name)}</option>`).join('');
+        if (cur) fProj.value = cur || 'all';
+
+        document.getElementById('fc-project').innerHTML =
+          state.projects.map((p) => `<option value="${p.id}">${window.C4Utils.escapeHtml(p.name)}</option>`).join('');
+      }
+
+      function renderTable() {
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const projF = document.getElementById('filter-project').value;
+        const kindF = document.getElementById('filter-kind').value;
+        const stageF = document.getElementById('filter-stage').value;
+
+        const filtered = state.costs.filter((c) => {
+          if (projF !== 'all' && String(c.projectId) !== projF) return false;
+          if (kindF !== 'all' && c.kind !== kindF) return false;
+          if (stageF !== 'all' && c.stage !== stageF) return false;
+          if (q && !`${c.desc} ${c.vendor} ${c.stage}`.toLowerCase().includes(q)) return false;
+          return true;
+        });
+
+        document.getElementById('costs-tbody').innerHTML = filtered.map((c) => {
+          const proj = state.projects.find((p) => p.id === c.projectId);
+          return `
+            <tr class="hover:bg-slate-50">
+              <td class="py-3 px-4 font-mono text-xs text-slate-500 whitespace-nowrap">${c.date.split('-').reverse().join('/')}</td>
+              <td class="py-3 px-4">
+                <div class="font-semibold text-slate-900 text-xs">${window.C4Utils.escapeHtml(proj ? proj.name : '—')}</div>
+                <div class="text-[11px] text-slate-500">${window.C4Utils.escapeHtml(c.stage)}</div>
+              </td>
+              <td class="py-3 px-4 whitespace-nowrap">
+                <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full ${c.kind === 'Material' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-sky-50 text-sky-700 border border-sky-200'}">
+                  ${c.kind}
+                </span>
+              </td>
+              <td class="py-3 px-4">
+                <div class="font-medium text-slate-900">${window.C4Utils.escapeHtml(c.desc)}</div>
+                <div class="text-xs text-slate-500">${window.C4Utils.escapeHtml(c.vendor)}</div>
+              </td>
+              <td class="py-3 px-4 text-right font-mono font-bold text-slate-900 whitespace-nowrap">${window.C4Utils.formatBRL(c.value)}</td>
+              <td class="py-3 px-4 text-right">
+                <button onclick="deleteCost(${c.id})" class="p-1.5 text-slate-400 hover:text-rose-600 rounded" title="Excluir">
+                  <i data-lucide="trash-2" class="w-4 h-4"></i>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+        lucide.createIcons();
+      }
+
+      function renderAll() {
+        populateProjectSelects();
+        renderKPIs();
+        renderProjects();
+        renderTable();
+        lucide.createIcons();
+      }
+
+      window.deleteCost = function (id) {
+        state.costs = state.costs.filter((c) => c.id !== id);
+        saveData();
+        renderAll();
+      };
+
+      const costModal = document.getElementById('cost-modal');
+      document.getElementById('btn-new-cost').addEventListener('click', () => costModal.classList.remove('hidden'));
+      document.getElementById('btn-close-cost').addEventListener('click', () => costModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-cost').addEventListener('click', () => costModal.classList.add('hidden'));
+
+      document.getElementById('cost-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        state.costs.unshift({
+          id: Date.now(),
+          date: new Date().toISOString().slice(0, 10),
+          projectId: Number(document.getElementById('fc-project').value),
+          kind: document.getElementById('fc-kind').value,
+          stage: document.getElementById('fc-stage').value,
+          desc: document.getElementById('fc-desc').value.trim(),
+          vendor: document.getElementById('fc-vendor').value.trim(),
+          value: Number(document.getElementById('fc-val').value || 0),
+        });
+        saveData();
+        costModal.classList.add('hidden');
+        document.getElementById('cost-form').reset();
+        renderAll();
+        window.C4Utils.toast('Custo lançado na obra!');
+      });
+
+      ['search-input', 'filter-project', 'filter-kind', 'filter-stage'].forEach((id) => {
+        document.getElementById(id).addEventListener('input', renderTable);
+        document.getElementById(id).addEventListener('change', renderTable);
+      });
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>

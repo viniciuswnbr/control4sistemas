@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Portal de Cotação de Fornecedores | Portfólio V1 - Control 4 Sistemas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen">
+  <script src="portfolio-bar.js" data-system-name="Portal de Cotação de Fornecedores" data-storage-key="c4_v1_cotacao_fornecedores"></script>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-sky-600 font-semibold">
+          <i data-lucide="scale" class="w-4 h-4"></i>
+          <span>Compras &amp; Suprimentos V1</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight mt-1">
+          Portal de Cotação &amp; Mapa Comparativo
+        </h1>
+        <p class="text-sm text-slate-500 mt-1">
+          Compare de 3 a 5 fornecedores por item, destaque automaticamente os menores preços em verde e identifique o vencedor.
+        </p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <button id="btn-add-supplier" class="inline-flex items-center gap-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-semibold text-xs px-3 py-2.5 rounded-lg shadow-xs">
+          <i data-lucide="building-2" class="w-4 h-4"></i>
+          <span>+ Fornecedor (Máx 5)</span>
+        </button>
+        <button id="btn-add-item" class="inline-flex items-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white font-semibold text-sm px-4 py-2.5 rounded-lg shadow-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i>
+          <span>Novo Item na Cotação</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- KPIs -->
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="kpi-grid"></section>
+
+    <!-- Filtros -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+      <div class="relative flex-1">
+        <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
+        <input id="search-input" type="text" placeholder="Buscar item na cotação..." class="w-full pl-9 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500" />
+      </div>
+      <div class="flex items-center gap-2">
+        <select id="filter-quote" class="px-3 py-2 text-sm border border-slate-200 rounded-lg bg-white font-semibold text-slate-700">
+          <option value="all">Todos os Itens</option>
+          <option value="incomplete">Faltando Preço</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Tabela Mapa Comparativo -->
+    <section class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-200 bg-slate-50 flex flex-wrap items-center justify-between gap-2">
+        <span class="text-xs font-mono font-semibold text-slate-600">
+          💡 Dica: Edite qualquer preço diretamente nas células abaixo para recalcular o vencedor em tempo real.
+        </span>
+        <span id="supplier-count-badge" class="text-xs font-mono bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-0.5 rounded-full"></span>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse" id="quote-table"></table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal Novo Item -->
+  <div id="item-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <h3 class="text-lg font-bold text-slate-900">Adicionar Item à Cotação</h3>
+        <button id="btn-close-item" class="text-slate-400 hover:text-slate-700"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="item-form" class="p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Descrição do Item *</label>
+          <input id="f-name" type="text" required placeholder="Ex: Chapa Aço Carbono 2mm" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Unidade *</label>
+            <input id="f-unit" type="text" required value="UN" class="w-full px-3 py-2 text-sm border border-slate-300 rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Quantidade *</label>
+            <input id="f-qty" type="number" min="1" required value="10" class="w-full px-3 py-2 text-sm font-mono border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="btn-cancel-item" class="px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 text-sm font-semibold bg-sky-600 hover:bg-sky-700 text-white rounded-lg">Adicionar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = 'c4_v1_cotacao_fornecedores';
+
+      const DEFAULT_DATA = {
+        suppliers: [
+          { id: 's1', name: 'Distribuidora Alfa' },
+          { id: 's2', name: 'Atacado Vale Sul' },
+          { id: 's3', name: 'Comercial Paulista' },
+          { id: 's4', name: 'Mega Suprimentos' },
+        ],
+        items: [
+          { id: 1, name: 'Resma Papel A4 75g (Cx 10un)', unit: 'CX', qty: 15, prices: { s1: 249.0, s2: 235.5, s3: 258.0, s4: 242.0 } },
+          { id: 2, name: 'Monitor LED 24" Full HD IPS', unit: 'UN', qty: 6, prices: { s1: 689.0, s2: 715.0, s3: 675.0, s4: 710.0 } },
+          { id: 3, name: 'Cadeira Ergonômica Tela Mesh', unit: 'UN', qty: 8, prices: { s1: 540.0, s2: 520.0, s3: 565.0, s4: 498.0 } },
+          { id: 4, name: 'Nobreak 1200VA Senoidal', unit: 'UN', qty: 4, prices: { s1: 610.0, s2: 590.0, s3: 640.0, s4: 605.0 } },
+          { id: 5, name: 'Kit Teclado + Mouse Sem Fio', unit: 'KIT', qty: 12, prices: { s1: 118.0, s2: 125.0, s3: 112.0, s4: 129.0 } },
+        ],
+      };
+
+      let state = loadData();
+
+      function loadData() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
+        return JSON.parse(JSON.stringify(DEFAULT_DATA));
+      }
+
+      function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      }
+
+      window.resetDemoData = function () {
+        state = JSON.parse(JSON.stringify(DEFAULT_DATA));
+        saveData();
+        renderAll();
+        window.C4Utils.toast('Cotação de demonstração restaurada!', 'info');
+      };
+
+      function computeTotals() {
+        const totals = {};
+        state.suppliers.forEach((s) => (totals[s.id] = 0));
+
+        let bestMixedTotal = 0;
+        state.items.forEach((item) => {
+          let minPrice = Infinity;
+          state.suppliers.forEach((s) => {
+            const p = Number(item.prices[s.id] || 0);
+            if (p > 0) {
+              totals[s.id] += p * item.qty;
+              if (p < minPrice) minPrice = p;
+            }
+          });
+          if (minPrice < Infinity) bestMixedTotal += minPrice * item.qty;
+        });
+
+        let winnerId = null;
+        let winnerTotal = Infinity;
+        let maxTotal = 0;
+        state.suppliers.forEach((s) => {
+          const t = totals[s.id];
+          if (t > 0 && t < winnerTotal) {
+            winnerTotal = t;
+            winnerId = s.id;
+          }
+          if (t > maxTotal) maxTotal = t;
+        });
+
+        return { totals, winnerId, winnerTotal: winnerTotal === Infinity ? 0 : winnerTotal, maxTotal, bestMixedTotal };
+      }
+
+      function renderKPIs(stats) {
+        const winner = state.suppliers.find((s) => s.id === stats.winnerId);
+        const savings = stats.maxTotal > stats.winnerTotal ? stats.maxTotal - stats.winnerTotal : 0;
+
+        const cards = [
+          { label: 'Fornecedor Vencedor (Global)', value: winner ? winner.name : '—', sub: winner ? `Total: ${window.C4Utils.formatBRL(stats.winnerTotal)}` : 'Preencha os preços', icon: 'trophy', color: 'text-emerald-600 bg-emerald-50', highlight: true },
+          { label: 'Economia vs. Maior Proposta', value: window.C4Utils.formatBRL(savings), sub: 'Redução direta no orçamento', icon: 'trending-down', color: 'text-sky-600 bg-sky-50' },
+          { label: 'Compra Mista Ideal', value: window.C4Utils.formatBRL(stats.bestMixedTotal), sub: 'Somando menor preço por item', icon: 'sparkles', color: 'text-indigo-600 bg-indigo-50' },
+          { label: 'Itens Cotados', value: state.items.length, sub: `${state.suppliers.length} fornecedores ativos`, icon: 'list-checks', color: 'text-amber-600 bg-amber-50' },
+        ];
+
+        document.getElementById('kpi-grid').innerHTML = cards.map((c) => `
+          <div class="bg-white border ${c.highlight ? 'border-emerald-300 bg-emerald-50/30' : 'border-slate-200'} rounded-xl p-4 shadow-sm flex items-start justify-between">
+            <div class="min-w-0">
+              <p class="text-xs font-medium text-slate-500">${c.label}</p>
+              <p class="text-lg sm:text-xl font-extrabold font-mono mt-1 truncate ${c.highlight ? 'text-emerald-700' : 'text-slate-900'}">${c.value}</p>
+              <p class="text-[11px] text-slate-400 mt-1">${c.sub}</p>
+            </div>
+            <div class="p-2.5 rounded-lg shrink-0 ${c.color}"><i data-lucide="${c.icon}" class="w-5 h-5"></i></div>
+          </div>
+        `).join('');
+      }
+
+      function renderTable() {
+        const stats = computeTotals();
+        renderKPIs(stats);
+        document.getElementById('supplier-count-badge').textContent = `${state.suppliers.length} de 5 fornecedores`;
+
+        const q = document.getElementById('search-input').value.trim().toLowerCase();
+        const mode = document.getElementById('filter-quote').value;
+
+        const filteredItems = state.items.filter((it) => {
+          if (q && !it.name.toLowerCase().includes(q)) return false;
+          if (mode === 'incomplete') {
+            const missing = state.suppliers.some((s) => !it.prices[s.id] || Number(it.prices[s.id]) <= 0);
+            if (!missing) return false;
+          }
+          return true;
+        });
+
+        const thead = `
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-[11px] font-mono uppercase tracking-wider text-slate-500">
+              <th class="py-3 px-4 min-w-[220px]">Item / Qtd</th>
+              ${state.suppliers.map((s) => {
+                const isWin = s.id === stats.winnerId;
+                return `
+                  <th class="py-3 px-3 min-w-[155px] ${isWin ? 'bg-emerald-50 text-emerald-800 border-b-2 border-emerald-500' : ''}">
+                    <div class="flex items-center justify-between gap-1">
+                      <span class="truncate font-bold">${window.C4Utils.escapeHtml(s.name)}</span>
+                      ${isWin ? '<span class="text-[10px] bg-emerald-600 text-white px-1.5 py-0.5 rounded">VENCEDOR</span>' : ''}
+                      ${state.suppliers.length > 3 ? `<button onclick="removeSupplier('${s.id}')" class="text-slate-400 hover:text-rose-600" title="Remover fornecedor">×</button>` : ''}
+                    </div>
+                  </th>
+                `;
+              }).join('')}
+              <th class="py-3 px-3 text-right">Ações</th>
+            </tr>
+          </thead>
+        `;
+
+        const tbody = `
+          <tbody class="divide-y divide-slate-100 text-sm">
+            ${filteredItems.map((it) => {
+              let minPrice = Infinity;
+              state.suppliers.forEach((s) => {
+                const v = Number(it.prices[s.id] || 0);
+                if (v > 0 && v < minPrice) minPrice = v;
+              });
+
+              return `
+                <tr class="hover:bg-slate-50/70">
+                  <td class="py-3 px-4">
+                    <div class="font-semibold text-slate-900">${window.C4Utils.escapeHtml(it.name)}</div>
+                    <div class="text-xs font-mono text-slate-500">${it.qty} ${window.C4Utils.escapeHtml(it.unit)}</div>
+                  </td>
+                  ${state.suppliers.map((s) => {
+                    const p = Number(it.prices[s.id] || 0);
+                    const isMin = p > 0 && p === minPrice;
+                    return `
+                      <td class="py-2.5 px-3 ${isMin ? 'bg-emerald-50/90' : ''}">
+                        <div class="relative">
+                          <span class="absolute left-2 top-1/2 -translate-y-1/2 text-[11px] font-mono ${isMin ? 'text-emerald-700 font-bold' : 'text-slate-400'}">R$</span>
+                          <input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            value="${p || ''}"
+                            onchange="updatePrice(${it.id}, '${s.id}', this.value)"
+                            class="w-full pl-7 pr-2 py-1.5 text-sm font-mono rounded-lg border ${isMin ? 'border-emerald-400 bg-white text-emerald-800 font-bold ring-1 ring-emerald-300' : 'border-slate-200 bg-white text-slate-800'} focus:outline-none focus:ring-2 focus:ring-sky-500"
+                          />
+                        </div>
+                        <div class="flex items-center justify-between mt-1 text-[10px] font-mono">
+                          <span class="${isMin ? 'text-emerald-700 font-bold' : 'text-slate-400'}">Sub: ${window.C4Utils.formatBRL(p * it.qty)}</span>
+                          ${isMin ? '<span class="text-emerald-700 font-bold">★ MENOR</span>' : ''}
+                        </div>
+                      </td>
+                    `;
+                  }).join('')}
+                  <td class="py-3 px-3 text-right">
+                    <button onclick="deleteItem(${it.id})" class="p-1.5 text-slate-400 hover:text-rose-600 rounded" title="Excluir item">
+                      <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                  </td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        `;
+
+        const tfoot = `
+          <tfoot>
+            <tr class="bg-slate-900 text-white font-mono text-sm">
+              <td class="py-3.5 px-4 font-bold">TOTAL GLOBAL POR FORNECEDOR</td>
+              ${state.suppliers.map((s) => {
+                const isWin = s.id === stats.winnerId;
+                return `
+                  <td class="py-3.5 px-3 font-extrabold ${isWin ? 'bg-emerald-700 text-white' : ''}">
+                    ${window.C4Utils.formatBRL(stats.totals[s.id])}
+                  </td>
+                `;
+              }).join('')}
+              <td></td>
+            </tr>
+          </tfoot>
+        `;
+
+        document.getElementById('quote-table').innerHTML = thead + tbody + tfoot;
+        lucide.createIcons();
+      }
+
+      function renderAll() {
+        renderTable();
+      }
+
+      window.updatePrice = function (itemId, supplierId, val) {
+        const it = state.items.find((i) => i.id === itemId);
+        if (!it) return;
+        it.prices[supplierId] = Math.max(0, Number(val || 0));
+        saveData();
+        renderAll();
+      };
+
+      window.deleteItem = function (id) {
+        state.items = state.items.filter((i) => i.id !== id);
+        saveData();
+        renderAll();
+      };
+
+      window.removeSupplier = function (supId) {
+        if (state.suppliers.length <= 3) {
+          window.C4Utils.toast('Mínimo de 3 fornecedores exigido.', 'warning');
+          return;
+        }
+        state.suppliers = state.suppliers.filter((s) => s.id !== supId);
+        saveData();
+        renderAll();
+      };
+
+      document.getElementById('btn-add-supplier').addEventListener('click', () => {
+        if (state.suppliers.length >= 5) {
+          window.C4Utils.toast('Limite máximo de 5 fornecedores atingido.', 'warning');
+          return;
+        }
+        const name = prompt('Nome do novo fornecedor:');
+        if (!name || !name.trim()) return;
+        const id = 's' + Date.now();
+        state.suppliers.push({ id, name: name.trim() });
+        saveData();
+        renderAll();
+        window.C4Utils.toast(`Fornecedor "${name.trim()}" adicionado!`);
+      });
+
+      const itemModal = document.getElementById('item-modal');
+      document.getElementById('btn-add-item').addEventListener('click', () => itemModal.classList.remove('hidden'));
+      document.getElementById('btn-close-item').addEventListener('click', () => itemModal.classList.add('hidden'));
+      document.getElementById('btn-cancel-item').addEventListener('click', () => itemModal.classList.add('hidden'));
+
+      document.getElementById('item-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        state.items.push({
+          id: Date.now(),
+          name: document.getElementById('f-name').value.trim(),
+          unit: document.getElementById('f-unit').value.trim() || 'UN',
+          qty: Number(document.getElementById('f-qty').value || 1),
+          prices: {},
+        });
+        saveData();
+        itemModal.classList.add('hidden');
+        document.getElementById('item-form').reset();
+        renderAll();
+        window.C4Utils.toast('Item adicionado! Preencha os preços na tabela.');
+      });
+
+      document.getElementById('search-input').addEventListener('input', renderTable);
+      document.getElementById('filter-quote').addEventListener('change', renderTable);
+
+      renderAll();
+    })();
+  </script>
+</body>
+</html>
