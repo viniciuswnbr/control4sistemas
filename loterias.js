@@ -507,6 +507,29 @@
     housesSubtitle: document.getElementById('houses-subtitle'),
     btnApplyHouseChampions: document.getElementById('btn-apply-house-champions'),
     canvas: document.getElementById('ticket-canvas'),
+    strategyBenefitBox: document.getElementById('strategy-benefit-box'),
+    inputConcursoBusca: document.getElementById('input-concurso-busca'),
+    btnBuscarConcurso: document.getElementById('btn-buscar-concurso'),
+    btnPrevConcurso: document.getElementById('btn-prev-concurso'),
+    btnNextConcurso: document.getElementById('btn-next-concurso'),
+    consultaResultadoBox: document.getElementById('consulta-resultado-box'),
+    inputConferirNumeros: document.getElementById('input-conferir-numeros'),
+    btnConferirAposta: document.getElementById('btn-conferir-aposta'),
+    btnUsarJogoGerado: document.getElementById('btn-usar-jogo-gerado'),
+    conferidorResultadoBox: document.getElementById('conferidor-resultado-box'),
+  };
+
+  const STRATEGY_INFO = {
+    equilibrado:
+      '<strong>Equilibrado:</strong> mistura metade pares e metade ímpares. <strong>Benefício:</strong> evita jogos desbalanceados (só pares ou só ímpares), que raramente saem nos sorteios.',
+    quentes:
+      '<strong>Mais Sorteados:</strong> prioriza as dezenas que mais saíram na história. <strong>Benefício:</strong> ideal para quem gosta de seguir a tendência dos números campeões.',
+    frios:
+      '<strong>Menos Sorteados:</strong> prioriza dezenas que saíram menos vezes até hoje. <strong>Benefício:</strong> útil para quem aposta que os números atrasados vão sair para equilibrar.',
+    casas:
+      '<strong>Campeões de Cada Casa:</strong> escolhe os líderes da 1ª até a última posição do sorteio. <strong>Benefício:</strong> espalha sua aposta pelo volante inteiro sem concentrar em um canto só.',
+    aleatorio:
+      '<strong>Surpresinha Pura:</strong> sorteio 100% aleatório sem filtros. <strong>Benefício:</strong> rapidez total para quem prefere deixar na mão da sorte.',
   };
 
   function getActiveGame() {
@@ -1340,6 +1363,165 @@
   }
 
   /* -------------------------------------------------------------------------
+   * CONSULTA DE RESULTADOS POR CONCURSO & CONFERIDOR DE APOSTA
+   * ------------------------------------------------------------------------- */
+  function renderStrategyBenefit() {
+    if (!els.strategyBenefitBox) return;
+    els.strategyBenefitBox.innerHTML = STRATEGY_INFO[state.strategy] || STRATEGY_INFO.equilibrado;
+  }
+
+  function renderConsultedDraw(drawObj) {
+    if (!els.consultaResultadoBox) return;
+    const g = getActiveGame();
+    const d = drawObj || g.ultimoSorteio;
+    state.consultedDraw = d;
+    if (els.inputConcursoBusca) {
+      els.inputConcursoBusca.value = d.concurso;
+    }
+
+    const ballsHtml = d.dezenas
+      .map(
+        (n) => `
+        <span
+          class="inline-flex h-8 w-8 items-center justify-center rounded-full font-mono text-xs font-bold text-white shadow-sm"
+          style="background-color: ${g.cor}"
+        >${formatNum(n, g.isColumnar)}</span>`
+      )
+      .join('');
+
+    els.consultaResultadoBox.innerHTML = `
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <span class="font-mono text-xs font-bold text-slate-900">
+          ${g.nome} • Concurso #${d.concurso}
+        </span>
+        <span class="font-mono text-[11px] text-slate-500">${d.data} (${d.fonte})</span>
+      </div>
+      <div class="flex flex-wrap gap-1.5">${ballsHtml}</div>
+      <div class="text-xs text-slate-700 space-y-1 pt-1 border-t border-slate-200">
+        <div><strong>Faixa principal:</strong> ${d.valorPagoPrincipal}</div>
+        <div class="text-slate-500">${d.detalheRateio}</div>
+      </div>
+    `;
+  }
+
+  async function fetchConcurso(concursoNum) {
+    const g = getActiveGame();
+    const num = Number(concursoNum);
+    if (!num || num < 1) return;
+
+    if (num === g.ultimoSorteio.concurso) {
+      renderConsultedDraw(g.ultimoSorteio);
+      checkUserNumbers();
+      return;
+    }
+
+    els.consultaResultadoBox.innerHTML =
+      '<div class="text-xs font-mono text-slate-500 py-2">Buscando concurso #' + num + '...</div>';
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(`${API_BASE}/${g.apiSlug}/${num}`, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+
+      if (data && data.concurso && Array.isArray(data.dezenas)) {
+        const premiacao0 = Array.isArray(data.premiacoes) && data.premiacoes[0] ? data.premiacoes[0] : null;
+        const ganhadores = premiacao0 ? premiacao0.ganhadores : 0;
+        const valorPremio = premiacao0 ? premiacao0.valorPremio : 0;
+        const parsed = {
+          concurso: data.concurso,
+          data: data.data || '-',
+          dezenas: data.dezenas.map((x) => Number(x)),
+          valorPagoPrincipal: data.acumulou
+            ? 'Acumulou (0 ganhadores na faixa principal)'
+            : `${formatBRL(valorPremio)} (${ganhadores} ganhador${ganhadores === 1 ? '' : 'es'})`,
+          detalheRateio:
+            Array.isArray(data.premiacoes) && data.premiacoes[1]
+              ? `${data.premiacoes[1].descricao}: ${formatBRL(data.premiacoes[1].valorPremio)} (${data.premiacoes[1].ganhadores} apostas)`
+              : 'Consulte o rateio completo no portal Caixa.',
+          fonte: 'API Caixa ao vivo',
+        };
+        renderConsultedDraw(parsed);
+        checkUserNumbers();
+        return;
+      }
+      throw new Error('Dados inválidos');
+    } catch {
+      els.consultaResultadoBox.innerHTML = `
+        <div class="text-xs text-amber-800 bg-amber-50 border border-amber-200 rounded-lg p-3">
+          Não foi possível carregar o concurso <strong>#${num}</strong> online agora. Mostrando o último concurso salvo abaixo.
+        </div>`;
+      setTimeout(() => {
+        renderConsultedDraw(g.ultimoSorteio);
+      }, 2200);
+    }
+  }
+
+  function checkUserNumbers() {
+    if (!els.inputConferirNumeros || !els.conferidorResultadoBox) return;
+    const raw = els.inputConferirNumeros.value.trim();
+    if (!raw) {
+      els.conferidorResultadoBox.innerHTML =
+        'Digite seus números acima ou clique em <strong>"Puxar meu Jogo #1"</strong> para ver quantos acertos você fez.';
+      return;
+    }
+
+    const g = getActiveGame();
+    const targetDraw = state.consultedDraw || g.ultimoSorteio;
+    const userNums = raw
+      .split(/[\s,;.-]+/)
+      .map((s) => s.trim())
+      .filter((s) => s !== '')
+      .map((s) => Number(s))
+      .filter((n) => !Number.isNaN(n) && n >= g.minNum && n <= g.maxNum);
+
+    const uniqueUserNums = g.isColumnar ? userNums.slice(0, 7) : Array.from(new Set(userNums));
+    if (!uniqueUserNums.length) {
+      els.conferidorResultadoBox.innerHTML =
+        '<span class="text-rose-600 font-semibold">Nenhum número válido encontrado para ' + g.nome + '.</span>';
+      return;
+    }
+
+    let matches = [];
+    if (g.isColumnar) {
+      matches = uniqueUserNums.filter((n, idx) => targetDraw.dezenas[idx] === n);
+    } else {
+      const drawnSet = new Set(targetDraw.dezenas);
+      matches = uniqueUserNums.filter((n) => drawnSet.has(n));
+    }
+
+    const badges = uniqueUserNums
+      .map((n, idx) => {
+        const hit = g.isColumnar ? targetDraw.dezenas[idx] === n : targetDraw.dezenas.includes(n);
+        return `<span class="inline-flex h-7 w-7 items-center justify-center rounded-full font-mono text-xs font-bold ${
+          hit ? 'bg-emerald-600 text-white shadow-sm' : 'bg-white border border-slate-300 text-slate-500'
+        }">${formatNum(n, g.isColumnar)}</span>`;
+      })
+      .join('');
+
+    els.conferidorResultadoBox.innerHTML = `
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-900">
+            Resultado no Concurso #${targetDraw.concurso}:
+          </span>
+          <span class="rounded-full px-2.5 py-0.5 font-mono text-xs font-bold ${
+            matches.length >= 4 ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-800'
+          }">
+            ${matches.length} acerto${matches.length === 1 ? '' : 's'}
+          </span>
+        </div>
+        <div class="flex flex-wrap gap-1.5">${badges}</div>
+        <p class="text-[11px] text-slate-500">
+          Os números em <strong>verde</strong> foram sorteados neste concurso.
+        </p>
+      </div>
+    `;
+  }
+
+  /* -------------------------------------------------------------------------
    * SELEÇÃO DE MODALIDADE & EVENTOS
    * ------------------------------------------------------------------------- */
   function selectLottery(id) {
@@ -1358,6 +1540,8 @@
 
     renderTabs();
     renderLastDraw();
+    renderConsultedDraw(g.ultimoSorteio);
+    renderStrategyBenefit();
     renderStats();
     generateAllGames();
   }
@@ -1372,8 +1556,38 @@
 
     els.selectStrategy.addEventListener('change', (e) => {
       state.strategy = e.target.value;
+      renderStrategyBenefit();
       generateAllGames();
     });
+
+    if (els.btnBuscarConcurso) {
+      els.btnBuscarConcurso.addEventListener('click', () => {
+        fetchConcurso(els.inputConcursoBusca.value);
+      });
+    }
+    if (els.btnPrevConcurso) {
+      els.btnPrevConcurso.addEventListener('click', () => {
+        const current = Number(els.inputConcursoBusca.value) || getActiveGame().ultimoSorteio.concurso;
+        if (current > 1) fetchConcurso(current - 1);
+      });
+    }
+    if (els.btnNextConcurso) {
+      els.btnNextConcurso.addEventListener('click', () => {
+        const current = Number(els.inputConcursoBusca.value) || getActiveGame().ultimoSorteio.concurso;
+        fetchConcurso(current + 1);
+      });
+    }
+    if (els.btnConferirAposta) {
+      els.btnConferirAposta.addEventListener('click', checkUserNumbers);
+    }
+    if (els.btnUsarJogoGerado) {
+      els.btnUsarJogoGerado.addEventListener('click', () => {
+        const g = getActiveGame();
+        const game1 = state.games[0] || [];
+        els.inputConferirNumeros.value = game1.map((n) => formatNum(n, g.isColumnar)).join(' ');
+        checkUserNumbers();
+      });
+    }
 
     els.gamesCountBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
