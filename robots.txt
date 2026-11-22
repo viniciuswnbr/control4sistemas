@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 
-Sitemap: https://control4sistemas.com.br/sitemap.xml
+Sitemap: https://www.control4sistemas.com.br/sitemap.xml
