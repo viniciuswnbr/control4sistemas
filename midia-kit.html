@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mídia Kit & Materiais de Divulgação | Control 4 Sistemas</title>
+  <meta
+    name="description"
+    content="Central aberta de materiais da Control 4 Sistemas. Baixe imagens prontas para WhatsApp, Instagram e Facebook e copie mensagens para indicar e compartilhar."
+  />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://www.control4sistemas.com.br/midia-kit" />
+  <meta name="theme-color" content="#FFFFFF" />
+
+  <!-- Open Graph / Social -->
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta property="og:url" content="https://www.control4sistemas.com.br/midia-kit" />
+  <meta property="og:title" content="Mídia Kit & Materiais | Control 4 Sistemas" />
+  <meta
+    property="og:description"
+    content="Baixe artes em alta resolução e copie textos prontos para divulgar e indicar a Control 4 Sistemas no WhatsApp, Instagram e Facebook."
+  />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              bg: '#FFFFFF',
+              subtle: '#F8FAFC',
+              border: '#E2E8F0',
+              text: '#0F172A',
+              muted: '#475569',
+              cyan: '#0284C7',
+              emerald: '#10B981',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Google Analytics 4 (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FXN3Y3MRDR"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag('js', new Date());
+    gtag('config', 'G-FXN3Y3MRDR');
+  </script>
+
+  <!-- Microsoft Clarity -->
+  <script type="text/javascript">
+    (function (c, l, a, r, i, t, y) {
+      c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+      t = l.createElement(r); t.async = 1; t.src = 'https://www.clarity.ms/tag/' + i;
+      y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+    })(window, document, 'clarity', 'script', 'zh9ji51ore');
+  </script>
+</head>
+<body class="bg-white text-slate-900 font-sans antialiased selection:bg-sky-100 selection:text-sky-900">
+
+  <!-- NAVBAR -->
+  <header id="navbar" class="fixed top-0 inset-x-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 md:h-20">
+        <a
+          href="/"
+          class="inline-flex items-center gap-2 font-mono text-sm sm:text-base font-bold tracking-wider text-slate-900 focus:outline-none"
+          aria-label="Control 4 Sistemas - Página Inicial"
+        >
+          <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500"></span>
+          <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+        </a>
+
+        <nav class="hidden lg:flex items-center gap-7" aria-label="Navegação principal">
+          <a href="/#bases" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Bases Prontas</a>
+          <a href="/#projetos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Portfólio V1</a>
+          <a href="/#servicos" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Serviços</a>
+          <a href="/calculadora-margem" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Calculadora de Margem</a>
+          <a href="/parceiros" class="text-sm font-medium text-slate-600 hover:text-sky-600 transition-colors">Parceiros</a>
+          <a href="/midia-kit" class="text-sm font-semibold text-sky-600" aria-current="page">Mídia Kit</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a
+            href="/#contato"
+            class="hidden sm:inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-700 transition-colors"
+          >
+            <span>Solicitar Orçamento</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <button
+            id="mobile-menu-btn"
+            type="button"
+            class="lg:hidden inline-flex items-center justify-center p-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50"
+            aria-label="Abrir menu"
+            aria-expanded="false"
+            aria-controls="mobile-menu"
+          >
+            <i data-lucide="menu" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white px-4 py-4 space-y-2">
+      <a href="/#bases" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Bases Prontas</a>
+      <a href="/#projetos" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Portfólio V1</a>
+      <a href="/#servicos" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Serviços</a>
+      <a href="/calculadora-margem" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Calculadora de Margem</a>
+      <a href="/parceiros" class="block rounded-lg px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Parceiros</a>
+      <a href="/midia-kit" class="block rounded-lg px-3 py-2 text-sm font-semibold text-sky-600 bg-sky-50">Mídia Kit</a>
+      <a href="/#contato" class="block rounded-lg bg-sky-600 px-3 py-2.5 text-center text-sm font-semibold text-white">Solicitar Orçamento</a>
+    </div>
+  </header>
+
+  <main class="pt-16 md:pt-20">
+    <!-- HERO -->
+    <section class="bg-grid-light border-b border-slate-200 py-10 md:py-14">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl">
+          <div class="inline-flex items-center gap-2 rounded-full border border-sky-200 bg-sky-50 px-3.5 py-1 text-xs font-mono font-medium text-sky-700 mb-4">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span>ACESSO LIVRE • COPIE, BAIXE E ENVIE EM 1 CLIQUE</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900">
+            Central de Materiais <span class="text-sky-600">(Mídia Kit)</span>
+          </h1>
+          <p class="mt-3 text-base sm:text-lg text-slate-600 leading-relaxed">
+            Quer indicar ou compartilhar a <strong>Control 4 Sistemas</strong> com alguém? Escolha abaixo mensagens prontas e baixe artes em alta resolução para enviar no <strong>WhatsApp</strong>, publicar no <strong>Instagram</strong> ou divulgar no <strong>Facebook</strong>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BARRA DE PERSONALIZAÇÃO RÁPIDA (OPCIONAL) -->
+    <section class="sticky top-16 md:top-20 z-30 border-b border-slate-200 bg-slate-50/95 backdrop-blur-md shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="grid lg:grid-cols-12 gap-4 items-center">
+          <div class="lg:col-span-6">
+            <label for="partner-name-input" class="block text-xs sm:text-sm font-semibold text-slate-800 mb-1.5">
+              Seu nome <span class="font-normal text-slate-500">(opcional — para assinar a indicação nos textos):</span>
+            </label>
+            <div class="relative flex items-center">
+              <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 pointer-events-none"></i>
+              <input
+                id="partner-name-input"
+                type="text"
+                maxlength="60"
+                placeholder="Ex: Carlos Silva (deixe vazio para usar sem assinatura)"
+                class="w-full rounded-lg border border-slate-300 bg-white pl-10 pr-20 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20"
+              />
+              <button
+                id="clear-name-btn"
+                type="button"
+                class="hidden absolute right-2 rounded-md px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition-colors"
+              >
+                Limpar
+              </button>
+            </div>
+          </div>
+
+          <div class="lg:col-span-6">
+            <span class="block text-xs font-mono uppercase tracking-wider text-slate-500 mb-1.5">
+              Link pronto para compartilhar
+            </span>
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <div class="flex-1 flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 overflow-hidden">
+                <i data-lucide="link-2" class="w-4 h-4 text-sky-600 shrink-0"></i>
+                <code id="generated-url-display" class="text-xs sm:text-sm font-mono text-slate-800 truncate">
+                  https://control4sistemas.com.br
+                </code>
+              </div>
+              <button
+                id="copy-url-btn"
+                type="button"
+                data-copy-target="generated-url"
+                class="copy-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition-colors shrink-0"
+              >
+                <i data-lucide="copy" class="w-4 h-4"></i>
+                <span>Copiar Link</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTEÚDO PRINCIPAL COM ABAS -->
+    <section class="py-8 md:py-12">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- NAVEGAÇÃO POR ABAS (MOBILE-FIRST) -->
+        <div class="mb-8" role="tablist" aria-label="Canais de divulgação">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 p-1.5 rounded-2xl bg-slate-100 border border-slate-200">
+            <button
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="tab-whatsapp"
+              data-tab-btn="whatsapp"
+              class="tab-btn flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all bg-white text-emerald-700 shadow-sm border border-emerald-200"
+            >
+              <i data-lucide="message-circle" class="w-4 h-4"></i>
+              <span>WhatsApp <span class="hidden md:inline font-normal text-xs text-slate-500">(Mensagens & Status)</span></span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="tab-instagram"
+              data-tab-btn="instagram"
+              class="tab-btn flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all text-slate-600 hover:text-slate-900"
+            >
+              <i data-lucide="instagram" class="w-4 h-4"></i>
+              <span>Instagram <span class="hidden md:inline font-normal text-xs text-slate-500">(Feed, Stories & Bio)</span></span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="tab-facebook"
+              data-tab-btn="facebook"
+              class="tab-btn flex items-center justify-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all text-slate-600 hover:text-slate-900"
+            >
+              <i data-lucide="share-2" class="w-4 h-4"></i>
+              <span>Facebook <span class="hidden md:inline font-normal text-xs text-slate-500">(Grupos & Feed)</span></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             ABA 1: WHATSAPP
+             ============================================================ -->
+        <div id="tab-whatsapp" data-tab-panel="whatsapp" role="tabpanel" class="space-y-12">
+          <!-- Mensagens Prontas -->
+          <div>
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-6">
+              <div>
+                <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-emerald-700">
+                  <i data-lucide="send" class="w-3.5 h-3.5"></i>
+                  Abordagem Direta & Encaminhamento
+                </span>
+                <h2 class="text-2xl font-bold text-slate-900 mt-1">3 Mensagens Prontas para WhatsApp</h2>
+              </div>
+              <p class="text-sm text-slate-500">Copie ou clique em <strong>Enviar no WhatsApp</strong> para mandar direto para alguém.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Opção 1 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 border border-sky-200">
+                    Opção 1 • Comércios e Lojas
+                  </span>
+                  <span class="text-xs font-mono text-slate-400">WhatsApp</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">Ideal para indicar a conhecidos que ainda controlam estoque e vendas no caderno ou planilha.</p>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="wa-msg-1" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    data-copy-id="wa-msg-1"
+                    class="copy-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 transition-colors"
+                  >
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span>Copiar Texto</span>
+                  </button>
+                  <a
+                    id="wa-share-1"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors"
+                  >
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Enviar no WhatsApp</span>
+                  </a>
+                </div>
+              </article>
+
+              <!-- Opção 2 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                    Opção 2 • Serviços & Clínicas
+                  </span>
+                  <span class="text-xs font-mono text-slate-400">WhatsApp</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">Foco em agendamento, ordem de serviço e atendimento profissional para clínicas e oficinas.</p>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="wa-msg-2" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    data-copy-id="wa-msg-2"
+                    class="copy-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 transition-colors"
+                  >
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span>Copiar Texto</span>
+                  </button>
+                  <a
+                    id="wa-share-2"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors"
+                  >
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Enviar no WhatsApp</span>
+                  </a>
+                </div>
+              </article>
+
+              <!-- Opção 3 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
+                    Opção 3 • Curta / Grupos
+                  </span>
+                  <span class="text-xs font-mono text-slate-400">WhatsApp</span>
+                </div>
+                <p class="text-xs text-slate-500 mb-3">Mensagem rápida e leve para encaminhar em grupos de networking, amigos ou contatos.</p>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="wa-msg-3" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <button
+                    type="button"
+                    data-copy-id="wa-msg-3"
+                    class="copy-btn inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-slate-800 transition-colors"
+                  >
+                    <i data-lucide="copy" class="w-4 h-4"></i>
+                    <span>Copiar Texto</span>
+                  </button>
+                  <a
+                    id="wa-share-3"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-emerald-600 px-3.5 py-2.5 text-xs font-semibold text-white hover:bg-emerald-700 transition-colors"
+                  >
+                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                    <span>Enviar no WhatsApp</span>
+                  </a>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <!-- Criativos Status WhatsApp -->
+          <div class="pt-6 border-t border-slate-200">
+            <div class="mb-6">
+              <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-emerald-700">
+                <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                Criativos Verticais 1080×1920
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900 mt-1">2 Imagens Prontas para Status do WhatsApp</h2>
+              <p class="text-sm text-slate-500 mt-1">Baixe o arquivo PNG em alta resolução e poste direto no seu Status ou envie como imagem.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-8 max-w-4xl">
+              <!-- Status 1 -->
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 flex flex-col items-center">
+                <div class="w-full max-w-[300px] overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                  <canvas id="canvas-wa-status-1" width="1080" height="1920" class="w-full h-auto block"></canvas>
+                </div>
+                <div class="w-full max-w-[300px] mt-4">
+                  <button
+                    type="button"
+                    data-download-canvas="canvas-wa-status-1"
+                    data-filename="control4-status-caderno-1080x1920.png"
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors shadow-sm"
+                  >
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar Imagem para Status (PNG)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Status 2 -->
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 flex flex-col items-center">
+                <div class="w-full max-w-[300px] overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                  <canvas id="canvas-wa-status-2" width="1080" height="1920" class="w-full h-auto block"></canvas>
+                </div>
+                <div class="w-full max-w-[300px] mt-4">
+                  <button
+                    type="button"
+                    data-download-canvas="canvas-wa-status-2"
+                    data-filename="control4-status-sob-medida-1080x1920.png"
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700 transition-colors shadow-sm"
+                  >
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar Imagem para Status (PNG)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             ABA 2: INSTAGRAM
+             ============================================================ -->
+        <div id="tab-instagram" data-tab-panel="instagram" role="tabpanel" class="hidden space-y-12">
+          <!-- Artes Feed (1080x1080) -->
+          <div>
+            <div class="mb-6">
+              <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-sky-700">
+                <i data-lucide="layout-grid" class="w-3.5 h-3.5"></i>
+                Feed Quadrado 1080×1080
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900 mt-1">2 Artes para Feed do Instagram</h2>
+              <p class="text-sm text-slate-500 mt-1">Artes em alta resolução prontas para publicar no Feed ou enviar no Direct.</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-8 max-w-4xl">
+              <!-- Feed 1 -->
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 flex flex-col items-center">
+                <div class="w-full max-w-[380px] overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                  <canvas id="canvas-ig-feed-1" width="1080" height="1080" class="w-full h-auto block"></canvas>
+                </div>
+                <div class="w-full max-w-[380px] mt-4">
+                  <button
+                    type="button"
+                    data-download-canvas="canvas-ig-feed-1"
+                    data-filename="control4-feed-sites-1080x1080.png"
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white hover:bg-sky-700 transition-colors shadow-sm"
+                  >
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar Arte (PNG)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Feed 2 -->
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 flex flex-col items-center">
+                <div class="w-full max-w-[380px] overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                  <canvas id="canvas-ig-feed-2" width="1080" height="1080" class="w-full h-auto block"></canvas>
+                </div>
+                <div class="w-full max-w-[380px] mt-4">
+                  <button
+                    type="button"
+                    data-download-canvas="canvas-ig-feed-2"
+                    data-filename="control4-feed-sistemas-1080x1080.png"
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white hover:bg-sky-700 transition-colors shadow-sm"
+                  >
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar Arte (PNG)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Artes Stories (1080x1920) -->
+          <div class="pt-6 border-t border-slate-200">
+            <div class="mb-6">
+              <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-sky-700">
+                <i data-lucide="smartphone" class="w-3.5 h-3.5"></i>
+                Stories Vertical 1080×1920
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900 mt-1">2 Artes para Stories (Com espaço para Link)</h2>
+              <p class="text-sm text-slate-500 mt-1">
+                A parte inferior fica livre para você adicionar a figurinha de <strong>"Link"</strong> do Instagram apontando para <code class="font-mono text-xs bg-slate-100 px-1.5 py-0.5 rounded">control4sistemas.com.br</code>.
+              </p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-8 max-w-4xl">
+              <!-- Story 1 -->
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 flex flex-col items-center">
+                <div class="w-full max-w-[300px] overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                  <canvas id="canvas-ig-story-1" width="1080" height="1920" class="w-full h-auto block"></canvas>
+                </div>
+                <div class="w-full max-w-[300px] mt-4">
+                  <button
+                    type="button"
+                    data-download-canvas="canvas-ig-story-1"
+                    data-filename="control4-story-sites-1080x1920.png"
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white hover:bg-sky-700 transition-colors shadow-sm"
+                  >
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar Arte (PNG)</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Story 2 -->
+              <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 flex flex-col items-center">
+                <div class="w-full max-w-[300px] overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                  <canvas id="canvas-ig-story-2" width="1080" height="1920" class="w-full h-auto block"></canvas>
+                </div>
+                <div class="w-full max-w-[300px] mt-4">
+                  <button
+                    type="button"
+                    data-download-canvas="canvas-ig-story-2"
+                    data-filename="control4-story-sistemas-1080x1920.png"
+                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-4 py-3 text-sm font-semibold text-white hover:bg-sky-700 transition-colors shadow-sm"
+                  >
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Baixar Arte (PNG)</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Legendas Prontas (< 500 chars) -->
+          <div class="pt-6 border-t border-slate-200">
+            <div class="mb-6">
+              <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-sky-700">
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                Textos Curtos (&lt; 500 caracteres)
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900 mt-1">Legendas Prontas para Instagram</h2>
+              <p class="text-sm text-slate-500 mt-1">Objetivas, com hashtags estratégicas e chamada para o link da bio ou Direct.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+              <!-- Legenda 1 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 border border-sky-200">
+                    Legenda 1 • Sites Profissionais
+                  </span>
+                  <span id="ig-cap-1-count" class="text-xs font-mono text-slate-500">0/500 caracteres</span>
+                </div>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="ig-cap-1" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <button
+                  type="button"
+                  data-copy-id="ig-cap-1"
+                  class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
+                >
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  <span>Copiar Legenda</span>
+                </button>
+              </article>
+
+              <!-- Legenda 2 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                    Legenda 2 • Sistemas de Gestão
+                  </span>
+                  <span id="ig-cap-2-count" class="text-xs font-mono text-slate-500">0/500 caracteres</span>
+                </div>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="ig-cap-2" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <button
+                  type="button"
+                  data-copy-id="ig-cap-2"
+                  class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
+                >
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  <span>Copiar Legenda</span>
+                </button>
+              </article>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============================================================
+             ABA 3: FACEBOOK
+             ============================================================ -->
+        <div id="tab-facebook" data-tab-panel="facebook" role="tabpanel" class="hidden space-y-12">
+          <!-- 3 Textos para Grupos -->
+          <div>
+            <div class="mb-6">
+              <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-sky-700">
+                <i data-lucide="users" class="w-3.5 h-3.5"></i>
+                Grupos Locais & Recomendações
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900 mt-1">3 Textos para Grupos de Empreendedores e Feed</h2>
+              <p class="text-sm text-slate-500 mt-1">Escolha entre oferta direta, pergunta para gerar engajamento ou convite para testar demonstrações.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+              <!-- Texto 1 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 border border-sky-200">
+                    Texto 1 • Indicação de Serviços
+                  </span>
+                </div>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="fb-msg-1" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <button
+                  type="button"
+                  data-copy-id="fb-msg-1"
+                  class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
+                >
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  <span>Copiar Texto</span>
+                </button>
+              </article>
+
+              <!-- Texto 2 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
+                    Texto 2 • Dor / Engajamento
+                  </span>
+                </div>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="fb-msg-2" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <button
+                  type="button"
+                  data-copy-id="fb-msg-2"
+                  class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
+                >
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  <span>Copiar Texto</span>
+                </button>
+              </article>
+
+              <!-- Texto 3 -->
+              <article class="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                <div class="flex items-center justify-between gap-2 mb-3">
+                  <span class="inline-flex items-center rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                    Texto 3 • Demonstrações Grátis
+                  </span>
+                </div>
+                <div class="flex-1 rounded-xl bg-slate-50 border border-slate-200/80 p-4 mb-4">
+                  <pre id="fb-msg-3" class="whitespace-pre-wrap font-sans text-sm text-slate-800 leading-relaxed"></pre>
+                </div>
+                <button
+                  type="button"
+                  data-copy-id="fb-msg-3"
+                  class="copy-btn w-full inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-xs sm:text-sm font-semibold text-white hover:bg-slate-800 transition-colors"
+                >
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  <span>Copiar Texto</span>
+                </button>
+              </article>
+            </div>
+          </div>
+
+          <!-- Banner Horizontal (1200x630) -->
+          <div class="pt-6 border-t border-slate-200">
+            <div class="mb-6">
+              <span class="inline-flex items-center gap-1.5 text-xs font-mono font-semibold uppercase tracking-wider text-sky-700">
+                <i data-lucide="monitor" class="w-3.5 h-3.5"></i>
+                Banner Horizontal 1200×630
+              </span>
+              <h2 class="text-2xl font-bold text-slate-900 mt-1">1 Banner para Feed e Grupos do Facebook</h2>
+              <p class="text-sm text-slate-500 mt-1">Formato widescreen limpo para acompanhar suas publicações em grupos e páginas.</p>
+            </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-6 max-w-3xl">
+              <div class="w-full overflow-hidden rounded-xl shadow-md border border-slate-200 bg-slate-900">
+                <canvas id="canvas-fb-banner-1" width="1200" height="630" class="w-full h-auto block"></canvas>
+              </div>
+              <div class="mt-4">
+                <button
+                  type="button"
+                  data-download-canvas="canvas-fb-banner-1"
+                  data-filename="control4-facebook-banner-1200x630.png"
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-sky-600 px-6 py-3 text-sm font-semibold text-white hover:bg-sky-700 transition-colors shadow-sm"
+                >
+                  <i data-lucide="download" class="w-4 h-4"></i>
+                  <span>Baixar Banner (PNG)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="border-t border-slate-200 bg-slate-50 py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-12 gap-6 items-center">
+        <div class="md:col-span-4 space-y-1.5">
+          <div class="inline-flex items-center gap-2 font-mono text-sm font-bold tracking-wider text-slate-900">
+            <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+            <span>CONTROL 4 <span class="text-sky-600">//</span> SISTEMAS</span>
+          </div>
+          <p class="text-xs text-slate-500">Atendimento no Vale do Paraíba (SP) e em todo o Brasil.</p>
+          <p class="text-xs text-slate-500 font-mono">&copy; <span id="current-year">2026</span> Control 4 Sistemas — control4sistemas.com.br</p>
+        </div>
+        <nav class="md:col-span-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-600" aria-label="Links do rodapé">
+          <a href="/#bases" class="hover:text-sky-600">Bases Prontas</a>
+          <a href="/#projetos" class="hover:text-sky-600">Portfólio V1</a>
+          <a href="/calculadora-margem" class="hover:text-sky-600">Calculadora de Margem</a>
+          <a href="/parceiros" class="hover:text-sky-600">Parceiros</a>
+          <a href="/midia-kit" class="text-sky-600 font-medium">Mídia Kit</a>
+          <a href="/#contato" class="hover:text-sky-600">Orçamento</a>
+        </nav>
+        <div class="md:col-span-3 md:text-right">
+          <a href="https://www.youtube.com/@control4sistemas" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-mono text-slate-700 hover:border-rose-300 hover:text-rose-600">
+            <i data-lucide="youtube" class="w-4 h-4 text-rose-600"></i>
+            <span>Canal no YouTube</span>
+          </a>
+        </div>
+      </div>
+      <div class="mt-6 pt-5 border-t border-slate-200/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+        <span>Control 4 Sistemas — Central de Materiais e Divulgação</span>
+        <div class="flex items-center gap-4">
+          <a href="/privacidade" class="hover:text-slate-600 transition-colors">Política de Privacidade</a>
+          <a href="/termos" class="hover:text-slate-600 transition-colors">Termos de Uso</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="midia-kit.js"></script>
+</body>
+</html>
