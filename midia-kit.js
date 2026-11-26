@@ -5,7 +5,7 @@
 (() => {
   'use strict';
 
-  const BASE_URL = 'https://control4sistemas.com.br';
+  const BASE_URL = 'https://www.control4sistemas.com.br';
 
   // ------------------------------------------------------------------------
   // Helpers

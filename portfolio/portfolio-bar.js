@@ -20,17 +20,19 @@
   const THEME_KEY = 'c4_portfolio_theme';
 
   const SYSTEMS = [
-    { file: 'pedidos-comissoes.html', label: '01. Pedidos & Comissões' },
-    { file: 'ordem-servico.html', label: '02. Ordem de Serviço + Assinatura' },
-    { file: 'estoque-alertas.html', label: '03. Estoque & Alertas' },
-    { file: 'agendamento-clinicas.html', label: '04. Agenda Clínicas 24h' },
-    { file: 'cotacao-fornecedores.html', label: '05. Cotação Fornecedores' },
-    { file: 'controle-frota.html', label: '06. Controle de Frota' },
-    { file: 'gestor-obras.html', label: '07. Gestor de Obras' },
-    { file: 'revenda-consignado.html', label: '08. Revenda Consignado' },
+    { file: 'pedidos-comissoes', label: '01. Pedidos & Comissões' },
+    { file: 'ordem-servico', label: '02. Ordem de Serviço + Assinatura' },
+    { file: 'estoque-alertas', label: '03. Estoque & Alertas' },
+    { file: 'agendamento-clinicas', label: '04. Agenda Clínicas 24h' },
+    { file: 'cotacao-fornecedores', label: '05. Cotação Fornecedores' },
+    { file: 'controle-frota', label: '06. Controle de Frota' },
+    { file: 'gestor-obras', label: '07. Gestor de Obras' },
+    { file: 'revenda-consignado', label: '08. Revenda Consignado' },
   ];
 
-  const currentFile = (window.location.pathname.split('/').pop() || '').toLowerCase();
+  const currentFile = (window.location.pathname.split('/').pop() || '')
+    .toLowerCase()
+    .replace(/\.html$/, '');
 
   const waMessage = encodeURIComponent(
     `Olá Juliana! Estava testando o sistema "${systemName}" no Portfólio V1 da Control 4 Sistemas e gostaria de um orçamento para personalizar para a minha empresa.`
@@ -556,7 +558,7 @@
     bar.innerHTML = `
       <div class="c4-pb-inner">
         <div class="c4-pb-left">
-          <a href="../index.html" class="c4-pb-back" title="Voltar para Control 4 Sistemas">
+          <a href="/" class="c4-pb-back" title="Voltar para Control 4 Sistemas">
             <span>←</span>
             <span>Site</span>
           </a>
